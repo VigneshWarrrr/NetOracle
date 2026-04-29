@@ -1,0 +1,103 @@
+{
+    "verb" : "finish",
+    "pdft_uuid" : "0a0ceba3-7ca9-421f-a973-8caae2950690",
+    "timestamp" : "2016/10/31 20:08:27",
+    "timestamp_hour" : 20,
+    "timestamp_month" : 10,
+    "timestamp_weekday" : 1,
+/*  ... and all further entries defined for "launch.json" */
+ 
+ 
+    "profile" : "P959c755539c8439e62c516c66a4a9097",
+    "profile_name" : "Sheetfed offset (CMYK, RGB and spot colors) (GWG 2015)",
+/*  ... and all further entries defined for "init.json" */
+ 
+ 
+    "retcode" : "8",
+    "duration" : "0:00:11:045",
+ 
+ 
+    "doc_corrections" : 870,
+    "doc_max_severity" : 3,
+    "doc_messages" : 236,
+    "doc_errors" : 160, 
+    "doc_errors_list" : [
+       {
+         "Font not embeddded" : 17
+       },
+       {
+          "DeviceRGB used" : 28
+       },
+       {
+          "TrimBox entry missing" : 1
+       }
+    ]
+    "doc_warnings" : 76,
+    "doc_warnings_list" : [
+       {
+         "Resolution less than 200ppi for continuous tone image" : 3
+       },
+       { 
+         "Page empty" : 2
+       }
+    ]
+    "doc_infos" : 0,
+    "doc_infos_list" : [
+       {
+         "Uses spot color" : 61
+       },
+       {
+         "Uses transpanrency" : 39
+       }
+    ]
+ 
+    "pdf_encrypted" : 0,   
+ 
+    "num_images" : 70,
+ 
+    "num_fonts" : 2,
+ 
+    "fonts" : [
+      {
+        "fontname" : "TimesNewRomanPS-BoldMT",
+        "fonttype" : "Type1",
+        "embedded" : 1,
+        "subset"   : 1
+      },
+      {
+        "fontname" : "MyriadPro-BoldItalic",
+        "fonttype" : "Type0",
+        "embedded" : 1,
+        "subset"   : 1
+      }
+    ],
+ 
+ 
+    "num_spotcolors" : 3,
+    "spotcolor_names" : [
+      "Orange",
+      "Purple",
+      "Varnish"
+    ],
+ 
+ 
+    "num_icc_profiles" : 3,
+    "icc_profiles_gray" : [
+    ],
+    "icc_profiles_rgb" : [
+      "sRGB",
+      "eciRGB v2"
+    ],
+    "icc_profiles_cmyk" : [
+       "PSO Coated v3"
+    ],
+ 
+ 
+    "pdfx_version" : "PDF/X-4",
+    "pdfx_oi_output_cond_id" : "FOGRA39",
+    "pdfx_oi_info" : "Prepared for ISO 12647-2:2013, coated sheet fed offset",
+    "pdfx_oi_icc_name" : "PSO Coated v3",
+    "pdfa_version" : "PDF/A-2b",
+    "pdfua_version" : "",
+    "pdfe_version: ""
+}

@@ -1,0 +1,444 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Engine | Loggedin</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .api-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .endpoint-badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        pre {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            color: #d1d5db;
+            margin-top: 1rem;
+        }
+
+        .integration-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+
+        .btn-connect {
+            background: var(--accent);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="theme-{{ current_theme }}">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span style="background: linear-gradient(135deg, var(--accent), #a855f7); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800;">L</span>
+                <span class="fancy-logo" style="font-size: 1.5rem;">Loggedin</span>
+            </div>
+            
+            <nav>
+                {% if user.is_staff or user.is_superuser %}
+                <a href="{% url 'dashboard:index' %}" class="nav-item">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Dashboard
+                </a>
+                {% else %}
+                <a href="{% url 'users:dashboard' %}" class="nav-item">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Dashboard
+                </a>
+                {% endif %}
+
+                <a href="{% url 'logs:dashboard' %}" class="nav-item">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Logs
+                </a>
+                <a href="{% url 'alerts:dashboard' %}" class="nav-item">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    Alerts
+                </a>
+
+                {% if user.is_staff or user.is_superuser %}
+                <a href="{% url 'management:dashboard' %}" class="nav-item">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    Users
+                </a>
+                <a href="{% url 'server:dashboard' %}" class="nav-item">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2-2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
+                    Server
+                </a>
+                {% endif %}
+
+                <a href="{% url 'api:dashboard' %}" class="nav-item active">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    API Engine
+                </a>
+                <a href="{% url 'settings_app:dashboard' %}" class="nav-item">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Settings
+                </a>
+            </nav>
+
+            <div style="margin-top: auto;">
+                <form action="{% url 'users:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-item" style="background: none; border: none; width: 100%; cursor: pointer;">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div>
+                    <h1>API Engine</h1>
+                    <p style="color: var(--text-secondary);">Configure real-time ingestion and database synchronization.</p>
+                </div>
+                <form action="{% url 'users:logout' %}" method="post" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error);">
+                        Logout
+                    </button>
+                </form>
+            </header>
+
+            <!-- Real-time Ingestion Docs -->
+            <div class="api-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Ingestion Endpoint</h2>
+                        <p style="color: var(--text-secondary);">Direct log transmission via REST API.</p>
+                    </div>
+                    <span class="endpoint-badge">POST /api/ingest/</span>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <h3>Payload Structure</h3>
+<pre>{
+  "event_type": "Brute Force Attempt",
+  "severity": "HIGH",
+  "src_ip": "192.168.1.100",
+  "dest_ip": "10.0.0.5",
+  "message": "Multiple auth failures in 5s",
+  "source": 1
+}</pre>
+                </div>
+            </div>
+
+            <!-- Database Integration -->
+            <div class="api-card">
+                <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Database Connector</h2>
+                <p style="color: var(--text-secondary);">Sync logs from your production databases for real-time IDS monitoring.</p>
+                
+                <form class="integration-form" method="post" action="{% url 'api:add_connector' %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <label>Database Type</label>
+                        <select name="db_type">
+                            <option value="mysql">MySQL / MariaDB</option>
+                            <option value="postgres">PostgreSQL</option>
+                            <option value="mongo">MongoDB</option>
+                            <option value="oracle">Oracle</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Endpoint URL</label>
+                        <input type="url" name="endpoint" placeholder="https://api.db.yourcorp.com/v1" required>
+                    </div>
+                    <div class="input-group">
+                        <label>API Key / Secret</label>
+                        <input type="password" name="api_key" placeholder="••••••••••••••••" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Sync Mode</label>
+                        <select name="sync_mode">
+                            <option value="push">Continuous Push</option>
+                            <option value="poll">Interval Polling (1m)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-connect">Connect Database</button>
+                </form>
+            </div>
+
+            {% if connectors %}
+            <!-- Connected Databases -->
+            <div class="api-card">
+                <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Active Connectors</h2>
+                <div class="data-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Database</th>
+                                <th>Endpoint</th>
+                                <th>Sync Mode</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for connector in connectors %}
+                            <tr>
+                                <td><strong>{{ connector.get_db_type_display }}</strong></td>
+                                <td style="font-family: monospace; font-size: 0.8rem;">{{ connector.endpoint }}</td>
+                                <td>{{ connector.get_sync_mode_display }}</td>
+                                <td><span class="badge badge-success">{{ connector.status }}</span></td>
+                                <td style="display: flex; gap: 0.5rem;">
+                                    <button onclick="openEditModal('{{ connector.id }}', '{{ connector.db_type }}', '{{ connector.endpoint }}', '{{ connector.sync_mode }}')" 
+                                            class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto; background: var(--warning); color: white;">Edit</button>
+                                    <form action="{% url 'api:delete_connector' connector.id %}" method="post" onsubmit="return confirm('Delete this connector?')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto; background: var(--error); color: white;">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Remote Interactive Terminal -->
+            <div class="api-card" style="margin-bottom: 2rem; border-left: 4px solid var(--accent);">
+                <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Remote Interactive Terminal
+                </h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">Query your connected external databases directly from here.</p>
+                
+                <div style="display: grid; grid-template-columns: 250px 1fr; gap: 1.5rem; margin-bottom: 1rem;">
+                    <div class="input-group">
+                        <label>Select Connector</label>
+                        <select id="remote-connector-select" style="width: 100%;" onchange="updateTerminalPlaceholder()">
+                            {% for connector in connectors %}
+                            <option value="{{ connector.id }}" data-type="{{ connector.db_type }}">{{ connector.get_db_type_display }} ({{ connector.endpoint|truncatechars:20 }})</option>
+                            {% empty %}
+                            <option disabled>No connectors available</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div style="background: #1e1e1e; padding: 1rem; border-radius: 8px; border: 1px solid #333;">
+                        <textarea id="remote-query" placeholder="SELECT * FROM users LIMIT 10;" style="width: 100%; height: 80px; background: transparent; border: none; color: #0f0; font-family: 'Courier New', Courier, monospace; outline: none; resize: vertical;"></textarea>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div id="remote-message" style="font-size: 0.85rem;"></div>
+                    <button onclick="runRemoteQuery()" class="btn" style="width: auto; background: var(--accent); color: white; display: flex; align-items: center; gap: 0.5rem;">
+                        Execute Remote
+                    </button>
+                </div>
+
+                <div id="remote-results-container" style="margin-top: 1.5rem; display: none; max-height: 300px; overflow: auto; border: 1px solid var(--border); border-radius: 8px;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead id="remote-thead" style="position: sticky; top: 0; background: var(--bg-dark); z-index: 10;"></thead>
+                        <tbody id="remote-tbody" style="font-family: monospace; font-size: 0.8rem;"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Edit Modal -->
+            <div id="editModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+                <div class="api-card" style="width: 100%; max-width: 500px; margin: 0;">
+                    <h2 style="margin-bottom: 1.5rem;">Edit Connector</h2>
+                    <form id="editForm" method="post">
+                        {% csrf_token %}
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Database Type</label>
+                            <select name="db_type" id="edit_db_type">
+                                <option value="mysql">MySQL / MariaDB</option>
+                                <option value="postgres">PostgreSQL</option>
+                                <option value="mongo">MongoDB</option>
+                                <option value="oracle">Oracle</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Endpoint URL</label>
+                            <input type="url" name="endpoint" id="edit_endpoint" required>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>New API Key (Optional)</label>
+                            <input type="password" name="api_key" placeholder="Leave blank to keep current">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 1.5rem;">
+                            <label>Sync Mode</label>
+                            <select name="sync_mode" id="edit_sync_mode">
+                                <option value="push">Continuous Push</option>
+                                <option value="poll">Interval Polling (1m)</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="btn-connect" style="margin: 0; flex: 1;">Save Changes</button>
+                            <button type="button" onclick="closeEditModal()" class="btn" style="width: auto; background: var(--glass); color: var(--text-primary);">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+                function openEditModal(id, type, endpoint, mode) {
+                    const modal = document.getElementById('editModal');
+                    const form = document.getElementById('editForm');
+                    form.action = `/api/update-connector/${id}/`;
+                    document.getElementById('edit_db_type').value = type;
+                    document.getElementById('edit_endpoint').value = endpoint;
+                    document.getElementById('edit_sync_mode').value = mode;
+                    modal.style.display = 'flex';
+                }
+
+                function closeEditModal() {
+                    document.getElementById('editModal').style.display = 'none';
+                }
+
+                // Close on click outside
+                window.onclick = function(event) {
+                    const modal = document.getElementById('editModal');
+                    if (event.target == modal) closeEditModal();
+                }
+
+                function updateTerminalPlaceholder() {
+                    const select = document.getElementById('remote-connector-select');
+                    const type = select.options[select.selectedIndex].getAttribute('data-type');
+                    const textarea = document.getElementById('remote-query');
+                    
+                    if (type === 'mongo') {
+                        textarea.placeholder = 'db.collection.find({ status: "active" }).limit(5);';
+                    } else {
+                        textarea.placeholder = 'SELECT * FROM remote_table WHERE active = 1;';
+                    }
+                }
+
+                function runRemoteQuery() {
+                    const connectorId = document.getElementById('remote-connector-select').value;
+                    const query = document.getElementById('remote-query').value;
+                    const messageEl = document.getElementById('remote-message');
+                    const container = document.getElementById('remote-results-container');
+                    const thead = document.getElementById('remote-thead');
+                    const tbody = document.getElementById('sql-tbody'); // Re-using style but unique logic below
+                    
+                    if (!connectorId) {
+                        messageEl.innerHTML = '<span style="color: var(--error);">No connector selected</span>';
+                        return;
+                    }
+
+                    messageEl.innerHTML = '<span style="color: var(--accent);">Connecting to remote source...</span>';
+                    container.style.display = 'none';
+
+                    fetch('{% url "api:execute_remote_query" %}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `connector_id=${connectorId}&query=${encodeURIComponent(query)}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            messageEl.innerHTML = `<span style="color: var(--error);">${data.error}</span>`;
+                        } else {
+                            messageEl.innerHTML = `<span style="color: var(--success);">${data.message}</span>`;
+                            if (data.columns && data.rows) {
+                                thead.innerHTML = `<tr>${data.columns.map(c => `<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid var(--border);">${c}</th>`).join('')}</tr>`;
+                                document.getElementById('remote-tbody').innerHTML = data.rows.map(row => `<tr>${row.map(cell => `<td style="padding: 0.75rem; border-bottom: 1px solid var(--border);">${cell}</td>`).join('')}</tr>`).join('');
+                                container.style.display = 'block';
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        messageEl.innerHTML = `<span style="color: var(--error);">Remote Sync Error: ${error.message}</span>`;
+                    });
+                }
+            </script>
+
+            <!-- External Database Content -->
+            <div class="api-card">
+                <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">External Database Content</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Live view of logs being pulled from connected external databases.</p>
+                <div class="data-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Message</th>
+                                <th>Severity</th>
+                                <th>Source IP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in external_logs %}
+                            <tr>
+                                <td style="color: var(--text-secondary);">{{ log.timestamp|date:"H:i:s" }}</td>
+                                <td style="font-weight: 500;">{{ log.message }}</td>
+                                <td>
+                                    {% if log.severity == 'HIGH' or log.severity == 'CRITICAL' %}
+                                    <span class="badge badge-error">{{ log.severity }}</span>
+                                    {% else %}
+                                    <span class="badge badge-warning">{{ log.severity }}</span>
+                                    {% endif %}
+                                </td>
+                                <td style="font-family: monospace;">{{ log.src_ip }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No logs synced yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 1.5rem; padding: 1rem; background: var(--glass); border-radius: 8px;">
+                    <p style="font-size: 0.85rem; color: var(--accent);">
+                        <strong>Note:</strong> High-severity logs shown above have been automatically directed to the 
+                        <a href="{% url 'alerts:dashboard' %}" style="color: var(--accent); font-weight: 600;">Alerts Page</a>.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

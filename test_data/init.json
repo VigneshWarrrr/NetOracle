@@ -1,0 +1,47 @@
+{
+    "verb" : "init",
+    "pdft_uuid" : "0a0ceba3-7ca9-421f-a973-8caae2950690",
+    "timestamp" : "2016/10/31 20:08:27",
+    "timestamp_hour" : 20,
+    "timestamp_month" : 10,
+    "timestamp_weekday" : 1,
+/*  ... and all further entries defined for "launch.json" */
+ 
+ 
+ 
+    "profile" : "P959c755539c8439e62c516c66a4a9097",
+    "profile_name" : "Sheetfed offset (CMYK, RGB and spot colors) (GWG 2015)",
+ 
+    "doc_size" : 863672,
+    "doc_created" : "2015/06/03 12:23:53.000",
+    "doc_modified" : "2016/10/31 20:08:28.000",
+    "pdf_version" : "1.5",
+    "pdf_creator" : "Acrobat PDFMaker 10.1 für PowerPoint",
+    "pdf_writer" : "Adobe PDF Library 10.0",
+    "doc_id1" : "DB10E96543FE2B4E93226FA065FE83BC",
+    "doc_id2" : "00AFB863B1344FDDBE90D24E513AB992",
+ 
+    "doc_pages" : 23,
+    "firstpage_size" : {
+      "mediabox" : [-10 0 581 615] ,
+      "cropbox"  : [-10 0 581 615] ,
+      "bleedbox" : [5 5 559 570] ,
+      "trimbox"  : [10 10 551 565] ,
+      "artbox"   : [] ,
+      "cropsize" : [591 625] ,
+      "trimsize" : [541 555] ,
+      "bleed"    : [5 5 8 5]
+    }
+ 
+ 
+    "variables" : {
+        "Calcs_for_LFP_Preflight_-_viewing_distance" : {
+            "eff_min_fontsize":null,
+            "eff_min_imageresolution":null
+        },
+        "eff_min_fontsize":200,
+        "eff_min_imageresolution":40,
+        "input_scalingfactor":100,
+        "input_viewingdistance":10
+    }
+}

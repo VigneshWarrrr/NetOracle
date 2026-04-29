@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Loggedin</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="theme-{{ current_theme }}">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 class="fancy-logo" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Loggedin</h1>
+                <p style="color: var(--text-secondary);">Security Intelligence Platform</p>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 0.75rem; border-radius: 0.75rem; margin-bottom: 1.5rem; font-size: 0.875rem;">
+                    Invalid username or password.
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_password">Password</label>
+                    <input type="password" name="password" autocomplete="current-password" required="" id="id_password">
+                </div>
+
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
