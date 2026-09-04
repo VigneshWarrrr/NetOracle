@@ -1,18 +1,26 @@
-Django>=4.2
-reportlab>=4.0.0
-PyPDF2>=3.0.0
-django-cors-headers
-requests
-djangorestframework
-scapy
-polars
-networkx
-numpy
-pandas
-scikit-learn
-PyYAML
-torch
-plotly
-shap
-joblib
-streamlit
+Django>=4.2,<7
+djangorestframework>=3.14
+django-cors-headers>=4.3
+
+# Risk forecasting and feature engineering
+numpy>=1.24
+pandas>=2.0
+polars>=1.0
+scikit-learn>=1.3
+networkx>=3.0
+PyYAML>=6.0
+torch>=2.0
+joblib>=1.3
+
+# Dashboard and explainability
+plotly>=5.15
+shap>=0.43
+streamlit>=1.28
+
+# Network capture and ingestion
+scapy>=2.5
+requests>=2.31
+
+# Existing log and report features
+reportlab>=4.0
+PyPDF2>=3.0
