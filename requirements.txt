@@ -8,6 +8,11 @@ scapy
 polars
 networkx
 numpy
+pandas
 scikit-learn
 PyYAML
 torch
+plotly
+shap
+joblib
+streamlit

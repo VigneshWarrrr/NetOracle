@@ -1,0 +1,1 @@
+"""Persisted forecasting model artifacts."""

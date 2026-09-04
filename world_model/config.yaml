@@ -1,0 +1,24 @@
+data:
+  dataset: "CIC-IDS-2018"
+  time_window_seconds: 10
+  sequence_length: 20
+  forecast_horizon: 5
+
+model:
+  state_dim: 128
+  hidden_dim: 256
+  num_heads: 8
+  num_layers: 4
+  dropout: 0.15
+  learning_rate: 0.0003
+  batch_size: 128
+  epochs: 40
+
+mitre_stages:
+  0: "Benign"
+  1: "Reconnaissance"
+  2: "Initial Access"
+  3: "Execution"
+  4: "Lateral Movement"
+  5: "Command & Control"
+  6: "Exfiltration"

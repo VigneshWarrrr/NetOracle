@@ -1,37 +1,40 @@
-from django.shortcuts import render, redirect
+from pathlib import Path
+
+from django.conf import settings
+from django.shortcuts import redirect
 
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from logs.models import LogEntry, LogSource
-from feature_engine.models import FeatureWindow
 from alerts.models import Alert
-from ai_models.services import forecaster
-from ai_models.models import ForecastSettings
-import json
+from feature_engine.models import FeatureWindow
+from feature_engine.services import ingest_live_events
+
+from run_pipeline import run_pipeline
 
 def get_forecast_context():
-    feature_windows = list(FeatureWindow.objects.order_by('-created_at')[:100])
-    feature_windows.reverse()
-    forecast = forecaster.forecast_sequence(
-        [window.features for window in feature_windows]
-    )
+    model_path = settings.BASE_DIR / 'models' / 'attack_forecaster.pt'
+    has_live_events = FeatureWindow.objects.filter(stream_key='global').exists()
+    try:
+        if has_live_events:
+            forecast = ingest_live_events([], stream_key='global', model_path=model_path)
+        else:
+            forecast = None
+    except (FileNotFoundError, ValueError, RuntimeError) as error:
+        forecast = None
+        forecast_error = str(error)
+    else:
+        forecast_error = None if forecast else 'Start capture_traffic to receive local network data.'
     context = {
         'forecast': forecast,
-        'model_available': forecaster.available,
-        'forecast_enabled': forecaster.enabled,
+        'model_available': bool(forecast and forecast['model_source'] == 'trained_model'),
+        'live_stream': bool(forecast),
+        'forecast_enabled': True,
+        'forecast_error': forecast_error,
     }
     if forecast:
-        context['forecast_peak_percent'] = round(forecast['risk_score'] * 100)
-        context['forecast_windows'] = [
-            {
-                'probability': probability,
-                'percent': round(probability * 100),
-                'stage': stage,
-            }
-            for probability, stage in zip(
-                forecast['attack_probabilities'], forecast['mitre_stages']
-            )
-        ]
+        context['forecast_peak_percent'] = round(forecast['forecasted_risk'] * 100)
+        context['forecast_json'] = forecast
     return context
 
 
@@ -60,9 +63,6 @@ class NetworkRiskForecastView(AdminDashboardView):
     template_name = 'dashboard/forecast.html'
 
     def post(self, request, *args, **kwargs):
-        settings = ForecastSettings.get_current()
-        settings.enabled = request.POST.get('forecast_enabled') == 'on'
-        settings.save(update_fields=['enabled', 'updated_at'])
         return redirect('dashboard:forecast')
 
     def get_context_data(self, **kwargs):

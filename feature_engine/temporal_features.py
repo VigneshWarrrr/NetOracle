@@ -1,23 +1,58 @@
-from future import annotations
+from __future__ import annotations
 
 from typing import Iterable, Sequence
 
 import polars as pl
 
 class TemporalFeatureEngine:
+    def __init__(self, window_seconds: int = 10) -> None:
+        if window_seconds <= 0:
+            raise ValueError("window_seconds must be greater than zero.")
+        self.window_seconds = window_seconds
 
+    def build_windows(self, flows: pl.DataFrame) -> pl.DataFrame:
+        return build_windows(self, flows)
 
- def __init__(
-    self,
-    window_seconds: int = 10,
-) -> None:
+    def add_entropy_features(self, flows: pl.DataFrame) -> pl.DataFrame:
+        return add_entropy_features(self, flows)
 
-    if window_seconds <= 0:
-        raise ValueError(
-            "window_seconds must be greater than zero."
-        )
+    def _add_rate_features(self, windows: pl.DataFrame) -> pl.DataFrame:
+        return _add_rate_features(self, windows)
 
-    self.window_seconds = window_seconds
+    def add_rolling_features(
+        self,
+        windows: pl.DataFrame,
+        columns: Sequence[str] | None = None,
+        rolling_windows: Sequence[int] = (3, 6, 12),
+    ) -> pl.DataFrame:
+        return add_rolling_features(self, windows, columns, rolling_windows)
+
+    def add_change_features(
+        self,
+        windows: pl.DataFrame,
+        columns: Sequence[str] | None = None,
+    ) -> pl.DataFrame:
+        return add_change_features(self, windows, columns)
+
+    def create_sequences(
+        self,
+        windows: pl.DataFrame,
+        feature_columns: Iterable[str],
+        sequence_length: int = 10,
+        prediction_horizon: int = 1,
+    ) -> tuple[list[list[list[float]]], list[list[float]]]:
+        return create_sequences(self, windows, feature_columns, sequence_length, prediction_horizon)
+
+    def build(self, flows: pl.DataFrame) -> pl.DataFrame:
+        return build(self, flows)
+
+    @staticmethod
+    def _validate_input(flows: pl.DataFrame) -> None:
+        _validate_input(flows)
+
+    @staticmethod
+    def _empty_window_dataframe() -> pl.DataFrame:
+        return _empty_window_dataframe()
 
 def build_windows(
     self,

@@ -4,108 +4,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Network Risk Forecast | NetOracle</title>
+    <title>Risk Forecast | NetOracle</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 </head>
 <body class="theme-{{ current_theme }}">
-    <div class="dashboard-layout">
-        <aside class="sidebar">
-            <div class="sidebar-logo">
-                <span class="brand-mark" aria-label="NetOracle logo">NO</span>
-                <span class="fancy-logo" style="font-size: 1.5rem;">NetOracle</span>
-            </div>
-            <nav>
-                <a href="{% url 'dashboard:index' %}" class="nav-item">Dashboard</a>
-                <a href="{% url 'dashboard:forecast' %}" class="nav-item active">Risk Forecast</a>
-                <a href="{% url 'logs:dashboard' %}" class="nav-item">Logs</a>
-                <a href="{% url 'alerts:dashboard' %}" class="nav-item">Alerts</a>
-                <a href="{% url 'api:dashboard' %}" class="nav-item">API Engine</a>
-                {% if user.is_staff or user.is_superuser %}
-                <a href="{% url 'management:dashboard' %}" class="nav-item">Users</a>
-                <a href="{% url 'server:dashboard' %}" class="nav-item">Server</a>
-                {% endif %}
-                <a href="{% url 'settings_app:dashboard' %}" class="nav-item">Settings</a>
-            </nav>
-            <div style="margin-top: auto;">
-                <form action="{% url 'users:logout' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="nav-item" style="background: none; border: none; width: 100%; cursor: pointer;">Logout</button>
-                </form>
-            </div>
-        </aside>
-        <main class="main-content forecast-page">
-            <header class="header">
-                <div>
-                    <p class="eyebrow">NetOracle world model</p>
-                    <h1>Network risk forecast</h1>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-logo"><span class="brand-mark">NO</span><span class="fancy-logo">NetOracle</span></div>
+        <nav>
+            <a href="{% url 'dashboard:index' %}" class="nav-item"><span class="nav-mark">⌂</span>Dashboard</a>
+            <a href="{% url 'dashboard:forecast' %}" class="nav-item active"><span class="nav-mark">R</span>Risk Forecast</a>
+            <a href="{% url 'logs:dashboard' %}" class="nav-item"><span class="nav-mark">▤</span>Logs</a>
+            <a href="{% url 'alerts:dashboard' %}" class="nav-item"><span class="nav-mark">♧</span>Alerts</a>
+            {% if user.is_staff or user.is_superuser %}
+            <a href="{% url 'management:dashboard' %}" class="nav-item"><span class="nav-mark">♙</span>Users</a>
+            <a href="{% url 'server:dashboard' %}" class="nav-item"><span class="nav-mark">▣</span>Server</a>
+            {% endif %}
+            <a href="{% url 'api:dashboard' %}" class="nav-item"><span class="nav-mark">&gt;_</span>API Engine</a>
+            <a href="{% url 'settings_app:dashboard' %}" class="nav-item"><span class="nav-mark">⚙</span>Settings</a>
+        </nav>
+        <div style="margin-top: auto;">
+            <form action="{% url 'users:logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="nav-item" style="background: none; border: none; width: 100%; cursor: pointer;"><span class="nav-mark">↪</span>Logout</button>
+            </form>
+        </div>
+    </aside>
+    <main class="main-content forecast-page">
+        <header class="header">
+            <div><p class="eyebrow">NetOracle world model</p><h1>Risk forecast</h1></div>
+            <span class="model-status {% if not live_stream %}model-status-muted{% endif %}"><i></i>{% if live_stream %}Local capture · {{ forecast.live_events }} events{% else %}Waiting for local capture{% endif %}</span>
+        </header>
+        {% if forecast %}
+        <section class="forecast-metric-grid">
+            <article class="forecast-metric"><span>Current risk score</span><strong>{{ forecast.current_risk|floatformat:2 }}</strong><small>Latest engineered state</small></article>
+            <article class="forecast-metric forecast-metric-accent"><span>Forecasted risk score</span><strong>{{ forecast.forecasted_risk|floatformat:2 }}</strong><small>Model projection</small></article>
+            <article class="forecast-metric"><span>Confidence score</span><strong>{{ forecast.confidence|floatformat:2 }}</strong><small>Prediction confidence</small></article>
+            <article class="forecast-metric"><span>Prediction horizon</span><strong>{{ forecast.prediction_horizon_seconds }}<small>s</small></strong><small>Forward horizon</small></article>
+        </section>
+        <section class="forecast-dashboard-grid">
+            <article class="forecast-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">Temporal rollout</p><h2>Risk forecast timeline</h2></div><span class="badge badge-success">Live model output</span></div>
+                <div id="risk-timeline" class="forecast-chart"></div>
+            </article>
+            <article class="forecast-panel attack-summary">
+                <p class="eyebrow">Predicted attack type</p><h2>{{ forecast.attack_type }}</h2>
+                <p>MITRE stage: <strong>{{ forecast.mitre_stage }}</strong></p>
+                <div class="attack-score"><span>Projected risk</span><strong>{{ forecast.forecasted_risk|floatformat:2 }}</strong></div>
+            </article>
+            <article class="forecast-panel">
+                <div class="forecast-heading"><div><p class="eyebrow">Runtime selection</p><h2>Model comparison</h2></div></div>
+                {% for model in forecast.model_comparison %}<div class="model-row {% if model.selected %}model-row-selected{% endif %}"><span>{{ model.name }}</span><strong>{{ model.risk|floatformat:2 }}</strong></div>{% endfor %}
+            </article>
+            <article class="forecast-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">Topology</p><h2>Dynamic network graph</h2></div><span class="graph-count">{{ forecast.graph_nodes }} nodes</span></div>
+                <div id="network-graph" class="forecast-chart forecast-graph"></div>
+            </article>
+            <article class="forecast-panel">
+                <div class="forecast-heading"><div><p class="eyebrow">Progression</p><h2>Attack chain forecast</h2></div></div>
+                <div class="chain-list">
+                {% for stage in forecast.attack_chain.stages %}<div class="chain-stage"><span>{{ forloop.counter }}</span><strong>{{ stage }}</strong></div>{% empty %}<p class="forecast-empty">No attack-chain stage returned.</p>{% endfor %}
                 </div>
-                <span class="model-status {% if not model_available %}model-status-muted{% endif %}"><i></i>{% if model_available %}Forecast engine active{% else %}Checkpoint unavailable{% endif %}</span>
-            </header>
-
-            <section class="forecast-control-bar">
-                <div>
-                    <p class="eyebrow">Runtime control</p>
-                    <h2>Live forecast evaluation</h2>
-                    <p>Pass each new feature-engine window into NetOracle as it arrives.</p>
+                <p class="chain-risk">Overall chain risk <strong>{{ forecast.attack_chain.overall_risk|floatformat:2 }}</strong></p>
+            </article>
+            <article class="forecast-panel">
+                <div class="forecast-heading"><div><p class="eyebrow">Threat framework</p><h2>MITRE ATT&amp;CK mapping</h2></div></div>
+                <p class="mitre-technique">{{ forecast.mitre.stage }}</p>
+                <p>{{ forecast.mitre.technique }} · {{ forecast.mitre.description }}</p>
+                <p class="chain-risk">Mapping confidence <strong>{{ forecast.mitre.confidence|floatformat:2 }}</strong></p>
+            </article>
+            <article class="forecast-panel explainability-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">Decision support</p><h2>Explainability: possible next access step</h2></div></div>
+                <div class="explainability-summary">
+                    <div><span>Next step</span><strong>{{ forecast.explainability_summary.next_access_step }}</strong></div>
+                    <div><span>Potential target</span><strong>{{ forecast.explainability_summary.target|default:"No target predicted at current risk" }}</strong></div>
+                    <div><span>Attack type</span><strong>{{ forecast.explainability_summary.attack_type }}</strong></div>
+                    <div><span>Estimated time</span><strong>{% if forecast.explainability_summary.estimated_time_seconds %}~{{ forecast.explainability_summary.estimated_time_seconds }} seconds{% else %}Not applicable{% endif %}</strong></div>
                 </div>
-                <form method="post" class="forecast-toggle-form">
-                    {% csrf_token %}
-                    <label class="switch-label" for="forecast-enabled">
-                        <input id="forecast-enabled" name="forecast_enabled" type="checkbox" {% if forecast_enabled %}checked{% endif %} onchange="this.form.submit()">
-                        <span class="switch-track"><i></i></span>
-                        <strong>{% if forecast_enabled %}On{% else %}Off{% endif %}</strong>
-                    </label>
-                </form>
-            </section>
-
-            <section class="forecast-hero">
-                <div class="forecast-hero-copy">
-                    <p class="eyebrow">Temporal attack intelligence</p>
-                    <h2>Project the threat<br><em>five windows ahead.</em></h2>
-                    <p>NetOracle evaluates the latest network feature sequence and estimates attack probability and MITRE progression for each upcoming window.</p>
-                </div>
-                <div class="forecast-hero-signal">
-                    {% if forecast %}
-                    <span class="signal-label">Peak projected risk</span>
-                    <strong>{{ forecast_peak_percent }}<small>%</small></strong>
-                    <div class="signal-ring" style="--risk: {{ forecast_peak_percent }}%;"><span>5 windows</span></div>
-                    {% else %}
-                    <span class="signal-label">Forecast readiness</span>
-                    <strong>{% if model_available %}20<small> steps</small>{% else %}--{% endif %}</strong>
-                    <span class="signal-note">{% if model_available %}Context needed{% else %}Model offline{% endif %}</span>
-                    {% endif %}
-                </div>
-            </section>
-
-            <section class="forecast-panel forecast-panel-primary">
-                <div class="forecast-heading">
-                    <div>
-                        <p class="eyebrow">Forecast rollout</p>
-                        <h2>Attack probability by observation window</h2>
-                    </div>
-                    <span class="badge badge-success">CIC-IDS2018 model</span>
-                </div>
-                {% if forecast %}
-                <div class="forecast-grid">
-                    <div class="forecast-risk"><span>Peak risk</span><strong>{{ forecast.risk_score|floatformat:2 }}</strong><small>Highest projected probability</small></div>
-                    <div class="forecast-windows">
-                        {% for window in forecast_windows %}
-                        <div class="forecast-window">
-                            <span>T+{{ forloop.counter }}</span>
-                            <div class="risk-track"><i style="height: {{ window.percent }}%;"></i></div>
-                            <strong>{{ window.probability|floatformat:2 }}</strong>
-                            <small>MITRE {{ window.stage }}</small>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% elif model_available %}
-                <p class="forecast-empty">Collecting context. NetOracle needs 20 chronological feature windows before it can forecast.</p>
-                {% else %}
-                <p class="forecast-empty">Place <code>best_world_model.pth</code> in the NetOracle models folder to enable forecasting.</p>
-                {% endif %}
-            </section>
-        </main>
-    </div>
+                <div class="precaution-box"><p class="eyebrow">Precautionary actions</p><ul>{% for tip in forecast.explainability_summary.precautions %}<li>{{ tip }}</li>{% endfor %}</ul></div>
+                <p class="explainability-basis">Based on: {{ forecast.explainability_summary.basis|join:", " }}</p>
+            </article>
+            <article class="forecast-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">Observed versus projected</p><h2>Historical vs forecast comparison</h2></div></div>
+                <div id="history-forecast" class="forecast-chart"></div>
+            </article>
+        </section>
+        {% else %}
+        <section class="forecast-panel forecast-empty-state"><h2>Forecast unavailable</h2><p>{{ forecast_error|default:"The world-model pipeline returned no result." }}</p></section>
+        {% endif %}
+    </main>
+</div>
+{% if forecast %}
+{{ forecast|json_script:"forecast-data" }}
+<script>
+const forecast = JSON.parse(document.getElementById('forecast-data').textContent);
+const timeline = forecast.risk_timeline || [];
+const localTime = label => new Date(label).toLocaleString([], {dateStyle: 'short', timeStyle: 'medium'});
+Plotly.newPlot('risk-timeline', [{x: timeline.map(point => localTime(point.label)), y: timeline.map(point => point.risk), mode: 'lines+markers', line: {color: '#d95d39', width: 3}, marker: {color: '#f2c14e', size: 7}, hovertemplate: 'Risk %{y:.2f}<extra>%{x}</extra>'}], {margin: {t: 12, r: 20, b: 70, l: 48}, yaxis: {range: [0, 1], title: 'Risk'}, xaxis: {title: 'Device local time', type: 'category'}, paper_bgcolor: 'transparent', plot_bgcolor: 'transparent', font: {color: '#dce7e4'}, gridcolor: '#304444'}, {responsive: true, displayModeBar: false});
+const edges = forecast.graph_edges || [];
+const nodes = [...new Set(edges.flatMap(edge => [edge.source, edge.target]))];
+const positions = Object.fromEntries(nodes.map((node, index) => [node, {x: Math.cos(index * 2.399) * 2, y: Math.sin(index * 2.399) * 2}]));
+const edgeX = [], edgeY = [];
+edges.forEach(edge => { edgeX.push(positions[edge.source].x, positions[edge.target].x, null); edgeY.push(positions[edge.source].y, positions[edge.target].y, null); });
+Plotly.newPlot('network-graph', [{x: edgeX, y: edgeY, mode: 'lines', line: {color: '#496463', width: 1}, hoverinfo: 'none'}, {x: nodes.map(node => positions[node].x), y: nodes.map(node => positions[node].y), text: nodes, mode: 'markers+text', textposition: 'top center', marker: {size: 13, color: '#f2c14e', line: {color: '#172525', width: 2}}, hovertemplate: '%{text}<extra></extra>'}], {margin: {t: 12, r: 12, b: 12, l: 12}, xaxis: {visible: false}, yaxis: {visible: false, scaleanchor: 'x'}, paper_bgcolor: 'transparent', plot_bgcolor: 'transparent', font: {color: '#dce7e4'}, showlegend: false}, {responsive: true, displayModeBar: false});
+const historical = forecast.historical_timeline || [];
+const projected = forecast.forecast_timeline || [];
+Plotly.newPlot('history-forecast', [
+    {x: historical.map(point => localTime(point.label)), y: historical.map(point => point.risk), mode: 'lines+markers', name: 'Observed', line: {color: '#6f8790', width: 3}},
+    {x: projected.map(point => localTime(point.label)), y: projected.map(point => point.risk), mode: 'lines+markers', name: 'Projected', line: {color: '#d95d39', width: 3, dash: 'dash'}}
+], {margin: {t: 12, r: 20, b: 70, l: 48}, yaxis: {range: [0, 1], title: 'Risk'}, xaxis: {title: 'Device local time', type: 'category'}, paper_bgcolor: 'transparent', plot_bgcolor: 'transparent', font: {color: '#dce7e4'}, gridcolor: '#304444', legend: {orientation: 'h'}}, {responsive: true, displayModeBar: false});
+</script>
+{% endif %}
+{% if live_stream %}<script>setTimeout(() => window.location.reload(), 5000);</script>{% endif %}
 </body>
 </html>

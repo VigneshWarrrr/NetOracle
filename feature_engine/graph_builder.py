@@ -1,4 +1,4 @@
-from future import annotations
+from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
@@ -389,4 +389,52 @@ def _validate_input(
             "Flow data is missing required columns: "
             f"{sorted(missing)}"
         )
+
+
+class NetworkGraphBuilder:
+    """Build static and time-windowed network graphs from flow data."""
+
+    def build_static_graph(
+        self,
+        flows: pl.DataFrame,
+    ) -> nx.DiGraph:
+        return build_static_graph(self, flows)
+
+    def build_dynamic_graphs(
+        self,
+        flows: pl.DataFrame,
+        window_seconds: int = 10,
+    ) -> list[GraphSnapshot]:
+        return build_dynamic_graphs(self, flows, window_seconds)
+
+    def build_node_features(
+        self,
+        flows: pl.DataFrame,
+    ) -> pl.DataFrame:
+        return build_node_features(self, flows)
+
+    def graph_to_edge_dataframe(
+        self,
+        graph: nx.DiGraph,
+    ) -> pl.DataFrame:
+        return graph_to_edge_dataframe(self, graph)
+
+    def get_suspicious_nodes(
+        self,
+        graph: nx.DiGraph,
+        top_k: int = 10,
+    ) -> list[dict]:
+        return get_suspicious_nodes(self, graph, top_k)
+
+    @staticmethod
+    def _add_node_statistics(
+        graph: nx.DiGraph,
+    ) -> None:
+        _add_node_statistics(graph)
+
+    @staticmethod
+    def _validate_input(
+        flows: pl.DataFrame,
+    ) -> None:
+        _validate_input(flows)
 
