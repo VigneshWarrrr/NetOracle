@@ -37,14 +37,15 @@ class IDSEngine:
         Returns the Alert object if triggered, else None.
         """
         score = cls.calculate_anomaly_score(log_entry)
+        risk_score = score
         
         # Check Anomaly Score
-        if score > 0.8:
+        if risk_score > 0.8:
             alert = Alert.objects.create(
                 user=log_entry.user,
                 log_entry=log_entry, 
                 rule_triggered="AI Anomaly Detection",
-                anomaly_score=score
+                anomaly_score=risk_score
             )
             send_notification(log_entry)
             return alert
@@ -77,7 +78,7 @@ class IDSEngine:
                     user=log_entry.user,
                     log_entry=log_entry, 
                     rule_triggered=rule.name,
-                    anomaly_score=score
+                    anomaly_score=risk_score
                 )
                 send_notification(log_entry)
                 return alert

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Loggedin</title>
+    <title>Dashboard | NetOracle</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -13,8 +13,8 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <span style="background: linear-gradient(135deg, var(--accent), #a855f7); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800;">L</span>
-                <span class="fancy-logo" style="font-size: 1.5rem;">Loggedin</span>
+                <span class="brand-mark" aria-label="NetOracle logo">NO</span>
+                <span class="fancy-logo" style="font-size: 1.5rem;">NetOracle</span>
             </div>
             
             <nav>
@@ -22,6 +22,10 @@
                 <a href="{% url 'dashboard:index' %}" class="nav-item active">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     Dashboard
+                </a>
+                <a href="{% url 'dashboard:forecast' %}" class="nav-item">
+                    <span class="nav-mark">R</span>
+                    Risk Forecast
                 </a>
                 <a href="{% url 'logs:dashboard' %}" class="nav-item">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -69,7 +73,10 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="header">
-                <h1>Overview</h1>
+                <div>
+                    <p class="eyebrow">Network intelligence center</p>
+                    <h1>Attack forecast</h1>
+                </div>
                 <div style="display: flex; gap: 1.5rem; align-items: center;">
                     <span style="color: var(--text-secondary);">Logged in as <strong>{{ user.username }}</strong></span>
                     <form action="{% url 'users:logout' %}" method="post" style="margin: 0;">
@@ -81,8 +88,69 @@
                 </div>
             </header>
 
-            <!-- Stats -->
-            <div class="stats-grid">
+            <section class="forecast-hero">
+                <div class="forecast-hero-copy">
+                    <p class="eyebrow">NetOracle world model</p>
+                    <h2>See the next move<br><em>before it lands.</em></h2>
+                    <p>Temporal analysis of recent network behavior, projected across the next five observation windows.</p>
+                    {% if model_available %}
+                    <span class="model-status"><i></i> Forecast engine active</span>
+                    {% else %}
+                    <span class="model-status model-status-muted"><i></i> Waiting for trained checkpoint</span>
+                    {% endif %}
+                </div>
+                <div class="forecast-hero-signal">
+                    {% if forecast %}
+                    <span class="signal-label">Peak projected risk</span>
+                    <strong>{{ forecast_peak_percent }}<small>%</small></strong>
+                    <div class="signal-ring" style="--risk: {{ forecast_peak_percent }}%;"><span>5 windows</span></div>
+                    {% else %}
+                    <span class="signal-label">Forecast readiness</span>
+                    <strong>{% if model_available %}20<small> steps</small>{% else %}--{% endif %}</strong>
+                    <span class="signal-note">{% if model_available %}Context needed{% else %}Model offline{% endif %}</span>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="forecast-panel forecast-panel-primary">
+                <div class="forecast-heading">
+                    <div>
+                        <p class="eyebrow">Five-window rollout</p>
+                        <h2>Projected attack progression</h2>
+                    </div>
+                    {% if model_available %}
+                    <span class="badge badge-success">Live model</span>
+                    {% else %}
+                    <span class="badge badge-warning">Checkpoint unavailable</span>
+                    {% endif %}
+                </div>
+                {% if forecast %}
+                <div class="forecast-grid">
+                    <div class="forecast-risk">
+                        <span>Peak risk</span>
+                        <strong>{{ forecast.risk_score|floatformat:2 }}</strong>
+                        <small>Highest projected probability</small>
+                    </div>
+                    <div class="forecast-windows">
+                        {% for window in forecast_windows %}
+                        <div class="forecast-window">
+                            <span>T+{{ forloop.counter }}</span>
+                            <div class="risk-track"><i style="height: {{ window.percent }}%;"></i></div>
+                            <strong>{{ window.probability|floatformat:2 }}</strong>
+                            <small>MITRE {{ window.stage }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% elif model_available %}
+                <p class="forecast-empty">Collecting context. NetOracle needs 20 chronological feature windows before it can forecast.</p>
+                {% else %}
+                <p class="forecast-empty">Train NetOracle and place <code>best_world_model.pth</code> in the NetOracle models folder to enable forecasting.</p>
+                {% endif %}
+            </section>
+
+            <!-- Supporting telemetry -->
+            <div class="stats-grid stats-grid-supporting">
                 <div class="stat-card">
                     <h3>Total Logs</h3>
                     <div class="value">{{ total_logs }}</div>

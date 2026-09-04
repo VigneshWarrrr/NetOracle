@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Risk Forecast | NetOracle</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="theme-{{ current_theme }}">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span class="brand-mark" aria-label="NetOracle logo">NO</span>
+                <span class="fancy-logo" style="font-size: 1.5rem;">NetOracle</span>
+            </div>
+            <nav>
+                <a href="{% url 'dashboard:index' %}" class="nav-item">Dashboard</a>
+                <a href="{% url 'dashboard:forecast' %}" class="nav-item active">Risk Forecast</a>
+                <a href="{% url 'logs:dashboard' %}" class="nav-item">Logs</a>
+                <a href="{% url 'alerts:dashboard' %}" class="nav-item">Alerts</a>
+                <a href="{% url 'api:dashboard' %}" class="nav-item">API Engine</a>
+                {% if user.is_staff or user.is_superuser %}
+                <a href="{% url 'management:dashboard' %}" class="nav-item">Users</a>
+                <a href="{% url 'server:dashboard' %}" class="nav-item">Server</a>
+                {% endif %}
+                <a href="{% url 'settings_app:dashboard' %}" class="nav-item">Settings</a>
+            </nav>
+            <div style="margin-top: auto;">
+                <form action="{% url 'users:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-item" style="background: none; border: none; width: 100%; cursor: pointer;">Logout</button>
+                </form>
+            </div>
+        </aside>
+        <main class="main-content forecast-page">
+            <header class="header">
+                <div>
+                    <p class="eyebrow">NetOracle world model</p>
+                    <h1>Network risk forecast</h1>
+                </div>
+                <span class="model-status {% if not model_available %}model-status-muted{% endif %}"><i></i>{% if model_available %}Forecast engine active{% else %}Checkpoint unavailable{% endif %}</span>
+            </header>
+
+            <section class="forecast-control-bar">
+                <div>
+                    <p class="eyebrow">Runtime control</p>
+                    <h2>Live forecast evaluation</h2>
+                    <p>Pass each new feature-engine window into NetOracle as it arrives.</p>
+                </div>
+                <form method="post" class="forecast-toggle-form">
+                    {% csrf_token %}
+                    <label class="switch-label" for="forecast-enabled">
+                        <input id="forecast-enabled" name="forecast_enabled" type="checkbox" {% if forecast_enabled %}checked{% endif %} onchange="this.form.submit()">
+                        <span class="switch-track"><i></i></span>
+                        <strong>{% if forecast_enabled %}On{% else %}Off{% endif %}</strong>
+                    </label>
+                </form>
+            </section>
+
+            <section class="forecast-hero">
+                <div class="forecast-hero-copy">
+                    <p class="eyebrow">Temporal attack intelligence</p>
+                    <h2>Project the threat<br><em>five windows ahead.</em></h2>
+                    <p>NetOracle evaluates the latest network feature sequence and estimates attack probability and MITRE progression for each upcoming window.</p>
+                </div>
+                <div class="forecast-hero-signal">
+                    {% if forecast %}
+                    <span class="signal-label">Peak projected risk</span>
+                    <strong>{{ forecast_peak_percent }}<small>%</small></strong>
+                    <div class="signal-ring" style="--risk: {{ forecast_peak_percent }}%;"><span>5 windows</span></div>
+                    {% else %}
+                    <span class="signal-label">Forecast readiness</span>
+                    <strong>{% if model_available %}20<small> steps</small>{% else %}--{% endif %}</strong>
+                    <span class="signal-note">{% if model_available %}Context needed{% else %}Model offline{% endif %}</span>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="forecast-panel forecast-panel-primary">
+                <div class="forecast-heading">
+                    <div>
+                        <p class="eyebrow">Forecast rollout</p>
+                        <h2>Attack probability by observation window</h2>
+                    </div>
+                    <span class="badge badge-success">CIC-IDS2018 model</span>
+                </div>
+                {% if forecast %}
+                <div class="forecast-grid">
+                    <div class="forecast-risk"><span>Peak risk</span><strong>{{ forecast.risk_score|floatformat:2 }}</strong><small>Highest projected probability</small></div>
+                    <div class="forecast-windows">
+                        {% for window in forecast_windows %}
+                        <div class="forecast-window">
+                            <span>T+{{ forloop.counter }}</span>
+                            <div class="risk-track"><i style="height: {{ window.percent }}%;"></i></div>
+                            <strong>{{ window.probability|floatformat:2 }}</strong>
+                            <small>MITRE {{ window.stage }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% elif model_available %}
+                <p class="forecast-empty">Collecting context. NetOracle needs 20 chronological feature windows before it can forecast.</p>
+                {% else %}
+                <p class="forecast-empty">Place <code>best_world_model.pth</code> in the NetOracle models folder to enable forecasting.</p>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

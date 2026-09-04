@@ -82,7 +82,7 @@ class DownloadLogsPDF(AdminOnlyMixin, View):
 
         # Styles
         styles = getSampleStyleSheet()
-        title = Paragraph("<b>Loggedin System: Latest 100 Logs Report</b>", styles['Title'])
+        title = Paragraph("<b>NetOracle: Latest 100 Logs Report</b>", styles['Title'])
         elements.append(title)
         
         # Display generation time in local timezone

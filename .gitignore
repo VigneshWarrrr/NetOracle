@@ -1,0 +1,9 @@
+myenv/
+**/__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+cic.csv
+*.pth
+*.pt
+.env

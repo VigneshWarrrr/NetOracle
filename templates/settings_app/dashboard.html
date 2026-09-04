@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings | Loggedin</title>
+    <title>Settings | NetOracle</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -87,8 +87,8 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <span style="background: linear-gradient(135deg, var(--accent), #a855f7); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800;">L</span>
-                <span class="fancy-logo" style="font-size: 1.5rem;">Loggedin</span>
+                <span class="brand-mark" aria-label="NetOracle logo">NO</span>
+                <span class="fancy-logo" style="font-size: 1.5rem;">NetOracle</span>
             </div>
             
             <nav>
@@ -181,7 +181,7 @@
                 <!-- Theme Settings -->
                 <div class="settings-card">
                     <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">App Appearance</h2>
-                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Choose between light and dark modes for the Loggedin interface.</p>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Choose between light and dark modes for the NetOracle interface.</p>
                     
                     <form method="post">
                         {% csrf_token %}

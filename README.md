@@ -1,6 +1,6 @@
-# Loggedin: Advanced Log Management & Security Intelligence Platform
+# NetOracle: Advanced Log Management & Security Intelligence Platform
 
-**Loggedin** is a state-of-the-art administrative dashboard and security monitoring platform designed to provide real-time visibility into system logs, security threats, and external database integrations. Built with a focus on high-performance monitoring and premium user experience, Loggedin empowers administrators to manage their entire infrastructure from a unified, secure interface.
+**NetOracle** is a state-of-the-art administrative dashboard and security monitoring platform designed to provide real-time visibility into system logs, security threats, and external database integrations. Built with a focus on high-performance monitoring and premium user experience, NetOracle empowers administrators to manage their entire infrastructure from a unified, secure interface.
 
 ## 🚀 Key Features
 
