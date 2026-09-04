@@ -1,86 +1,197 @@
-# NetOracle: Advanced Log Management & Security Intelligence Platform
+# NetOracle Risk Forecasting Platform
 
-**NetOracle** is a state-of-the-art administrative dashboard and security monitoring platform designed to provide real-time visibility into system logs, security threats, and external database integrations. Built with a focus on high-performance monitoring and premium user experience, NetOracle empowers administrators to manage their entire infrastructure from a unified, secure interface.
+NetOracle is a Django-based network security platform focused on forecasting attack risk from engineered network traffic. It converts packet or flow data into temporal network states, runs a persisted PyTorch forecaster, builds a communication graph, and presents the result through a risk forecasting dashboard.
 
-## 🚀 Key Features
+## Risk Forecasting
 
-### 📊 Comprehensive Dashboard
-- **Real-Time Analytics**: Monitor system health, user activity, and security status at a glance.
-- **Dynamic Metrics**: Live-updating cards for total logs, active alerts, and database performance.
+The forecasting path is:
 
-### 🛡️ Security & IDS Engine
-- **Intrusion Detection System (IDS)**: Automatic scanning of system logs for malicious patterns.
-- **PDF Ingestion**: Support for analyzing threats within document-based log files using PyPDF2.
-- **Anomaly Scoring**: AI-driven risk assessment for detected security events.
-
-### 🖥️ Server Monitoring
-- **Live Console**: Real-time stream of the `server.log` file directly in your browser.
-- **Interactive SQL Terminal**: Execute raw SQL queries safely against the `db.sqlite3` database.
-- **Log Table Browser**: Interactive database table view with full audit history.
-- **Export Reports**: Generate professional PDF audit reports with localized timestamps.
-
-### 🔌 API Engine & External Connectors
-- **Multi-Database Support**: Connect to external MySQL, PostgreSQL, Oracle, and MongoDB sources.
-- **Remote Terminal**: Interact with external databases using context-aware query environments (SQL or NoSQL).
-- **Automated Sync**: Schedule interval polling or continuous push for remote log ingestion.
-
-### 👥 User & Management
-- **Admin Authentication**: Secure login system with role-based access control.
-- **User Management**: Unified interface to manage platform administrators and permissions.
-
----
-
-## 🛠️ Tech Stack
-- **Backend**: Django (Python)
-- **Frontend**: HTML5, Vanilla JS, Premium Modern CSS
-- **Database**: SQLite (Core), support for MySQL, Postgres, MongoDB (Connectors)
-- **Reporting**: ReportLab (PDF Generation)
-- **Security**: Regex-based IDS Engine & PyPDF2 Log Parsing
-
----
-
-## ⚙️ Installation & Setup
-
-### 1. Prerequisites
-- Python 3.8+
-- pip (Python Package Installer)
-
-### 2. Clone & Install
-```bash
-# Navigate to the project directory
-cd "c:/VIGNESHWARAN/Dsu/Sem 4/Database Management System-4/proj/db"
-
-# Install dependencies
-pip install -r requirements.txt
+```text
+Network events or CIC-IDS CSV
+        |
+        v
+CSVReaderService / Scapy capture
+        |
+        v
+FlowFeatureEngine
+        |
+        v
+TemporalFeatureEngine
+        |
+        v
+NetworkGraphBuilder
+        |
+        v
+models/attack_forecaster.pt
+        |
+        v
+Risk forecast, attack chain, MITRE mapping, target analysis, dashboard
 ```
 
-### 3. Database Initialization
-```bash
-python manage.py makemigrations
+The dashboard provides:
+
+- Current and forecasted risk scores
+- Historical versus projected risk timeline
+- Prediction horizon and confidence
+- Predicted attack type
+- Attack-chain progression
+- MITRE ATT&CK stage and technique mapping
+- Dynamic network graph
+- Model comparison
+- Explainability summary with possible next access step and precautions
+
+The dashboard uses the persisted model at:
+
+```text
+models/attack_forecaster.pt
+```
+
+It does not create a random model during inference. If the model artifact is missing, the dashboard cannot provide a trained-model forecast.
+
+## Project Layout
+
+```text
+manage.py                       Django entry point
+run_pipeline.py                 Terminal forecasting pipeline
+train.py                        Training entry point
+models/                         Persisted model artifacts
+world_model/                    PyTorch model and inference services
+feature_engine/                 Flow, temporal, and graph features
+forecasting/                    Attack-chain, MITRE, and victim logic
+explainability/                 Model and graph explanation tools
+ingestion/                      CSV, PCAP, Zeek, and live capture adapters
+dashboard/                     Django dashboard views
+templates/dashboard/            Risk forecast dashboard UI
+static/css/                     Shared dashboard styling
+datasets/                       Dataset package boundary
+experiments/                    Model experiments and baselines
+```
+
+## Requirements
+
+- Python 3.10 or newer
+- Windows: Npcap for local packet capture
+- Administrator privileges may be required for interface capture
+- A working PyTorch installation compatible with the selected Python environment
+
+The project has been tested with the local virtual environment named `myenv`.
+
+## Installation
+
+From the repository workspace root:
+
+```powershell
+cd "C:\VIGNESHWARAN\SIH 2026\Logged_IN"
+.\myenv\Scripts\python.exe -m pip install -r .\Logged_In\requirements.txt
+```
+
+Or activate the environment first:
+
+```powershell
+cd "C:\VIGNESHWARAN\SIH 2026\Logged_IN\Logged_In"
+..\myenv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+## Database Setup
+
+```powershell
 python manage.py migrate
+python manage.py check
 ```
 
-### 4. Create Administrator
-```bash
+Create an administrator for the protected dashboard:
+
+```powershell
 python manage.py createsuperuser
 ```
 
-### 5. Launch the Platform
-```bash
+## Run the Dashboard
+
+```powershell
 python manage.py runserver
 ```
-Access the dashboard at: `http://127.0.0.1:8000/`
 
----
+Open:
 
-## 🔒 Security Policy
-- **Read-Only Logs**: The platform enforces strict read-only access to system log tables, even via the interactive terminal, to prevent tampering.
-- **Admin Verification**: All critical infrastructure tools (Server Console, API Engine, SQL Terminal) require full administrator privileges.
+```text
+http://127.0.0.1:8000/
+```
 
----
+Open the risk forecast page at:
 
-## 📜 License
-This project is developed as part of the Database Management System-4 curriculum. All rights reserved.
+```text
+http://127.0.0.1:8000/dashboard/forecast/
+```
 
----
-**Developed by Antigravity AI**
+## Run the Terminal Pipeline
+
+The terminal pipeline is useful for validating the forecasting path without starting Django:
+
+```powershell
+python run_pipeline.py ..\cic.csv --limit 200 --model models\attack_forecaster.pt
+```
+
+It reports the current risk, forecasted risk, predicted attack, horizon, likely target, pipeline counts, and model source.
+
+## Train the Model
+
+To create or replace the persisted model artifact:
+
+```powershell
+python train.py ..\cic.csv --output models\attack_forecaster.pt --limit 2000 --epochs 25
+```
+
+Inference loads the resulting file through `world_model/inference_service.py`.
+
+## Capture Local Network Traffic
+
+The application can capture IP packets directly from the machine where it runs. This does not require an external ingestion API, but it only sees traffic available to that machine's network interface.
+
+On Windows:
+
+1. Install Npcap.
+2. Open an elevated PowerShell when required by the adapter.
+3. Start Django in one terminal.
+4. Start capture in a second terminal:
+
+```powershell
+python manage.py capture_traffic
+```
+
+Specify an interface when necessary:
+
+```powershell
+python manage.py capture_traffic --iface "Wi-Fi" --batch-size 20
+```
+
+Captured packets are normalized by `ingestion/live_capture.py`, processed by the feature engines, persisted in the feature-window store, and used for the model forecast.
+
+A host normally sees its own traffic and traffic delivered to its interface. Monitoring every device on a switched network requires router visibility, a mirrored switch port, a gateway sensor, or agents on those devices.
+
+## Data Sources
+
+The repository includes `cic.csv` at the workspace level for repeatable pipeline testing. CIC-IDS data is used for training and offline validation. Live capture uses the active interface and does not require the CSV.
+
+## Forecast Interpretation
+
+Risk is a model probability-like score in the range `0.0` to `1.0`. The dashboard applies a conservative attack-label threshold. A low or borderline risk score is reported as benign rather than being labeled as a confirmed attack.
+
+MITRE stage, attack-chain progression, graph target ranking, and precautionary actions are supporting interpretations of the model and engineered network state. They are not proof that a compromise has occurred.
+
+## Development Checks
+
+Run these before committing changes:
+
+```powershell
+python manage.py check
+python -m py_compile run_pipeline.py train.py
+python run_pipeline.py ..\cic.csv --limit 200 --model models\attack_forecaster.pt
+```
+
+## Security Notes
+
+- Do not expose the development server directly to the public internet.
+- Replace development secrets before deployment.
+- Restrict packet capture and dashboard access to authorized operators.
+- Treat model output as decision support and confirm incidents with logs and endpoint evidence.
