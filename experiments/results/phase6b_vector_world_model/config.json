@@ -1,0 +1,166 @@
+{
+  "experiment": "phase6b_vector_world_model",
+  "seed": 42,
+  "input_shape": [
+    6,
+    157
+  ],
+  "output_shape": [
+    6,
+    157
+  ],
+  "feature_count": 157,
+  "target": "future_attack_within_horizon",
+  "target_definition": "any current_attack in t+1 through t+6; current t excluded (same target as Phase 4/5)",
+  "counts": {
+    "train": {
+      "samples": 29315,
+      "positive": 3571,
+      "negative": 25744
+    },
+    "validation": {
+      "samples": 6195,
+      "positive": 2592,
+      "negative": 3603
+    },
+    "test": {
+      "samples": 6195,
+      "positive": 1763,
+      "negative": 4432
+    }
+  },
+  "dataset_validation": {
+    "splits": {
+      "train": {
+        "count": 29315,
+        "X_shape": [
+          29315,
+          6,
+          157
+        ],
+        "Y_shape": [
+          29315,
+          6,
+          157
+        ],
+        "X_finite": true,
+        "Y_finite": true,
+        "temporal_alignment_failures": 0,
+        "duplicate_X_sequences_present": 11573,
+        "label_recomputation_mismatches": 0,
+        "positive": 3571,
+        "negative": 25744
+      },
+      "validation": {
+        "count": 6195,
+        "X_shape": [
+          6195,
+          6,
+          157
+        ],
+        "Y_shape": [
+          6195,
+          6,
+          157
+        ],
+        "X_finite": true,
+        "Y_finite": true,
+        "temporal_alignment_failures": 0,
+        "duplicate_X_sequences_present": 317,
+        "label_recomputation_mismatches": 0,
+        "positive": 2592,
+        "negative": 3603
+      },
+      "test": {
+        "count": 6195,
+        "X_shape": [
+          6195,
+          6,
+          157
+        ],
+        "Y_shape": [
+          6195,
+          6,
+          157
+        ],
+        "X_finite": true,
+        "Y_finite": true,
+        "temporal_alignment_failures": 0,
+        "duplicate_X_sequences_present": 319,
+        "label_recomputation_mismatches": 0,
+        "positive": 1763,
+        "negative": 4432
+      }
+    },
+    "total_samples": 41705,
+    "cross_split_leakage_pairs": 0,
+    "issues": [],
+    "status": "PASS"
+  },
+  "architecture": {
+    "description": "state encoder -> temporal self-attention context -> recursive residual latent transition (x6) -> per-step state decoder + attack head over predicted rollout only",
+    "d_model": 128,
+    "num_heads": 4,
+    "num_layers": 2,
+    "feed_forward_dim": 256,
+    "dropout": 0.2,
+    "rollout_steps": 6,
+    "parameter_count": 347806,
+    "attack_head_input": "mean-pooled predicted latent rollout z(t+1)...z(t+6) only -- never the ground-truth Y"
+  },
+  "training": {
+    "loss": "state_loss_weight * MSE(Y_hat, Y) + attack_loss_weight * BCEWithLogits(attack_logit, label)",
+    "state_loss_weight": 1.0,
+    "attack_loss_weight": 1.0,
+    "pos_weight": 7.209185102212265,
+    "pos_weight_source": "computed from TRAIN split labels only",
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "batch_size": 128,
+    "max_epochs": 25,
+    "patience": 5,
+    "best_epoch": 1,
+    "duration_seconds": 26.184030199976405,
+    "selected_validation_threshold": 0.04385456070303917,
+    "mixed_precision": true
+  },
+  "scaling": "StandardScaler fit on train history states (X) only; same transform applied unchanged to X and Y across all splits",
+  "device": {
+    "type": "cuda",
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "torch_version": "2.10.0+cu128",
+    "first_training_batch_device": "cuda:0"
+  },
+  "smoke_test": {
+    "status": "PASS",
+    "batch_size": 8,
+    "input_shape": [
+      8,
+      6,
+      157
+    ],
+    "y_hat_shape": [
+      8,
+      6,
+      157
+    ],
+    "attack_logit_shape": [
+      8
+    ],
+    "smoke_state_loss": 1.524566888809204,
+    "smoke_attack_loss": 0.7278228402137756,
+    "parameters_with_gradient": 39
+  },
+  "source_files": [
+    "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+    "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Friday-23-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+    "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+  ]
+}

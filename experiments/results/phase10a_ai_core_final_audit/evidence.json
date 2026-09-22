@@ -1,0 +1,1294 @@
+{
+  "phase": "10A",
+  "generated_unix": 1789925191.668151,
+  "note": "evidence only; no model/dataset/Django/frontend modification",
+  "artifact_integrity": {
+    "ok": true,
+    "recorded_sha256_phase9k": {
+      "phase6b_run1_checkpoint": "6374a9c47d722215e64a3cae1b1e24c425a89dad26407b147b153af03404fb79",
+      "phase6b_run1_scaler": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881",
+      "phase7b_stage_head_checkpoint": "f9d16f1943aeeed4f355659b85e90cb6cf8cb94ae84d2fcbd473c59fa3342fe4",
+      "phase7c_shap_explainer_module": "7045f572bd9922c419b180742c9b4ecb2720968e02c7ded21d00a1db309ba36a"
+    },
+    "current_sha256": {
+      "phase7b_stage_head_checkpoint": "f9d16f1943aeeed4f355659b85e90cb6cf8cb94ae84d2fcbd473c59fa3342fe4",
+      "phase6b_run1_checkpoint": "6374a9c47d722215e64a3cae1b1e24c425a89dad26407b147b153af03404fb79",
+      "phase6b_run1_scaler": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881"
+    },
+    "hash_match_phase9k_manifest": {
+      "phase7b_stage_head_checkpoint": true,
+      "phase6b_run1_checkpoint": true,
+      "phase6b_run1_scaler": true
+    },
+    "phase9n_checkpoint_present": true,
+    "plain_phase6b_checkpoint_present_but_unused": true,
+    "plain_phase6b_sha256": "364276bd3f63be1d6a1b22124bc820614e42387f633bc14cf6b67d307a6238e2",
+    "run1_vs_plain_6b_checkpoints_identical": false,
+    "phase7b_backbone_keys": 39,
+    "phase7b_stage_head_keys": 4,
+    "backbone_keyset_equals_run1": true,
+    "phase7b_backbone_tensors_bit_identical_to_run1": true,
+    "backbone_param_count": 347806,
+    "stage_head_param_count": 8646,
+    "total_param_count": 356452,
+    "scaler": {
+      "n_features_in": 157,
+      "mean_finite": true,
+      "scale_finite": true,
+      "min_scale": 0.004061012837699226,
+      "num_zero_scale": 0,
+      "with_mean": true,
+      "with_std": true,
+      "pickled_with_sklearn": "1.9.1",
+      "runtime_sklearn": "1.8.0",
+      "sklearn_version_mismatch": true,
+      "_first_pass_value_pickled_with_sklearn": "1.8.0",
+      "_correction_note": "first-pass value read _sklearn_version via __getstate__ (returns runtime version); corrected from the unpickle warning in the supplement check"
+    },
+    "_seconds": 3.81
+  },
+  "schema_and_scaler": {
+    "ok": true,
+    "feature_count": 157,
+    "expected": 157,
+    "unique_feature_names": 157,
+    "no_meta_columns_in_features": true,
+    "identical_order_to_phase4_config": true,
+    "phase4_config_feature_count": 157,
+    "feature_schema_sha256": "f5117fda8518c9e373a4260ff65281800a4760d8af16bb97411ca8371b85bb73",
+    "first5": [
+      "flow_count",
+      "dst_port__sum",
+      "dst_port__mean",
+      "protocol__sum",
+      "protocol__mean"
+    ],
+    "last5": [
+      "idle_std__mean",
+      "idle_max__sum",
+      "idle_max__mean",
+      "idle_min__sum",
+      "idle_min__mean"
+    ],
+    "stored_scaler_vs_train_refit_max_rel_diff_mean": 0.0,
+    "stored_scaler_vs_train_refit_max_rel_diff_scale": 0.0,
+    "stored_scaler_matches_train_only_refit": true,
+    "stored_scaler_vs_train_val_test_fit_max_rel_diff_mean": 80.53589154305905,
+    "split_counts": {
+      "train": 29315,
+      "validation": 6195,
+      "test": 6195
+    },
+    "x_shape": [
+      6,
+      157
+    ],
+    "x_dtype": "float32",
+    "test_x_all_finite": true,
+    "_seconds": 17.39
+  },
+  "full_test_reproduction": {
+    "ok": true,
+    "n_test_samples": 6195,
+    "missing_keys": 0,
+    "seconds": 47.6,
+    "max_abs_prob_diff_vs_phase7b": 0.0024012327196750727,
+    "mean_abs_prob_diff_vs_phase7b": 3.6095228399004705e-05,
+    "max_abs_prob_diff_vs_run1": 0.0024012327196750727,
+    "stage_step_exact_match_rate": 0.9998385794995964,
+    "stage_steps_compared": 37170,
+    "samples_with_all_six_stage_steps_matching": 6189,
+    "max_abs_stage_confidence_diff": 0.004041261970520016,
+    "engine_cold_load_seconds_in_process": 16.62,
+    "predicted_stage_step_counts_over_test": {
+      "COMMAND_AND_CONTROL": 3764,
+      "LATERAL_MOVEMENT": 1292,
+      "BENIGN": 26497,
+      "INITIAL_ACCESS": 2530,
+      "IMPACT": 754,
+      "CREDENTIAL_ACCESS": 2333
+    },
+    "predicted_probability_summary": {
+      "min": 0.00028898476739414036,
+      "max": 0.9998781681060791,
+      "mean": 0.27435538815254107,
+      "frac_gt_0.99": 0.18288942695722357,
+      "frac_lt_0.01": 0.4715092816787732
+    },
+    "_seconds": 65.99
+  },
+  "determinism": {
+    "ok": true,
+    "n_samples": 300,
+    "device_primary": "cuda:0",
+    "same_instance_repeat_bit_exact": true,
+    "fresh_instance_bit_exact": true,
+    "max_prob_diff_fresh_instance": 0.0,
+    "cpu_vs_primary_max_prob_diff": 0.00022123754024505615,
+    "cpu_vs_primary_stage_identical_fraction": 1.0,
+    "cpu_vs_primary_max_rollout_diff_scaled": 0.0028972327709198,
+    "explanation_repeat_bit_exact": true,
+    "explanation_cpu_vs_primary_max_abs_diff": 2.8870999813079834e-08,
+    "explanation_top10_identical_cpu_vs_primary": true,
+    "_seconds": 35.76
+  },
+  "stage_head": {
+    "ok": true,
+    "engine_stages": [
+      "BENIGN",
+      "BENIGN",
+      "BENIGN",
+      "BENIGN",
+      "BENIGN",
+      "BENIGN"
+    ],
+    "manual_argmax_over_model_stage_logits": [
+      "BENIGN",
+      "BENIGN",
+      "BENIGN",
+      "BENIGN",
+      "BENIGN",
+      "BENIGN"
+    ],
+    "manual_argmax_via_stage_head_on_z_future": [
+      "BENIGN",
+      "BENIGN",
+      "BENIGN",
+      "BENIGN",
+      "BENIGN",
+      "BENIGN"
+    ],
+    "engine_equals_manual": true,
+    "perturbed_stage_head_stages": [
+      "CREDENTIAL_ACCESS",
+      "CREDENTIAL_ACCESS",
+      "CREDENTIAL_ACCESS",
+      "CREDENTIAL_ACCESS",
+      "CREDENTIAL_ACCESS",
+      "CREDENTIAL_ACCESS"
+    ],
+    "perturbing_stage_head_changes_output": true,
+    "cells_changed_when_stage_head_perturbed": 510,
+    "cells_total": 600,
+    "attack_logit_independent_of_stage_head": true,
+    "stage_head_module": "MitreStageHead",
+    "model_class": "VectorWorldModelWithStageHead",
+    "class_index_to_stage": {
+      "0": "BENIGN",
+      "1": "INITIAL_ACCESS",
+      "2": "CREDENTIAL_ACCESS",
+      "3": "LATERAL_MOVEMENT",
+      "4": "COMMAND_AND_CONTROL",
+      "5": "IMPACT"
+    },
+    "_seconds": 0.11
+  },
+  "explainability": {
+    "ok": true,
+    "shap_package_available_flag": true,
+    "shap_version": "0.50.0",
+    "n_samples": 300,
+    "distinct_method_strings": [
+      "Gradient \u00d7 Input"
+    ],
+    "top1_importance_displayed_as_0.0000_fraction_all": 0.2966666666666667,
+    "top1_importance_displayed_as_0.0000_fraction_predicted_attack_gt_0.99": 0.4406779661016949,
+    "n_samples_predicted_attack_gt_0.99": 59,
+    "top1_importance_median": 0.0002384670005994849,
+    "top1_importance_min": 7.600843332511431e-07,
+    "top1_importance_max": 0.5972327589988708,
+    "top1_importance_median_when_prob_gt_0.99": 0.00012182028876850381,
+    "top1_importance_median_when_prob_lt_0.5": 0.0002971107023768127,
+    "explicit_shap_call": "raised ModuleNotFoundError: No module named 'tensorflow'",
+    "method_with_shap_flag_true": "Gradient \u00d7 Input",
+    "method_with_shap_flag_false": "Gradient \u00d7 Input",
+    "top10_identical_shap_flag_true_vs_false": true,
+    "faithful_claims_note": "Attribution values indicate how much each observed feature, at each of the 6 observed windows (t-5..t), contributed to THIS MODEL's own risk score or stage-class logit, as computed by gradient-based or SHAP attribution on the frozen Phase 7B checkpoint. They are NOT proof of real-world causality, attacker intent, or a confirmed MITRE technique. MITRE technique IDs come from a separate, independently-audited label-to-technique mapping (forecasting/mitre_mapping.py) and are never derived from this attribution. AttackChainBuilder.predict_next_stage() is a +1 placeholder heuristic and is never used here as evidence.",
+    "shap_wording_present_in_faithful_claims_note": true,
+    "explainer_gradient_target": "sigmoid probability (see explainability/shap_explainer.py::_explain_with_gradients -> _convert_to_probability -> target.backward())",
+    "_seconds": 8.88
+  },
+  "thread_safety": {
+    "ok": true,
+    "rounds": 3,
+    "threads": 4,
+    "calls_per_round": 16,
+    "exceptions": [],
+    "n_exceptions": 0,
+    "n_result_mismatches_vs_sequential": 0,
+    "mismatch_examples": [],
+    "singleton_has_no_lock": true,
+    "_seconds": 1.3
+  },
+  "forecast_vs_detection": {
+    "ok": true,
+    "n_test": 6195,
+    "positives": 1763,
+    "positives_with_current_window_already_attack": 1641,
+    "positives_that_are_true_onsets_current_benign": 122,
+    "fraction_of_positives_already_under_attack": 0.9307997731140102,
+    "oracle_persistence_uses_ground_truth_current_label_unavailable_at_inference": {
+      "n": 6195,
+      "positives": 1763,
+      "prevalence": 0.28458434221146084,
+      "pr_auc": 0.9476656143421195,
+      "roc_auc": 0.9648358071346224
+    },
+    "world_model_all": {
+      "n": 6195,
+      "positives": 1763,
+      "prevalence": 0.28458434221146084,
+      "pr_auc": 0.8487219256228604,
+      "roc_auc": 0.8719958211409417
+    },
+    "world_model_onset_subset_current_benign": {
+      "n": 4549,
+      "positives": 122,
+      "prevalence": 0.02681908111672895,
+      "pr_auc": 0.33219502749697916,
+      "roc_auc": 0.8340946205660495
+    },
+    "world_model_ongoing_subset_current_attack": {
+      "n": 1646,
+      "positives": 1641,
+      "prevalence": 0.996962332928311,
+      "pr_auc": 0.9987749719235762,
+      "roc_auc": 0.6924436319317488
+    },
+    "world_model_onset_recall_at_frozen_phase8a_threshold": 0.4344262295081967,
+    "world_model_fpr_at_frozen_threshold_on_fully_benign": 0.09566787003610108,
+    "world_model_ongoing_recall_at_frozen_threshold": 0.7623400365630713,
+    "frozen_threshold_used": 0.335242,
+    "transformer_all": {
+      "n": 6195,
+      "positives": 1763,
+      "prevalence": 0.28458434221146084,
+      "pr_auc": 0.8638154159072176,
+      "roc_auc": 0.8762982465480771
+    },
+    "transformer_onset_subset_current_benign": {
+      "n": 4549,
+      "positives": 122,
+      "prevalence": 0.02681908111672895,
+      "pr_auc": 0.42666175238263815,
+      "roc_auc": 0.8866530640962499
+    },
+    "test_positives_by_source_day": {
+      "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv": {
+        "positives": 637,
+        "onset_positives": 2
+      },
+      "Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "positives": 23,
+        "onset_positives": 0
+      },
+      "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "positives": 175,
+        "onset_positives": 0
+      },
+      "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "positives": 62,
+        "onset_positives": 48
+      },
+      "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "positives": 346,
+        "onset_positives": 0
+      },
+      "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "positives": 208,
+        "onset_positives": 72
+      },
+      "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv": {
+        "positives": 312,
+        "onset_positives": 0
+      }
+    },
+    "_seconds": 0.95
+  },
+  "path_inventory": {
+    "ok": true,
+    "authoritative_refs_outside_experiments_tests": [
+      {
+        "file": "api/views.py",
+        "line": 16,
+        "text": "from world_model.inference_service import AuthoritativeForecastService"
+      },
+      {
+        "file": "api/views.py",
+        "line": 21,
+        "text": "inference path (experiments/inference_engine.py via"
+      },
+      {
+        "file": "api/views.py",
+        "line": 22,
+        "text": "world_model.inference_service.AuthoritativeForecastService)."
+      },
+      {
+        "file": "api/views.py",
+        "line": 25,
+        "text": "3.5 TEST split (see AuthoritativeForecastService.predict_demo_sample"
+      },
+      {
+        "file": "api/views.py",
+        "line": 44,
+        "text": "result = AuthoritativeForecastService.predict_demo_sample(index=index)"
+      },
+      {
+        "file": "dashboard/views.py",
+        "line": 14,
+        "text": "from world_model.inference_service import AuthoritativeForecastService"
+      },
+      {
+        "file": "dashboard/views.py",
+        "line": 19,
+        "text": "prediction path (experiments/inference_engine.py via"
+      },
+      {
+        "file": "dashboard/views.py",
+        "line": 20,
+        "text": "world_model.inference_service.AuthoritativeForecastService). Distinct"
+      },
+      {
+        "file": "dashboard/views.py",
+        "line": 26,
+        "text": "result = AuthoritativeForecastService.predict_demo_sample(index=0)"
+      },
+      {
+        "file": "dashboard/views.py",
+        "line": 117,
+        "text": "Wraps world_model.inference_service.AuthoritativeForecastService,"
+      },
+      {
+        "file": "dashboard/views.py",
+        "line": 118,
+        "text": "which wraps experiments.inference_engine.NetOracleInferenceEngine"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 119,
+        "text": "class AuthoritativeForecastService:"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 122,
+        "text": "(experiments/inference_engine.py: NetOracleInferenceEngine)."
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 153,
+        "text": "from inference_engine import NetOracleInferenceEngine  # local import: heavy (torch + checkpoint), loaded lazily"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 155,
+        "text": "cls._engine = NetOracleInferenceEngine()"
+      }
+    ],
+    "legacy_heuristic_refs": [
+      {
+        "file": "README.md",
+        "line": 25,
+        "text": "models/attack_forecaster.pt"
+      },
+      {
+        "file": "README.md",
+        "line": 46,
+        "text": "models/attack_forecaster.pt"
+      },
+      {
+        "file": "README.md",
+        "line": 132,
+        "text": "python run_pipeline.py ..\\cic.csv --limit 200 --model models\\attack_forecaster.pt"
+      },
+      {
+        "file": "README.md",
+        "line": 142,
+        "text": "python train.py ..\\cic.csv --output models\\attack_forecaster.pt --limit 2000 --epochs 25"
+      },
+      {
+        "file": "README.md",
+        "line": 189,
+        "text": "python run_pipeline.py ..\\cic.csv --limit 200 --model models\\attack_forecaster.pt"
+      },
+      {
+        "file": "run_pipeline.py",
+        "line": 18,
+        "text": "from world_model.inference_service import AttackForecastService"
+      },
+      {
+        "file": "run_pipeline.py",
+        "line": 83,
+        "text": "prediction = AttackForecastService(model_path).forecast("
+      },
+      {
+        "file": "run_pipeline.py",
+        "line": 119,
+        "text": "AttackForecastService._heuristic_risk(network_states[index:index + 1])"
+      },
+      {
+        "file": "run_pipeline.py",
+        "line": 181,
+        "text": "parser.add_argument(\"--model\", type=Path, default=Path(\"models/attack_forecaster.pt\"))"
+      },
+      {
+        "file": "train.py",
+        "line": 15,
+        "text": "from world_model.inference_service import AttackRiskForecaster"
+      },
+      {
+        "file": "train.py",
+        "line": 41,
+        "text": "model = AttackRiskForecaster(states.shape[1])"
+      },
+      {
+        "file": "train.py",
+        "line": 58,
+        "text": "parser.add_argument(\"--output\", type=Path, default=Path(\"models/attack_forecaster.pt\"))"
+      },
+      {
+        "file": "dashboard/views.py",
+        "line": 57,
+        "text": "model_path = settings.BASE_DIR / 'models' / 'attack_forecaster.pt'"
+      },
+      {
+        "file": "feature_engine/services.py",
+        "line": 4,
+        "text": "from world_model.inference_service import AttackForecastService"
+      },
+      {
+        "file": "feature_engine/services.py",
+        "line": 24,
+        "text": "forecast = AttackForecastService().forecast([numeric_values]) if numeric_values else None"
+      },
+      {
+        "file": "ingestion/management/commands/capture_traffic.py",
+        "line": 20,
+        "text": "model_path = settings.BASE_DIR / \"models\" / \"attack_forecaster.pt\""
+      },
+      {
+        "file": "management/commands/capture_traffic.py",
+        "line": 22,
+        "text": "model_path = settings.BASE_DIR / \"models\" / \"attack_forecaster.pt\""
+      },
+      {
+        "file": "templates/dashboard/forecast.html",
+        "line": 43,
+        "text": "(<code>world_model.inference_service.AttackForecastService</code>): it runs on an"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 13,
+        "text": "class AttackRiskForecaster(torch.nn.Module):"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 27,
+        "text": "class AttackForecastService:"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 30,
+        "text": "def __init__(self, model_path: str | Path = \"models/attack_forecaster.pt\") -> None:"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 56,
+        "text": "fallback_risk if fallback_risk is not None else self._heuristic_risk(sequence),"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 60,
+        "text": "source = \"heuristic_fallback\""
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 64,
+        "text": "point = float(np.clip(self._predict_with_model(sequence[index:index + 1]), 0.0, 1.0)) if self.model is not None else self._heuristic_risk(sequence[index:index + 1])"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 114,
+        "text": "def _heuristic_risk(sequence: np.ndarray) -> float:"
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 131,
+        "text": "`AttackForecastService`/`AttackRiskForecaster` above are UNCHANGED and"
+      }
+    ],
+    "track_b_refs": [
+      {
+        "file": "run_pipeline.py",
+        "line": 18,
+        "text": "from world_model.inference_service import AttackForecastService"
+      },
+      {
+        "file": "train.py",
+        "line": 15,
+        "text": "from world_model.inference_service import AttackRiskForecaster"
+      },
+      {
+        "file": "api/views.py",
+        "line": 16,
+        "text": "from world_model.inference_service import AuthoritativeForecastService"
+      },
+      {
+        "file": "dashboard/views.py",
+        "line": 14,
+        "text": "from world_model.inference_service import AuthoritativeForecastService"
+      },
+      {
+        "file": "feature_engine/services.py",
+        "line": 4,
+        "text": "from world_model.inference_service import AttackForecastService"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 229,
+        "text": "class NetworkWorldModel(nn.Module):"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 383,
+        "text": "from world_model.feature_extraction import FeatureExtractor"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 384,
+        "text": "from world_model.world_model import NetworkWorldModel"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 385,
+        "text": "from world_model.baseline import BaselineModel"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 418,
+        "text": "model = NetworkWorldModel("
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 483,
+        "text": "}, 'models/best_world_model.pth')"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 499,
+        "text": "print(\"[+] Model checkpoint saved -> models/best_world_model.pth\")"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 509,
+        "text": "import streamlit as st"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 519,
+        "text": "from world_model.world_model import NetworkWorldModel"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 520,
+        "text": "from world_model.mitre_mapper import MITREMapper"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 529,
+        "text": "if not os.path.exists('models/best_world_model.pth'):"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 531,
+        "text": "ckpt = torch.load('models/best_world_model.pth', map_location='cpu')"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 533,
+        "text": "model = NetworkWorldModel("
+      },
+      {
+        "file": "world_model/inference.py",
+        "line": 19,
+        "text": "from .world_model import NetworkWorldModel"
+      },
+      {
+        "file": "world_model/inference.py",
+        "line": 26,
+        "text": "model_path=\"models/best_world_model.pth\","
+      },
+      {
+        "file": "world_model/inference.py",
+        "line": 64,
+        "text": "self.model = NetworkWorldModel("
+      },
+      {
+        "file": "world_model/world_model.py",
+        "line": 173,
+        "text": "class NetworkWorldModel(nn.Module):"
+      },
+      {
+        "file": "world_model/src/streamlit.py",
+        "line": 24,
+        "text": "import streamlit as st"
+      },
+      {
+        "file": "world_model/src/streamlit.py",
+        "line": 49,
+        "text": "from world_model.inference import NetOracleInference"
+      },
+      {
+        "file": "world_model/src/streamlit.py",
+        "line": 113,
+        "text": "\"models/best_world_model.pth\","
+      }
+    ],
+    "phase9n_refs_in_production_code": [],
+    "phase9n_refs_in_authoritative_engine_or_django": [],
+    "torch_load_sites_outside_experiments_tests": [
+      {
+        "file": "world_model/build_project.py",
+        "line": 531,
+        "text": "ckpt = torch.load('models/best_world_model.pth', map_location='cpu')"
+      },
+      {
+        "file": "world_model/build_project.py",
+        "line": 541,
+        "text": "model.load_state_dict(ckpt['model_state'])"
+      },
+      {
+        "file": "world_model/inference.py",
+        "line": 43,
+        "text": "self.checkpoint = torch.load("
+      },
+      {
+        "file": "world_model/inference.py",
+        "line": 96,
+        "text": "self.model.load_state_dict("
+      },
+      {
+        "file": "world_model/inference_service.py",
+        "line": 94,
+        "text": "artifact = torch.load(self.model_path, map_location=\"cpu\", weights_only=False)"
+      }
+    ],
+    "checkpoint_files_in_repo_tree": [
+      "experiments/results/phase4_3_class_weight_ablation/lstm/best_model.pt",
+      "experiments/results/phase4_3_class_weight_ablation/lstm/scaler.joblib",
+      "experiments/results/phase4_baseline/logistic_regression/model.joblib",
+      "experiments/results/phase4_baseline/logistic_regression/scaler.joblib",
+      "experiments/results/phase4_baseline/lstm/best_model.pt",
+      "experiments/results/phase4_baseline/lstm/scaler.joblib",
+      "experiments/results/phase5_temporal_transformer/transformer/best_model.pt",
+      "experiments/results/phase5_temporal_transformer/transformer/scaler.joblib",
+      "experiments/results/phase6b_vector_world_model/model/best_model.pt",
+      "experiments/results/phase6b_vector_world_model/model/scaler.joblib",
+      "experiments/results/phase6b_vector_world_model_ablation/run1_existing_scaling/model/best_model.pt",
+      "experiments/results/phase6b_vector_world_model_ablation/run1_existing_scaling/model/scaler.joblib",
+      "experiments/results/phase6b_vector_world_model_ablation/run2_robust_scaling/model/best_model.pt",
+      "experiments/results/phase6b_vector_world_model_ablation/run2_robust_scaling/model/scaler.joblib",
+      "experiments/results/phase7b_mitre_stage_head/model/best_stage_head.pt",
+      "experiments/results/phase9h_multimodal_baseline/variant_a_model/best_model.pt",
+      "experiments/results/phase9m_unseen_attack_audit/holdout_bot/logistic_regression_model.joblib",
+      "experiments/results/phase9m_unseen_attack_audit/holdout_bot/scaler.joblib",
+      "experiments/results/phase9m_unseen_attack_audit/holdout_bot/transformer_best_model.pt",
+      "experiments/results/phase9m_unseen_attack_audit/holdout_infiltration/logistic_regression_model.joblib",
+      "experiments/results/phase9m_unseen_attack_audit/holdout_infiltration/scaler.joblib",
+      "experiments/results/phase9m_unseen_attack_audit/holdout_infiltration/transformer_best_model.pt",
+      "experiments/results/phase9n_per_step_risk/model/best_per_step_risk_head.pt"
+    ],
+    "engine_import_sites_of_track_b": [],
+    "_seconds": 0.34
+  },
+  "claims_scan": {
+    "ok": true,
+    "shap": [],
+    "calibrated": [
+      {
+        "file": "templates/dashboard/authoritative_forecast.html",
+        "line": 144,
+        "text": "<li>No calibrated probabilities (Phase 8B finding).</li>"
+      }
+    ],
+    "unseen_or_zero_day": [
+      {
+        "file": "templates/dashboard/authoritative_forecast.html",
+        "line": 146,
+        "text": "<li>No unseen-attack-generalization claim.</li>"
+      },
+      {
+        "file": "docs/MITRE_MAPPING_AUDIT.md",
+        "line": 37,
+        "text": "- **SQL Injection** previously fell through every match rule to `BENIGN` / confidence `0.0` (\"Unknown attack type\"). Now resolves to `INITIAL_ACCESS` / `T1190` (Exploit Public-Facing Application)."
+      },
+      {
+        "file": "docs/PHASE6A_DYNAMIC_GRAPH_DESIGN.md",
+        "line": 32,
+        "text": "## Unseen entities"
+      },
+      {
+        "file": "docs/PHASE6A_DYNAMIC_GRAPH_DESIGN.md",
+        "line": 34,
+        "text": "Entity IDs are deterministic within each source day and assigned on first valid chronological occurrence. Nodes absent from a window are not emitted. A later online consumer may use an explicit `UNSEEN_HOST` representati"
+      }
+    ],
+    "infiltration": [
+      {
+        "file": "docs/CIC_IDS2018_DATA_READINESS.md",
+        "line": 22,
+        "text": "- `Infilteration` -> `Infiltration`: 161,934 (0.9975604%), files: Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv; Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv."
+      },
+      {
+        "file": "docs/CIC_IDS2018_DATA_READINESS.md",
+        "line": 43,
+        "text": "- `Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv` / `Infiltration`: 93,063 flows, `2018-03-01 02:00:00` to `2018-03-01 10:54:59` (32099.0 seconds)."
+      },
+      {
+        "file": "docs/CIC_IDS2018_DATA_READINESS.md",
+        "line": 53,
+        "text": "- `Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv` / `Infiltration`: 68,871 flows, `2018-02-28 01:42:00` to `2018-02-28 12:04:59` (37379.0 seconds)."
+      },
+      {
+        "file": "docs/MITRE_MAPPING_AUDIT.md",
+        "line": 25,
+        "text": "| Infiltration | `infiltration` | LATERAL_MOVEMENT | \u2014 | 0.80 | heuristic_uncertain | Reviewed in Phase 7A. CSE-CIC-IDS2018's 'Infiltration' scenario documents a dropped-file execution phase (Initial Access / Execution) "
+      },
+      {
+        "file": "docs/MITRE_MAPPING_AUDIT.md",
+        "line": 29,
+        "text": "| Infilteration (alias of Infiltration) | `infilteration` | LATERAL_MOVEMENT | \u2014 | 0.80 | heuristic_uncertain | Raw pre-normalization spelling ('Infilteration') of 'Infiltration'; see the 'infiltration' entry above for t"
+      },
+      {
+        "file": "docs/MITRE_MAPPING_AUDIT.md",
+        "line": 39,
+        "text": "- **Infiltration** is retained at `LATERAL_MOVEMENT` but is now explicitly flagged `heuristic_uncertain` with a documented rationale: the dataset provides one flow-level label regardless of which real kill-chain sub-phas"
+      },
+      {
+        "file": "docs/TEMPORAL_DATASET_DESIGN.md",
+        "line": 19,
+        "text": "`Infilteration` is normalized to `Infiltration`; known capitalization variants of DDoS labels are normalized. Raw labels remain available in the preprocessing audit. `Benign` maps to current attack indicator 0. Any other"
+      }
+    ],
+    "early_warning": [],
+    "per_step": [
+      {
+        "file": "templates/dashboard/authoritative_forecast.html",
+        "line": 92,
+        "text": "<div class=\"attack-score\"><span>P(attack somewhere in t+1..t+6)</span><strong>{{ f.whole_horizon_attack_probability.value|floatformat:4 }}</strong></div>"
+      },
+      {
+        "file": "templates/dashboard/authoritative_forecast.html",
+        "line": 142,
+        "text": "<li>No native per-step attack probability -- only the single whole-horizon scalar above.</li>"
+      },
+      {
+        "file": "templates/dashboard/forecast.html",
+        "line": 114,
+        "text": "const timeline = forecast.risk_timeline || [];"
+      },
+      {
+        "file": "templates/dashboard/index.html",
+        "line": 99,
+        "text": "<p>Temporal analysis of recent network behavior, projected across the next five observation windows.</p>"
+      },
+      {
+        "file": "templates/dashboard/index.html",
+        "line": 122,
+        "text": "<p class=\"eyebrow\">Five-window rollout</p>"
+      },
+      {
+        "file": "templates/dashboard/index.html",
+        "line": 139,
+        "text": "{% for window in forecast_windows %}"
+      },
+      {
+        "file": "templates/dashboard/index.html",
+        "line": 143,
+        "text": "<strong>{{ window.probability|floatformat:2 }}</strong>"
+      },
+      {
+        "file": "docs/PHASE6A_DYNAMIC_GRAPH_DESIGN.md",
+        "line": 11,
+        "text": "- The target remains `future_attack_within_horizon`, based only on t+1 through t+6."
+      },
+      {
+        "file": "docs/TEMPORAL_DATASET_DESIGN.md",
+        "line": 35,
+        "text": "For state S(t), `future_attack_within_horizon` is 1 when any current attack indicator in S(t+1) through S(t+6) is 1. S(t) is explicitly excluded. Future attack types are retained where available. The final 60 terminal wi"
+      }
+    ],
+    "realtime": [
+      {
+        "file": "templates/api/dashboard.html",
+        "line": 141,
+        "text": "<p style=\"color: var(--text-secondary);\">Configure real-time ingestion and database synchronization.</p>"
+      },
+      {
+        "file": "templates/api/dashboard.html",
+        "line": 151,
+        "text": "<!-- Real-time Ingestion Docs -->"
+      },
+      {
+        "file": "templates/api/dashboard.html",
+        "line": 177,
+        "text": "<p style=\"color: var(--text-secondary);\">Sync logs from your production databases for real-time IDS monitoring.</p>"
+      },
+      {
+        "file": "templates/dashboard/forecast.html",
+        "line": 60,
+        "text": "<div class=\"forecast-heading\"><div><p class=\"eyebrow\">Temporal rollout</p><h2>Risk forecast timeline</h2></div><span class=\"badge badge-success\">Live model output</span></div>"
+      },
+      {
+        "file": "templates/dashboard/index.html",
+        "line": 126,
+        "text": "<span class=\"badge badge-success\">Live model</span>"
+      },
+      {
+        "file": "templates/logs/dashboard.html",
+        "line": 192,
+        "text": "<h2 style=\"font-size: 1.1rem; margin-bottom: 0.5rem;\">Real-time API</h2>"
+      },
+      {
+        "file": "templates/server/dashboard.html",
+        "line": 97,
+        "text": "<p style=\"color: var(--text-secondary);\">Real-time console and database health.</p>"
+      },
+      {
+        "file": "templates/users/dashboard.html",
+        "line": 166,
+        "text": "<h2 style=\"font-size: 1.25rem; margin-bottom: 0.5rem;\">Real-time Ingestion API</h2>"
+      },
+      {
+        "file": "README.md",
+        "line": 62,
+        "text": "ingestion/ CSV, PCAP, Zeek, and live capture adapters"
+      },
+      {
+        "file": "README.md",
+        "line": 174,
+        "text": "The repository includes `cic.csv` at the workspace level for repeatable pipeline testing. CIC-IDS data is used for training and offline validation. Live capture uses the active interface and does not require the CSV."
+      }
+    ],
+    "beats_baselines": [
+      {
+        "file": "templates/alerts/dashboard.html",
+        "line": 57,
+        "text": "<button type=\"submit\" class=\"nav-item\" style=\"background: none; border: none; width: 100%; cursor: pointer;\">"
+      },
+      {
+        "file": "templates/api/dashboard.html",
+        "line": 51,
+        "text": "width: 100%;"
+      },
+      {
+        "file": "templates/api/dashboard.html",
+        "line": 128,
+        "text": "<button type=\"submit\" class=\"nav-item\" style=\"background: none; border: none; width: 100%; cursor: pointer;\">"
+      },
+      {
+        "file": "templates/api/dashboard.html",
+        "line": 257,
+        "text": "<select id=\"remote-connector-select\" style=\"width: 100%;\" onchange=\"updateTerminalPlaceholder()\">"
+      },
+      {
+        "file": "templates/api/dashboard.html",
+        "line": 266,
+        "text": "<textarea id=\"remote-query\" placeholder=\"SELECT * FROM users LIMIT 10;\" style=\"width: 100%; height: 80px; background: transparent; border: none; color: #0f0; font-family: 'Courier New', Courier, monospace; outline: none;"
+      },
+      {
+        "file": "templates/api/dashboard.html",
+        "line": 278,
+        "text": "<table style=\"width: 100%; border-collapse: collapse;\">"
+      },
+      {
+        "file": "templates/api/dashboard.html",
+        "line": 287,
+        "text": "<div class=\"api-card\" style=\"width: 100%; max-width: 500px; margin: 0;\">"
+      },
+      {
+        "file": "templates/dashboard/authoritative_forecast.html",
+        "line": 30,
+        "text": "<button type=\"submit\" class=\"nav-item\" style=\"background: none; border: none; width: 100%; cursor: pointer;\"><span class=\"nav-mark\">\u21aa</span>Logout</button>"
+      },
+      {
+        "file": "templates/dashboard/forecast.html",
+        "line": 31,
+        "text": "<button type=\"submit\" class=\"nav-item\" style=\"background: none; border: none; width: 100%; cursor: pointer;\"><span class=\"nav-mark\">\u21aa</span>Logout</button>"
+      },
+      {
+        "file": "templates/dashboard/index.html",
+        "line": 69,
+        "text": "<button type=\"submit\" class=\"nav-item\" style=\"background: none; border: none; width: 100%; cursor: pointer;\">"
+      },
+      {
+        "file": "templates/logs/dashboard.html",
+        "line": 135,
+        "text": "style=\"background: none; border: none; width: 100%; cursor: pointer;\">"
+      },
+      {
+        "file": "templates/management/dashboard.html",
+        "line": 62,
+        "text": "width: 100%;"
+      },
+      {
+        "file": "templates/management/dashboard.html",
+        "line": 77,
+        "text": "width: 100%;"
+      },
+      {
+        "file": "templates/management/dashboard.html",
+        "line": 155,
+        "text": "style=\"background: none; border: none; width: 100%; cursor: pointer;\">Logout</button>"
+      },
+      {
+        "file": "templates/management/dashboard.html",
+        "line": 163,
+        "text": "<div style=\"display: flex; justify-content: space-between; width: 100%; align-items: center;\">"
+      },
+      {
+        "file": "templates/server/dashboard.html",
+        "line": 84,
+        "text": "<button type=\"submit\" class=\"nav-item\" style=\"background: none; border: none; width: 100%; cursor: pointer;\">"
+      },
+      {
+        "file": "templates/server/dashboard.html",
+        "line": 138,
+        "text": "<textarea id=\"sql-query\" placeholder=\"SELECT * FROM sqlite_master WHERE type='table';\" style=\"width: 100%; height: 100px; background: transparent; border: none; color: #0f0; font-family: 'Courier New', Courier, monospace"
+      },
+      {
+        "file": "templates/server/dashboard.html",
+        "line": 149,
+        "text": "<table style=\"width: 100%; border-collapse: collapse;\">"
+      },
+      {
+        "file": "templates/settings_app/dashboard.html",
+        "line": 50,
+        "text": "width: 100%;"
+      },
+      {
+        "file": "templates/settings_app/dashboard.html",
+        "line": 148,
+        "text": "<button type=\"submit\" class=\"nav-item\" style=\"background: none; border: none; width: 100%; cursor: pointer;\">"
+      },
+      {
+        "file": "templates/users/dashboard.html",
+        "line": 97,
+        "text": "<button type=\"submit\" class=\"nav-item\" style=\"background: none; border: none; width: 100%; cursor: pointer;\">"
+      },
+      {
+        "file": "templates/users/dashboard.html",
+        "line": 146,
+        "text": "<table style=\"width: 100%; border-collapse: collapse;\">"
+      },
+      {
+        "file": "docs/CIC_IDS2018_DATA_READINESS.md",
+        "line": 36,
+        "text": "- `Friday-02-03-2018_TrafficForML_CICFlowMeter.csv` / `Bot`: 286,191 flows, `2018-03-02 01:00:00` to `2018-03-02 12:59:59` (43199.0 seconds)."
+      },
+      {
+        "file": "docs/CIC_IDS2018_DATA_READINESS.md",
+        "line": 43,
+        "text": "- `Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv` / `Infiltration`: 93,063 flows, `2018-03-01 02:00:00` to `2018-03-01 10:54:59` (32099.0 seconds)."
+      }
+    ],
+    "attack_chain_or_next_step": [
+      {
+        "file": "templates/dashboard/forecast.html",
+        "line": 64,
+        "text": "<p class=\"eyebrow\">Predicted attack type</p><h2>{{ forecast.attack_type }}</h2>"
+      },
+      {
+        "file": "templates/dashboard/forecast.html",
+        "line": 77,
+        "text": "<div class=\"forecast-heading\"><div><p class=\"eyebrow\">Progression</p><h2>Attack chain forecast</h2></div></div>"
+      },
+      {
+        "file": "templates/dashboard/forecast.html",
+        "line": 79,
+        "text": "{% for stage in forecast.attack_chain.stages %}<div class=\"chain-stage\"><span>{{ forloop.counter }}</span><strong>{{ stage }}</strong></div>{% empty %}<p class=\"forecast-empty\">No attack-chain stage returned.</p>{% endfo"
+      },
+      {
+        "file": "templates/dashboard/forecast.html",
+        "line": 90,
+        "text": "<div class=\"forecast-heading\"><div><p class=\"eyebrow\">Decision support</p><h2>Explainability: possible next access step</h2></div></div>"
+      },
+      {
+        "file": "templates/dashboard/forecast.html",
+        "line": 97,
+        "text": "<div class=\"precaution-box\"><p class=\"eyebrow\">Precautionary actions</p><ul>{% for tip in forecast.explainability_summary.precautions %}<li>{{ tip }}</li>{% endfor %}</ul></div>"
+      },
+      {
+        "file": "README.md",
+        "line": 28,
+        "text": "Risk forecast, attack chain, MITRE mapping, target analysis, dashboard"
+      },
+      {
+        "file": "README.md",
+        "line": 36,
+        "text": "- Predicted attack type"
+      },
+      {
+        "file": "README.md",
+        "line": 37,
+        "text": "- Attack-chain progression"
+      },
+      {
+        "file": "README.md",
+        "line": 41,
+        "text": "- Explainability summary with possible next access step and precautions"
+      },
+      {
+        "file": "README.md",
+        "line": 60,
+        "text": "forecasting/ Attack-chain, MITRE, and victim logic"
+      },
+      {
+        "file": "README.md",
+        "line": 135,
+        "text": "It reports the current risk, forecasted risk, predicted attack, horizon, likely target, pipeline counts, and model source."
+      },
+      {
+        "file": "README.md",
+        "line": 180,
+        "text": "MITRE stage, attack-chain progression, graph target ranking, and precautionary actions are supporting interpretations of the model and engineered network state. They are not proof that a compromise has occurred."
+      }
+    ],
+    "presentation_slide_count": 7,
+    "presentation_hits": {
+      "shap": [
+        {
+          "slide": 3,
+          "text": "BALLERS Technical Approach Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Input Data PCAP / Flow Records Zeek &amp; Security Logs Public CTI Datasets Feature Extraction Ports &amp; Protocols Packet/Flow Frequency TCP Flags, Timing Network State Modelling Sequential time- windows capturing behaviour evolution AI/ML Forecasting Baseline: RF / LogReg Temporal: LSTM, "
+        },
+        {
+          "slide": 4,
+          "text": "BALLERS Feasibility &amp; Viability Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Why Feasible \u2713 Public cybersecurity datasets available \u2713 Fully software-based prototype \u2713 Open-source AI/ML ecosystem \u2713 Runs on standard computing hardware \u2713 Modular and scalable architecture Prototype Flow Dataset Features AI Model API Dashboard Key Challenges &amp; Mitigation Chal"
+        },
+        {
+          "slide": 5,
+          "text": "BALLERS Implementation Workflow &amp; System Architecture Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Network Traffic / Security Logs Data Preprocessing  \u2014  Cleaning \u00b7 Normalisation \u00b7 Time Windows Feature Extraction  \u2014  Network Behaviour Features Network State Representation  \u2014  Sequential States AI Temporal Forecasting Engine  \u2014  LSTM / Transformer Multi-Step "
+        }
+      ],
+      "calibrated": [],
+      "unseen_or_zero_day": [],
+      "infiltration": [],
+      "early_warning": [
+        {
+          "slide": 2,
+          "text": "BALLERS AI-Driven Proactive Network Attack Forecasting Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University The Problem \ud83d\udd34  Reactive Detection Traditional security systems primarily alert when suspicious activity is already occurring. \ud83d\udd34  Alert Overload Large volumes of alerts make it difficult for analysts to identify the most critical threats. \ud83d\udd34  Missing Temporal Contex"
+        },
+        {
+          "slide": 5,
+          "text": "BALLERS Implementation Workflow &amp; System Architecture Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Network Traffic / Security Logs Data Preprocessing  \u2014  Cleaning \u00b7 Normalisation \u00b7 Time Windows Feature Extraction  \u2014  Network Behaviour Features Network State Representation  \u2014  Sequential States AI Temporal Forecasting Engine  \u2014  LSTM / Transformer Multi-Step "
+        },
+        {
+          "slide": 6,
+          "text": "BALLERS Impact &amp; Benefits Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Proactive Defence Early warning before an attack reaches critical stages. Faster Incident Response Helps security teams prioritise threats likely to escalate. Reduced Alert Fatigue Focuses analyst attention on high-risk attack trajectories. Potential Applications Security Operations Centr"
+        }
+      ],
+      "per_step": [],
+      "realtime": [],
+      "beats_baselines": [],
+      "attack_chain_or_next_step": [
+        {
+          "slide": 6,
+          "text": "BALLERS Impact &amp; Benefits Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Proactive Defence Early warning before an attack reaches critical stages. Faster Incident Response Helps security teams prioritise threats likely to escalate. Reduced Alert Fatigue Focuses analyst attention on high-risk attack trajectories. Potential Applications Security Operations Centr"
+        },
+        {
+          "slide": 7,
+          "text": "                                                                     Research Inspiration Temporal modelling for cyber-event forecasting  LSTM &amp; Transformer sequence forecasting  Attack-chain prediction  MITRE ATT&amp;CK threat modelling  Temporal Graph Neural Networks Idea Submission \u2013 SIH (Internal Hackathon) 2026 - Dayananda Sagar University BALLERS RESEARCH  AND REFERENCES Selected Referen"
+        }
+      ]
+    },
+    "presentation_full_text_first_slides": [
+      "TITLE PAGE \u2022   Problem Statement ID \u2014 SIH26153 \u2022   Problem Statement Title \u2014 AI/ML-Based Network Attack Forecasting \u2022   Theme \u2014 Blockchain &amp; Cybersecurity \u2022   PS Category \u2014 Software \u2022   Team ID \u2014 SIH2026-214 \u2022   Team Name \u2014 BALLERS  \u2022   Team Leader Name \u2014   AKSHAY SENTHIL \u2022   Team Leader USN Number \u2014  ENG24RA0001 School of Engineering, Dayananda Sagar University, Bengaluru \u2013 562112",
+      "BALLERS AI-Driven Proactive Network Attack Forecasting Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University The Problem \ud83d\udd34  Reactive Detection Traditional security systems primarily alert when suspicious activity is already occurring. \ud83d\udd34  Alert Overload Large volumes of alerts make it difficult for analysts to identify the most critical threats. \ud83d\udd34  Missing Temporal Context Individual events may not reveal how an attack is evolving toward its next stage. Our Solution NETWORK TRAFFIC + SECURITY LOGS \u2193 TEMPORAL BEHAVIOUR ANALYSIS \u2193 AI/ML FORECASTING \u2193 NEXT ATTACK STAGE \u2193",
+      "BALLERS Technical Approach Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Input Data PCAP / Flow Records Zeek &amp; Security Logs Public CTI Datasets Feature Extraction Ports &amp; Protocols Packet/Flow Frequency TCP Flags, Timing Network State Modelling Sequential time- windows capturing behaviour evolution AI/ML Forecasting Baseline: RF / LogReg Temporal: LSTM, Transformer Output Attack Risk Score Next Attack Stage MITRE Mapping Explainability:   SHAP values + feature importance clarify why each forecast was made. Technology Stack Python Pandas Scikit-learn ",
+      "BALLERS Feasibility &amp; Viability Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Why Feasible \u2713 Public cybersecurity datasets available \u2713 Fully software-based prototype \u2713 Open-source AI/ML ecosystem \u2713 Runs on standard computing hardware \u2713 Modular and scalable architecture Prototype Flow Dataset Features AI Model API Dashboard Key Challenges &amp; Mitigation Challenge Mitigation Large network traffic volume Flow-based processing, time-window aggregation High false positives Temporal context, adaptive risk thresholds Complex multi-stage attacks Sequential, mul",
+      "BALLERS Implementation Workflow &amp; System Architecture Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Network Traffic / Security Logs Data Preprocessing  \u2014  Cleaning \u00b7 Normalisation \u00b7 Time Windows Feature Extraction  \u2014  Network Behaviour Features Network State Representation  \u2014  Sequential States AI Temporal Forecasting Engine  \u2014  LSTM / Transformer Multi-Step Attack Forecasting  \u2014  What may happen next? MITRE ATT&amp;CK Mapping  \u2014  Predicted Attack Stage Explainable AI  \u2014  Why was this predicted? SOC Early Warning Dashboard  \u2014  Risk \u00b7 Forecast \u00b7 Explanatio",
+      "BALLERS Impact &amp; Benefits Idea Submission \u2013 SIH (Internal Hackathon)  |  2026 - Dayananda Sagar University Proactive Defence Early warning before an attack reaches critical stages. Faster Incident Response Helps security teams prioritise threats likely to escalate. Reduced Alert Fatigue Focuses analyst attention on high-risk attack trajectories. Potential Applications Security Operations Centres Government Networks Enterprise Infrastructure Critical Infrastructure Cloud Environments Financial &amp; Defence Networks Research Inspiration \u2022   Temporal modelling for cyber event forecasting \u2022  ",
+      "                                                                     Research Inspiration Temporal modelling for cyber-event forecasting  LSTM &amp; Transformer sequence forecasting  Attack-chain prediction  MITRE ATT&amp;CK threat modelling  Temporal Graph Neural Networks Idea Submission \u2013 SIH (Internal Hackathon) 2026 - Dayananda Sagar University BALLERS RESEARCH  AND REFERENCES Selected References 1.  Temporal Graph Neural Networks for Network Alert Prediction \u2014 2026 2.  CL-AP\u00b2: Composite Learning for Cyber Attack Prediction \u2014 2024 3.   KillChainGraph : Predicting MITRE ATT&amp;CK Technique"
+    ],
+    "presentation_last_modified": "2026-09-10",
+    "_seconds": 0.09
+  },
+  "environment": {
+    "ok": true,
+    "python": "3.14.3",
+    "torch": "2.10.0+cu128",
+    "cuda_available": true,
+    "sklearn": "1.8.0",
+    "shap": "0.50.0",
+    "reportlab": "MISSING (ModuleNotFoundError)",
+    "django": "6.0.2",
+    "rest_framework": "3.16.1",
+    "plotly": "MISSING (ModuleNotFoundError)",
+    "scapy": "2.7.0",
+    "streamlit": "MISSING (ModuleNotFoundError)",
+    "PyPDF2": "MISSING (ModuleNotFoundError)",
+    "networkx": "3.6.1",
+    "polars": "1.44.2",
+    "requirements_txt_pins_exact_versions": false,
+    "requirements_txt_lines": [
+      "Django>=4.2,<7",
+      "djangorestframework>=3.14",
+      "django-cors-headers>=4.3",
+      "numpy>=1.24",
+      "pandas>=2.0",
+      "polars>=1.0",
+      "scikit-learn>=1.3",
+      "networkx>=3.0",
+      "PyYAML>=6.0",
+      "torch>=2.0",
+      "joblib>=1.3",
+      "plotly>=5.15",
+      "shap>=0.43",
+      "streamlit>=1.28",
+      "scapy>=2.5",
+      "requests>=2.31",
+      "reportlab>=4.0",
+      "PyPDF2>=3.0"
+    ],
+    "windows_dir_used_by_engine": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\data\\windows",
+    "windows_dir_exists": true,
+    "windows_dir_inside_repo": false,
+    "windows_csv_count": 10,
+    "windows_dir_total_mb": 70.9,
+    "gitignore_patterns": [
+      "myenv/",
+      "**/__pycache__/",
+      "*.py[cod]",
+      "*.sqlite3",
+      "*.log",
+      "cic.csv",
+      "*.pth",
+      "*.pt",
+      ".env"
+    ],
+    "gitignore_excludes_pt_checkpoints": true,
+    "git_head": "4e54c7533fc327331d1ea44a609a52a6010424e0",
+    "git_dirty_entries": 50,
+    "authoritative_files_tracked_in_git": {
+      "experiments/inference_engine.py": false,
+      "experiments/phase6b_vector_world_model.py": false,
+      "experiments/phase7b_mitre_stage_head.py": false,
+      "experiments/phase7c_explainability.py": false,
+      "experiments/world_model_dataset.py": false,
+      "experiments/phase4_baseline.py": false,
+      "templates/dashboard/authoritative_forecast.html": false,
+      "world_model/inference_service.py": true,
+      "dashboard/views.py": true,
+      "api/views.py": true
+    },
+    "engine_committed": false,
+    "modified_but_uncommitted_tracked_files": [
+      "M api/urls.py",
+      " M api/views.py",
+      " M dashboard/urls.py",
+      " M dashboard/views.py",
+      " M experiments/tests.py",
+      " M forecasting/mitre_mapping.py",
+      " M forecasting/tests.py",
+      " M templates/dashboard/forecast.html",
+      " M templates/dashboard/index.html",
+      " M world_model/inference_service.py"
+    ],
+    "authoritative_artifacts_gitignored": {
+      "best_stage_head.pt": true,
+      "run1 best_model.pt": true,
+      "scaler.joblib": false
+    },
+    "authoritative_artifacts_tracked": {
+      "best_stage_head.pt": false,
+      "run1 best_model.pt": false,
+      "scaler.joblib": false
+    },
+    "db_sqlite3_present": false,
+    "_seconds": 0.71
+  },
+  "django_startup": {
+    "ok": true,
+    "returncode": 1,
+    "stdout_tail": "",
+    "stderr_last_line": "ModuleNotFoundError: No module named 'reportlab'",
+    "_seconds": 3.35
+  },
+  "cold_start": {
+    "ok": true,
+    "engine_load_seconds": 19.14,
+    "first_prediction_incl_explanations_seconds": 0.25,
+    "warm_prediction_seconds": 0.034,
+    "stderr_tail": "",
+    "_seconds": 20.83
+  },
+  "rendered_pages": {
+    "ok": true,
+    "landing_dashboard_index": {
+      "status": 200,
+      "text": "Dashboard | NetOracle NO NetOracle Dashboard R Risk Forecast A Authoritative Forecast Logs Alerts Users Server API Engine Settings Logout Network intelligence center Attack forecast Logged in as p10a Logout NetOracle world model See the next move before it lands. Temporal analysis of recent network behavior, projected across the next five observation windows. Waiting for trained checkpoint Forecast readiness -- Model offline Five-window rollout Projected attack progression Checkpoint unavailable This live-capture forecast path has no compatible trained checkpoint. See the Authoritative Forecast page for the real, checkpoint-backed NetOracle world model. Total Logs 0 Active Alerts 0 System Status Healthy Recent Logs Timestamp Event Severity No logs. Recent Alerts Time Rule Status No alerts. Registered Log Sources Name IP Address Type No sources.",
+      "html_len": 11583
+    },
+    "legacy_forecast": {
+      "status": 200,
+      "text": "Risk Forecast | NetOracle NO NetOracle \u2302 Dashboard R Risk Forecast (legacy) A Authoritative Forecast \u25a4 Logs \u2667 Alerts \u2659 Users \u25a3 Server &gt;_ API Engine \u2699 Settings \u21aa Logout NetOracle world model Risk forecast Waiting for local capture This page is the legacy, NON-AUTHORITATIVE live-capture path ( world_model.inference_service.AttackForecastService ): it runs on an incompatible feature schema with no trained checkpoint, so it always falls back to a simple heuristic (sigmoid-of-mean) when it shows a forecast at all -- it is not a NetOracle world-model prediction. For the real, checkpoint-backed model established in Phase 9K, see the Authoritative Forecast page. Forecast unavailable Start capture_traffic to receive local network data.",
+      "html_len": 3220
+    },
+    "authoritative_forecast": {
+      "status": 200,
+      "text": "Authoritative Forecast | NetOracle NO NetOracle \u2302 Dashboard R Risk Forecast (legacy) A Authoritative Forecast \u25a4 Logs \u2667 Alerts \u2659 Users \u25a3 Server &gt;_ API Engine \u2699 Settings \u21aa Logout NetOracle world model &middot; Phase 9K/9L Authoritative forecast Authoritative model loaded This page calls the ONE authoritative, checkpoint-backed inference path established in Phase 9K ( experiments/inference_engine.py , model VectorWorldModelWithStageHead , checkpoint phase7b_mitre_stage_head/model/best_stage_head.pt ) via world_model.inference_service.AuthoritativeForecastService . Because the existing live-capture feature pipeline produces a feature schema that does not match the model's required 157-feature CICFlowMeter-window schema, this page demonstrates the engine on a real, already-validated sample from the frozen Phase 3.5 test split (see PROVENANCE below for exactly which one) rather than on live-captured events. The legacy Risk Forecast page remains a separate, NON-AUTHORITATIVE heuristic path and is not this model's prediction. Whole-horizon attack probability 0.9999 probability of attack somewhere within the forecast horizon (t+1..t+6) -- a single scalar, NOT a per-step P(t+1), P(t+2), ... series. The model has no native per-step attack-probability head; fabricating one from this scalar (e.g. by broadcasting or by 1-P(BENIGN) from the stage head) is explicitly out of scope for this phase and must never be presented as native per-step risk. Overall predicted MITRE stage COMMAND_AND_CONTROL confidence 0.999 Source sample Friday-02-03-2018_TrafficForML_CICFlowMeter.csv 2018-03-02 11:12:50 CURRENT STATE Observed state at window t 157 features observed across 6 windows (t-5, t-4, t-3, t-2, t-1, t). FORECAST Six-step future state rollout 6 predicted future states [t+1..t+6], each 157-dim; &#x27;raw_units&#x27; obtained via the exact inverse of the fitted Run1 StandardScaler transform, not a new estimate. Horizon steps: t+1, t+2, t+3, t+4, t+5, t+6 (157-dim predicted state at each step; not rendered in full here to keep this page compact -- available via the API endpoint, /api/authoritative-predict/ ). ATTACK RISK Whole-horizon probability P(attack somewhere in t+1..t+6) 0.9999 probability of attack somewhere within the forecast horizon (t+1..t+6) -- a single scalar, NOT a per-step P(t+1), P(t+2), ... series. The model has no native per-step attack-probability head; fabricating one from this scalar (e.g. by broadcasting or by 1-P(BENIGN) from the stage head) is explicitly out of scope for this phase and must never be presented as native per-step risk. MITRE STAGE TRAJECTORY Predicted attack-stage trajectory t+1 COMMAND_AND_CONTROL 0.997 t+2 COMMAND_AND_CONTROL 0.998 t+3 COMMAND_AND_CONTROL 0.999 t+4 COMMAND_AND_CONTROL 0.999 t+5 COMMAND_AND_CONTROL 0.999 t+6 COMMAND_AND_CONTROL 0.999 MITRE-stage classification derived from a reasoned mapping of CIC-IDS-2018 dataset attack labels (forecasting/mitre_mapping.py), NOT authoritative MITRE ATT&amp;CK ground truth and NOT causal attacker kill-chain inference. Only 6 stage classes have real coverage in this dataset: [&#x27;BENIGN&#x27;, &#x27;INITIAL_ACCESS&#x27;, &#x27;CREDENTIAL_ACCESS&#x27;, &#x27;LATERAL_MOVEMENT&#x27;, &#x27;COMMAND_AND_CONTROL&#x27;, &#x27;IMPACT&#x27;]. INITIAL_ACCESS has zero validation/test examples in the established Phase 3.5 split (see Phase 7B metrics.json). Stages not represented in the dataset at all: [&#x27;RECONNAISSANCE&#x27;, &#x27;EXECUTION&#x27;, &#x27;PERSISTENCE&#x27;, &#x27;PRIVILEGE_ESCALATION&#x27;, &#x27;DEFENSE_EVASION&#x27;, &#x27;DISCOVERY&#x27;, &#x27;COLLECTION&#x27;, &#x27;EXFILTRATION&#x27;]. EXPLANATION Gradient-based feature attribution Post-hoc, gradient-based feature attribution on the frozen checkpoint (no retraining, no surrogate model). Top features driving the whole-horizon attack probability (window t) 1 rst_flag_cnt__mean 0.0000 2 fwd_pkt_len_std__mean 0.0000 3 fwd_iat_tot__mean 0.0000 4 bwd_seg_size_avg__mean 0.0000 5 psh_flag_cnt__sum 0.0000 6 fwd_pkt_len_mean__mean 0.0000 7 rst_flag_cnt__sum 0.0000 8 pkt_len_var__mean 0.0000 9 bwd_pkt_len_mean__mean 0.0000 10 ack_flag_cnt__mean 0.0000 Attribution values indicate how much each observed feature, at each of the 6 observed windows (t-5..t), contributed to this model's own risk score or stage-class logit. They are NOT proof of real-world causality, attacker intent, or a confirmed MITRE technique. The full disclosure text ( explanations.faithful_claims_only ), including the exact underlying attribution library used for this prediction, is available verbatim via the API endpoint above. PROVENANCE Model / checkpoint / run identity Model VectorWorldModelWithStageHead (experiments/phase7b_mitre_stage_head.py, backbone: experiments/phase6b_vector_world_model.py) Checkpoint C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase7b_mitre_stage_head\\model\\best_stage_head.pt Checkpoint SHA-256 f9d16f1943aeeed4&hellip; Scaler SHA-256 b3a0cea7f9d2d0fc&hellip; Feature schema SHA-256 f5117fda8518c9e3&hellip; Code commit 4e54c7533fc3 Device cuda:0 Inference duration 0.2363s LIMITATIONS What this page does NOT claim No native per-step attack probability -- only the single whole-horizon scalar above. MITRE stages are a reasoned label mapping from CIC-IDS-2018 attack labels, not authoritative MITRE ATT&amp;CK ground truth, and not causal attacker kill-chain inference. No calibrated probabilities (Phase 8B finding). No PCAP-derived model input (Phase 9H/9I). No unseen-attack-generalization claim. No uncertainty quantification or counterfactual simulation. This page shows a fixed, already-validated demonstration sample, not live network data (see the explanation banner above).",
+      "html_len": 13319
+    },
+    "root_redirect": {
+      "status": 200,
+      "chain": [
+        "('/users/login/', 302)"
+      ],
+      "final_url_text": "Login | NetOracle NO NetOracle Security Intelligence Platform Username Password Sign In"
+    },
+    "api_keys": [
+      "current_state",
+      "explanations",
+      "future_state_rollout",
+      "input_metadata",
+      "mitre_stage_trajectory",
+      "provenance",
+      "whole_horizon_attack_probability"
+    ],
+    "api_status": 200,
+    "api_whole_horizon": {
+      "value": 0.9998519420623779,
+      "semantics": "probability of attack somewhere within the forecast horizon (t+1..t+6) -- a single scalar, NOT a per-step P(t+1), P(t+2), ... series. The model has no native per-step attack-probability head; fabricating one from this scalar (e.g. by broadcasting or by 1-P(BENIGN) from the stage head) is explicitly out of scope for this phase and must never be presented as native per-step risk."
+    },
+    "api_top_level_key_names_containing_risk_or_prob": [
+      "whole_horizon_attack_probability"
+    ],
+    "api_out_of_range_status": 400,
+    "api_bad_index_status": 400,
+    "api_unauthenticated_status": 403,
+    "page_unauthenticated_status": 302,
+    "page_non_staff_status": 302,
+    "api_non_staff_status": 200,
+    "_seconds": 23.54
+  },
+  "supplement": {
+    "ok": true,
+    "scaler_pickled_with_sklearn": "1.9.1",
+    "runtime_sklearn": "1.8.0",
+    "scaler_unpickle_warning_emitted": true,
+    "amp_False": {
+      "max_abs_prob_diff_vs_frozen_phase7b": 0.0024020075800571528,
+      "mean_abs_prob_diff": 3.609575324042958e-05,
+      "stage_cells_mismatch": 6,
+      "stage_cells_total": 37170,
+      "samples_with_any_stage_mismatch": 6
+    },
+    "amp_True": {
+      "max_abs_prob_diff_vs_frozen_phase7b": 4.99711383383783e-13,
+      "mean_abs_prob_diff": 8.03635198718593e-14,
+      "stage_cells_mismatch": 0,
+      "stage_cells_total": 37170,
+      "samples_with_any_stage_mismatch": 0
+    },
+    "_seconds": 1142.74
+  }
+}

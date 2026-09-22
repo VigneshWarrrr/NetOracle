@@ -1,0 +1,5 @@
+model,split,threshold_rule,tn,fp,fn,tp
+run2_robust_pathological_scaling_improved_threshold,validation,recall_at_fpr<=5pct,3428,175,1314,1278
+run2_robust_pathological_scaling_improved_threshold,test,recall_at_fpr<=5pct,3994,438,616,1147
+run2_robust_pathological_scaling_improved_threshold,validation,f1_max_reference_only,1955,1648,233,2359
+run2_robust_pathological_scaling_improved_threshold,test,f1_max_reference_only,2108,2324,280,1483

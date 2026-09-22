@@ -114,3 +114,87 @@ class AttackForecastService:
     def _heuristic_risk(sequence: np.ndarray) -> float:
         latest = np.nan_to_num(sequence[-1], nan=0.0, posinf=0.0, neginf=0.0)
         return float(1.0 / (1.0 + np.exp(-np.mean(latest))))
+
+
+class AuthoritativeForecastService:
+    """Phase 9L: the ONE thin Django-facing wrapper around the authoritative,
+    checkpoint-backed inference engine established in Phase 9K
+    (experiments/inference_engine.py: NetOracleInferenceEngine).
+
+    This class contains NO model logic of its own -- it only locates,
+    lazily loads (once per process, class-level singleton), and calls the
+    real engine, and shapes its already-JSON-serializable output for
+    Django views/API responses. It never modifies the checkpoint, never
+    fits/refits the scaler, and never runs with gradients enabled outside
+    the engine's own explainability path.
+
+    `AttackForecastService`/`AttackRiskForecaster` above are UNCHANGED and
+    remain the (non-authoritative, heuristic-fallback) path for the
+    existing live-capture feature pipeline (feature_engine.TemporalFeatureEngine),
+    whose feature schema is NOT compatible with the authoritative model's
+    157-feature CICFlowMeter-window schema (see
+    experiments/results/phase9l_django_integration/ for why this phase did
+    not attempt to reconcile the two schemas). That legacy path must never
+    be presented as "the NetOracle model prediction" -- see
+    experiments/results/phase9k_integration/track_reconciliation.md.
+    """
+
+    _engine = None  # process-level singleton; loaded lazily, once
+
+    @classmethod
+    def get_engine(cls):
+        if cls._engine is None:
+            import sys
+            from pathlib import Path
+
+            experiments_dir = Path(__file__).resolve().parent.parent / "experiments"
+            if str(experiments_dir) not in sys.path:
+                sys.path.insert(0, str(experiments_dir))
+            from inference_engine import NetOracleInferenceEngine  # local import: heavy (torch + checkpoint), loaded lazily
+
+            cls._engine = NetOracleInferenceEngine()
+        return cls._engine
+
+    @classmethod
+    def predict(
+        cls,
+        x_raw,
+        *,
+        source_file: str = "unknown",
+        window_start: str = "unknown",
+        top_k: int = 10,
+        include_explanations: bool = True,
+    ) -> dict:
+        """x_raw: array-like [6,157], raw (unscaled) feature units, exact
+        world_model_dataset.py column order. Raises ValueError/TypeError on
+        invalid input (via the engine's own validate_feature_vector) --
+        callers (views/API) are responsible for turning that into a clean
+        HTTP error response; this method never substitutes a heuristic."""
+        import numpy as np
+
+        engine = cls.get_engine()
+        x_raw = np.asarray(x_raw, dtype=np.float32)
+        return engine.predict(
+            x_raw,
+            source_file=source_file,
+            window_start=window_start,
+            top_k=top_k,
+            include_explanations=include_explanations,
+        )
+
+    @classmethod
+    def predict_demo_sample(cls, index: int = 0) -> dict:
+        """Runs a real prediction on an already-validated sample from the
+        frozen Phase 3.5 TEST split (the exact mechanism Phase 9K used for
+        its own deterministic-validation equivalence check). Used because
+        this integration-only phase does not build a new CSV-upload/window-
+        construction UI; it demonstrates the authoritative engine on real,
+        already-audited data rather than on the incompatible live-capture
+        feature schema (see class docstring)."""
+        engine = cls.get_engine()
+        sample = engine.get_test_sample(index)
+        return cls.predict(
+            sample["x_raw"],
+            source_file=sample["source_file"],
+            window_start=sample["window_start"],
+        )

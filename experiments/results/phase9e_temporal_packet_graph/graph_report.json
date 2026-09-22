@@ -1,0 +1,492 @@
+{
+  "success": true,
+  "verdict": "GREEN",
+  "conventions": {
+    "reused": [
+      {
+        "convention": "10-second temporal window",
+        "source": "feature_engine/temporal_features.py (TemporalFeatureEngine.__init__ default window_seconds=10), feature_engine/graph_builder.py (build_dynamic_graphs default window_seconds=10), scripts/build_phase6a_graph_dataset.py (WINDOW_SECONDS = 10)",
+        "note": "Confirmed as an established, project-wide convention across three independent locations; reused verbatim as WINDOW_SECONDS = 10 rather than re-deriving a new value."
+      },
+      {
+        "convention": "canonical packet field naming",
+        "source": "ingestion/pcap_reader.py (PcapReaderService._packet_to_event)",
+        "note": "Field names (src_ip, dst_ip, protocol, ttl, tcp_flags, tcp_window_size, byte_count) mirror this existing schema where the underlying quantity is the same."
+      },
+      {
+        "convention": "deterministic SHA-256 hashing for stable identifiers",
+        "source": "scripts/build_phase6a_graph_dataset.py (hashlib.sha256 used for duplicate-state/sequence detection)",
+        "note": "Reused SHA-256 as the hashing primitive for deterministic IP pseudonymization, consistent with the only existing precedent for content-based hashing in this repository."
+      },
+      {
+        "convention": "one JSON report + one Markdown report per phase",
+        "source": "experiments/phase9c_pcap_archive_inspection.py, experiments/phase9d_pcap_validation.py",
+        "note": "Reused verbatim for output structure and naming."
+      }
+    ],
+    "intentionally_kept_separate": [
+      {
+        "item": "feature_engine/graph_builder.py (NetworkGraphBuilder)",
+        "reason": "That builder operates on FLOW-level data produced by FlowFeatureEngine (src_ip/dst_ip/packet_count/byte_count/flow_duration_seconds already aggregated per flow). Phase 9E instead builds directly from raw packets without a prior flow-segmentation step, per this phase's explicit scope. Reusing NetworkGraphBuilder would have required either fabricating flow_duration_seconds/flow_start fields not directly available from a single-endpoint raw capture, or running the full FlowFeatureEngine pipeline, which is out of scope here. A new, packet-native graph construction path was written instead."
+      },
+      {
+        "item": "ingestion/pcap_reader.py (PcapReaderService)",
+        "reason": "Not imported directly (to keep this experiment a self-contained standalone script, consistent with the Phase 9B/9C/9D convention, and to avoid coupling to the `ingestion` Django app's import surface). Its packet-to-event field mapping is mirrored by name above but reimplemented locally with additional fields (payload length, IP fragmentation, explicit SYN/ACK/FIN/RST booleans) that PcapReaderService does not expose."
+      },
+      {
+        "item": "TCP flags representation",
+        "reason": "ingestion/pcap_reader.py stores tcp_flags as str(tcp_layer.flags) (a letter code, e.g. 'SA'). Phase 9E keeps this same letter-code string for the raw per-packet field (tcp_flags_str) AND separately derives explicit boolean SYN/ACK/FIN/RST bit checks, since the edge-feature spec requires exact per-flag counts rather than a flag string."
+      },
+      {
+        "item": "anonymization utility",
+        "reason": "No existing anonymization/pseudonymization utility was found anywhere in the repository (grep for anonymiz*/hash_ip found no match). A new, small, deterministic SHA-256-based function was written for this phase only."
+      }
+    ]
+  },
+  "parsing_results": {
+    "total_packets_in_capture": 10417,
+    "total_ip_packets": 7316,
+    "status_counts": {
+      "ok": 7316,
+      "non_ip": 3101
+    },
+    "parse_error_reasons": {}
+  },
+  "temporal_window_structure": {
+    "window_seconds": 10,
+    "capture_start_ts": 1518611531.157735,
+    "capture_end_ts": 1518643752.057367,
+    "capture_duration_seconds": 32220.89963197708,
+    "total_windows": 3223,
+    "matches_phase9d_aggregates": true
+  },
+  "anonymization_validation": {
+    "unique_raw_ips": 551,
+    "unique_anonymized_ids": 551,
+    "collision_count": 0,
+    "bijective_mapping": true,
+    "deterministic_repeatable": true,
+    "id_bit_length": 64,
+    "method": "SHA-256(fixed_salt || raw_ip)[:16 hex chars]",
+    "privacy_caveat": "This is deterministic pseudonymization for internal artifact consistency, NOT cryptographically strong anonymization: IPv4 address space (2^32) is small enough that the mapping is brute-forceable against a known salt. It prevents casual raw-IP exposure in serialized artifacts; it does not guarantee non-reversibility."
+  },
+  "graph_statistics": {
+    "capture_level": {
+      "total_windows": 3223,
+      "non_empty_windows": 997,
+      "empty_windows": 2226,
+      "total_nodes_observed": 551,
+      "total_unique_directed_source_destination_pairs": 1094,
+      "unique_edges_across_entire_capture": 1094,
+      "unique_edges_note": "Identical to total_unique_directed_source_destination_pairs above -- both are the count of the set of distinct (src, dst) directed pairs observed anywhere in the capture. Reported under both labels for direct correspondence with the Phase 9E specification.",
+      "total_edges_across_windows": 3052,
+      "total_edges_across_windows_note": "Counts a given (src, dst) pair once per window it appears in (i.e. window-local edge instances), unlike the unique-pair count above which counts each pair once regardless of how many windows it appears in.",
+      "total_packets_represented": 7316,
+      "total_bytes_represented": 963452,
+      "packet_accounting_check": {
+        "sum_of_edge_window_packet_counts": 7316,
+        "total_ip_packets_parsed": 7316,
+        "matches": true
+      }
+    },
+    "per_window_distributions": {
+      "note": "Computed across ALL windows in [0, total_windows), including empty windows (contributing 0 for node_count/edge_count/packet_count/byte_count). Metrics that are mathematically undefined for a given window (density and average_degree when node_count < 2 or 0; in/out-degree when node_count == 0) are excluded from that metric's distribution, and windows_with_defined_value reports how many of the total_windows windows contributed a value for that specific metric. isolated_node_count is included for correctness-checking: by construction (a node is only added to a window's graph if it appears in at least one edge that window), it is expected to be 0 in every window -- this is verified empirically below rather than assumed.",
+      "metrics": {
+        "node_count": {
+          "windows_with_defined_value": 3223,
+          "min": 0.0,
+          "median": 0.0,
+          "mean": 0.7942910331988831,
+          "p95": 3.0,
+          "max": 5.0
+        },
+        "edge_count": {
+          "windows_with_defined_value": 3223,
+          "min": 0.0,
+          "median": 0.0,
+          "mean": 0.9469438411417933,
+          "p95": 4.0,
+          "max": 8.0
+        },
+        "packet_count": {
+          "windows_with_defined_value": 3223,
+          "min": 0.0,
+          "median": 0.0,
+          "mean": 2.269934843313683,
+          "p95": 11.0,
+          "max": 218.0
+        },
+        "byte_count": {
+          "windows_with_defined_value": 3223,
+          "min": 0.0,
+          "median": 0.0,
+          "mean": 298.93018926466027,
+          "p95": 1029.0,
+          "max": 217503.0
+        },
+        "density": {
+          "windows_with_defined_value": 997,
+          "min": 0.35,
+          "median": 1.0,
+          "mean": 0.8132062855232364,
+          "p95": 1.0,
+          "max": 1.0
+        },
+        "average_degree": {
+          "windows_with_defined_value": 997,
+          "min": 1.0,
+          "median": 2.0,
+          "mean": 2.278468739551989,
+          "p95": 3.0,
+          "max": 3.2
+        },
+        "mean_in_degree": {
+          "windows_with_defined_value": 997,
+          "min": 0.5,
+          "median": 1.0,
+          "mean": 1.1392343697759946,
+          "p95": 1.5,
+          "max": 1.6
+        },
+        "mean_out_degree": {
+          "windows_with_defined_value": 997,
+          "min": 0.5,
+          "median": 1.0,
+          "mean": 1.1392343697759946,
+          "p95": 1.5,
+          "max": 1.6
+        },
+        "max_in_degree": {
+          "windows_with_defined_value": 997,
+          "min": 1.0,
+          "median": 1.0,
+          "mean": 1.530591775325978,
+          "p95": 3.0,
+          "max": 4.0
+        },
+        "max_out_degree": {
+          "windows_with_defined_value": 997,
+          "min": 1.0,
+          "median": 1.0,
+          "mean": 1.5576730190571715,
+          "p95": 3.0,
+          "max": 4.0
+        },
+        "max_degree": {
+          "windows_with_defined_value": 997,
+          "min": 1.0,
+          "median": 2.0,
+          "mean": 3.061183550651956,
+          "p95": 6.0,
+          "max": 8.0
+        },
+        "isolated_node_count": {
+          "windows_with_defined_value": 3223,
+          "min": 0.0,
+          "median": 0.0,
+          "mean": 0.0,
+          "p95": 0.0,
+          "max": 0.0
+        },
+        "weakly_connected_component_count": {
+          "windows_with_defined_value": 3223,
+          "min": 0.0,
+          "median": 0.0,
+          "mean": 0.30933912503878375,
+          "p95": 1.0,
+          "max": 1.0
+        }
+      }
+    }
+  },
+  "temporal_dynamics": {
+    "consecutive_window_pairs_evaluated": 3222,
+    "node_churn_per_window_pair": {
+      "min": 0,
+      "median": 1.0,
+      "mean": 1.2780881440099316,
+      "p95": 4.0,
+      "max": 6
+    },
+    "edge_churn_per_window_pair": {
+      "min": 0,
+      "median": 1.0,
+      "mean": 1.7566728739913098,
+      "p95": 6.0,
+      "max": 12
+    },
+    "new_nodes_per_window": {
+      "min": 0,
+      "median": 0.0,
+      "mean": 0.6390440720049658,
+      "p95": 3.0,
+      "max": 5
+    },
+    "disappearing_nodes_per_window": {
+      "min": 0,
+      "median": 0.0,
+      "mean": 0.6390440720049658,
+      "p95": 3.0,
+      "max": 5
+    },
+    "new_edges_per_window": {
+      "min": 0,
+      "median": 0.0,
+      "mean": 0.8783364369956549,
+      "p95": 4.0,
+      "max": 8
+    },
+    "disappearing_edges_per_window": {
+      "min": 0,
+      "median": 0.0,
+      "mean": 0.8783364369956549,
+      "p95": 4.0,
+      "max": 8
+    },
+    "node_set_jaccard_consecutive": {
+      "min": 0.0,
+      "median": 0.0,
+      "mean": 0.08542431660546716,
+      "p95": 0.5,
+      "max": 1.0
+    },
+    "edge_set_jaccard_consecutive": {
+      "min": 0.0,
+      "median": 0.0,
+      "mean": 0.03034647930608763,
+      "p95": 0.25,
+      "max": 1.0
+    },
+    "node_set_jaccard_defined_pairs": 1634,
+    "edge_set_jaccard_defined_pairs": 1634,
+    "longest_consecutive_non_empty_window_run": 8,
+    "total_non_empty_windows_cross_check": 997,
+    "interpretation": "Low mean Jaccard similarity between consecutive windows' node/edge sets indicates the graph's membership changes substantially window-to-window (a genuinely temporal graph); a mean near 1.0 would indicate a near-static graph merely repeated across time."
+  },
+  "packet_feature_availability": [
+    {
+      "feature": "timestamp",
+      "available": true,
+      "derivation": "Direct scapy packet.time field.",
+      "coverage": "100.0%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "packet length",
+      "available": true,
+      "derivation": "len(packet) -- direct wire length.",
+      "coverage": "100.0%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "source/destination IP",
+      "available": true,
+      "derivation": "IP layer .src/.dst fields; present only on IP packets.",
+      "coverage": "70.2%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "protocol",
+      "available": true,
+      "derivation": "Layer membership check (TCP/UDP/ICMP presence in packet).",
+      "coverage": "70.2%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "ports",
+      "available": true,
+      "derivation": "TCP/UDP layer .sport/.dport fields; not applicable to ICMP.",
+      "coverage": "67.1%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "TTL",
+      "available": true,
+      "derivation": "IP layer .ttl field.",
+      "coverage": "70.2%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "TCP flags",
+      "available": true,
+      "derivation": "TCP layer .flags field (string form and bitmask checks).",
+      "coverage": "41.1%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "TCP window",
+      "available": true,
+      "derivation": "TCP layer .window field.",
+      "coverage": "41.1%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "payload length",
+      "available": true,
+      "derivation": "len(bytes(layer.payload)) for TCP/UDP/ICMP layers.",
+      "coverage": "70.2%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "fragmentation",
+      "available": true,
+      "derivation": "IP layer .flags (MF/DF) and .frag offset fields.",
+      "coverage": "70.2%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "inter-arrival time (IAT)",
+      "available": true,
+      "derivation": "Exact arithmetic difference between consecutive direct timestamps of packets sharing the same (window, src, dst) edge key; requires >=2 packets on that edge in that window.",
+      "coverage": "56.8%",
+      "classification": "DIRECT"
+    },
+    {
+      "feature": "retransmission indicators",
+      "available": false,
+      "derivation": "Would require per-flow TCP sequence-number tracking and judgment calls about duplicate vs. out-of-order vs. genuine retransmission -- inherently heuristic, not implemented.",
+      "coverage": "0.0%",
+      "classification": "NOT IMPLEMENTED"
+    },
+    {
+      "feature": "connection indicators (e.g. completed handshake)",
+      "available": false,
+      "derivation": "Raw SYN/ACK/FIN/RST counts ARE computed per edge (DIRECT), but judging whether they form a 'completed connection' requires a stateful, threshold-based, heuristic interpretation across windows -- not implemented.",
+      "coverage": "0.0%",
+      "classification": "NOT IMPLEMENTED"
+    },
+    {
+      "feature": "port-scan indicators",
+      "available": false,
+      "derivation": "unique_destination_ports is computed (DIRECT) and could feed a future heuristic, but scan detection itself requires an arbitrary threshold/time-window judgment call -- not implemented.",
+      "coverage": "0.0%",
+      "classification": "NOT IMPLEMENTED"
+    }
+  ],
+  "representation_feasibility": {
+    "representation_a_edge_list_snapshots": {
+      "description": "Per window: node_ids (list of anonymized ids), edge_index (list of (src, dst) anonymized id pairs), edge_features (per-edge feature dict), node_features (per-node feature dict).",
+      "max_nodes_in_a_single_window": 5,
+      "max_edges_in_a_single_window": 8,
+      "mean_nodes_per_non_empty_window": 2.567703109327984,
+      "mean_edges_per_non_empty_window": 3.061183550651956,
+      "node_feature_dim": 13,
+      "edge_feature_dim": 23,
+      "variable_size_issue": "Node and edge counts vary per window (min/median/mean/p95/max reported in graph_statistics.per_window_distributions), so this representation requires ragged/variable-size batching (e.g. padding+masking or a graph-batching library) rather than a fixed-size tensor.",
+      "storage_note": "This is the representation actually serialized to disk for this phase (see graph_artifact_path)."
+    },
+    "representation_b_fixed_dimensional_state": {
+      "description": "Per window, summarize the whole graph into one fixed-length vector using transparent aggregate statistics: node_count, edge_count, total packet/byte counts, mean degree, density, protocol mix totals, SYN/ACK/FIN/RST totals, etc. (the same quantities already computed in graph_statistics).",
+      "feasible": true,
+      "estimated_dim": 12,
+      "information_lost": [
+        "Which specific host pairs communicated (only aggregate counts survive)",
+        "Per-node identity and individual node behavior",
+        "Full in/out-degree distribution shape (only mean/max survive)",
+        "Edge directionality between specific pairs"
+      ],
+      "information_preserved": [
+        "Aggregate traffic volume (packets, bytes)",
+        "Host/edge count and rough density",
+        "Protocol mix",
+        "TCP control-flag totals"
+      ]
+    },
+    "sparsity": {
+      "total_nodes_observed": 551,
+      "possible_directed_pairs_excluding_self_loops": 303050,
+      "actual_unique_directed_pairs_observed": 1094,
+      "sparsity_fraction": 0.9963900346477479
+    },
+    "storage_requirements": {
+      "serialized_graph_artifact_bytes": 4647750
+    },
+    "decision_deferred": "No representation is selected as superior here, per Phase 9E scope; this is a feasibility characterization only."
+  },
+  "csv_relationship": {
+    "csv_exists_for_this_day": true,
+    "csv_path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\data\\raw\\CSE-CIC-IDS2018\\Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv",
+    "endpoint_identity_present_in_csv": false,
+    "protocol_column_present": true,
+    "timestamp_column_present": true,
+    "csv_temporal_granularity": "Each CSV row is a single CICFlowMeter flow record with its own Timestamp (the flow's start time); the CSV format itself has no fixed temporal binning. This is a known property of the CICFlowMeter output format, not a claim derived from opening the full file in this phase.",
+    "packet_graph_temporal_granularity": "Fixed 10-second windows.",
+    "theoretical_window_level_alignment": "In principle, CSV rows could be bucketed into the same 10-second windows by their Timestamp field, enabling a window-level (not row-level) join against this capture's packet-graph windows.",
+    "what_prevents_proving_alignment_now": "This day's CSV (confirmed in Phase 9D) lacks Src IP/Dst IP columns entirely, so even a window-level join cannot be verified to correspond to the SAME hosts seen in this packet capture -- only to the same time window in general. No such join was attempted in this phase.",
+    "row_level_correspondence_established": false,
+    "explicit_statement": "No flow-row correspondence was established."
+  },
+  "multimodal_architecture_implications": {
+    "topology_change": {
+      "observed_in_this_pcap": "Mean consecutive-window node-set Jaccard similarity is 0.08542431660546716, and edge-set Jaccard is 0.03034647930608763 (over 1634 defined window pairs) -- the graph's membership is not static across windows in this single capture.",
+      "hypothesized_future_use": "A world model could consume per-window topology-change signals (churn, Jaccard) as an auxiliary input alongside flow state, on the hypothesis that topology instability precedes or accompanies anomalous activity."
+    },
+    "communication_expansion": {
+      "observed_in_this_pcap": "551 distinct hosts and 1094 unique directed pairs were observed from a single endpoint's capture over ~8.95 hours.",
+      "hypothesized_future_use": "Sudden growth in unique_destinations for a node (already a DIRECT node feature) is a plausible predictive signal for future models; not evaluated for predictive value here."
+    },
+    "host_centrality_changes": {
+      "observed_in_this_pcap": "Per-window degree distributions (min/median/mean/p95/max) are computed in graph_statistics.per_window_distributions and show variation across windows.",
+      "hypothesized_future_use": "Centrality shifts (e.g. a normally low-degree host suddenly gaining many peers) could be a future world-model feature."
+    },
+    "port_behavior": {
+      "observed_in_this_pcap": "Per-edge source/destination port diversity is computed exactly per window; not aggregated into a capture-wide claim here.",
+      "hypothesized_future_use": "Port-diversity spikes could feed a future (not-yet-built) heuristic or learned scan-detection signal."
+    },
+    "protocol_behavior": {
+      "observed_in_this_pcap": "TCP/UDP/ICMP packet counts are tracked per edge and per node window; see graph_statistics and node/edge feature schemas.",
+      "hypothesized_future_use": "Protocol-mix shift per window is a natural complementary signal to the flow-level protocol features already used elsewhere in this project."
+    },
+    "packet_volume_changes": {
+      "observed_in_this_pcap": "Per-window packet_count and byte_count distributions are reported exactly (min/median/mean/p95/max).",
+      "hypothesized_future_use": "Volume bursts relative to a host's own baseline could contribute to a future anomaly signal."
+    },
+    "burst_iat_behavior": {
+      "observed_in_this_pcap": "Mean/std inter-arrival time is computed exactly per edge (where >=2 packets exist on that edge in that window).",
+      "hypothesized_future_use": "IAT compression (packets arriving unusually close together) is a classic burst indicator that could feed a future model."
+    },
+    "flow_vs_packet_complementary_information": {
+      "observed_in_this_pcap": "This capture carries fields the existing flow-level CSV pipeline does not retain post-aggregation: per-packet TTL, TCP window, IP fragmentation flags, and exact per-packet timestamps rather than flow-level start/end times.",
+      "hypothesized_future_use": "These packet-only fields are the concrete candidate contribution of the PACKET GRAPH branch in the architecture diagram, complementary to (not a replacement for) FLOW STATE."
+    },
+    "predictive_value_disclaimer": "No predictive value is claimed for any signal above; all items are either directly observed structural facts about this one capture or explicitly labeled hypotheses for future work."
+  },
+  "novelty_assessment": {
+    "claim": "This phase does NOT claim novelty merely from using a graph representation. It assesses only whether the packet modality is technically CAPABLE of supporting the intended future components.",
+    "multimodal_network_state": {
+      "supported": true,
+      "basis": "A packet-derived graph state (Representation A or B) was successfully constructed per window alongside the existing flow-state machinery, with no fabricated fields -- confirms the packet modality can structurally sit beside FLOW STATE as a second input branch."
+    },
+    "learned_temporal_dynamics": {
+      "supported": "CONDITIONALLY",
+      "basis": "Consecutive-window churn is non-trivial (mean node churn 1.2780881440099316, mean edge churn 1.7566728739913098), meaning there is genuine temporal signal to learn from in this one capture -- but this was measured on a single endpoint's traffic only, so generalization across hosts/days is NOT VERIFIED."
+    },
+    "multi_step_attack_trajectory": {
+      "supported": "NOT VERIFIED",
+      "basis": "No attack labels exist for this capture (per hard constraint #7/#8), so nothing about trajectory-relevant signal content can be assessed here -- only that the graph has enough temporal structure (non-trivial churn) to be worth pairing with labels in a future, separate phase."
+    },
+    "uncertainty": {
+      "supported": "NOT VERIFIED",
+      "basis": "Nothing in this phase touches probabilistic modeling; the graph construction here is entirely deterministic and exact."
+    },
+    "counterfactual_intervention": {
+      "supported": "NOT VERIFIED",
+      "basis": "Out of scope per hard constraint #6; the edge/node feature schema captured here would need to support a future perturbation interface, which was not evaluated."
+    },
+    "overall": "The packet modality provides a credible, technically grounded STRUCTURAL foundation (exact windowed graph with real topology change) for the future multimodal concept, but this single-endpoint, unlabeled experiment verifies structure only -- not predictive value, not generalization, and not the downstream components (trajectory/uncertainty/counterfactual) themselves."
+  },
+  "graph_artifact_path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\data\\phase9e\\graph_snapshots.json",
+  "graph_artifact_bytes": 4647750,
+  "graph_artifact_mode": "full_edge_list_snapshots",
+  "limitations": [
+    "This entire experiment is scoped to ONE endpoint's capture (pcap/UCAP172.31.69.22); no claim is made about the other 448 archive members or the dataset as a whole.",
+    "No attack label exists for any window in this capture; nothing here should be read as evidence of attack or benign traffic.",
+    "IPv6 is not implemented (none observed in this capture; a non-IPv4 packet is classified as ipv6_not_implemented or non_ip, not dropped silently).",
+    "Retransmission indicators, connection-completion indicators, and port-scan indicators are NOT IMPLEMENTED (would require heuristic, threshold-based judgment, out of scope for this phase).",
+    "isolated_node_count is empirically 0.0 (max across windows) confirming the by-construction expectation that every node in a window's graph has degree >= 1.",
+    "Anonymization is deterministic pseudonymization for artifact hygiene, not cryptographically strong privacy protection (see anonymization_validation.privacy_caveat in the JSON report).",
+    "Raw per-packet records are not persisted to disk (only the anonymized, window-aggregated graph artifact is written), per the 'do not store raw PCAP-derived data unnecessarily' output constraint.",
+    "Packet accounting check: True (sum of per-edge-window packet counts equals total IP packets parsed)."
+  ],
+  "recommended_next_experiment": "If pursued further (not started here): parse a second, larger member (e.g. one of the capWIN-J6GMIG1DQE5-* hosts) with this same pipeline and compare its graph-statistics distributions against this host's, to determine whether the temporal/topological patterns observed here (non-trivial churn, sparse but multi-host structure) generalize across hosts before any model architecture is chosen."
+}

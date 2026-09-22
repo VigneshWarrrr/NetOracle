@@ -1,0 +1,33 @@
+claim_id,source,claim,evidence,verdict,note
+C01,Dashboard/API,"Whole-horizon output is P(attack somewhere in t+1..t+6), a single scalar",engine result dict; API keys; semantics string,GREEN,Correctly scoped; explicitly not per-step
+C02,Dashboard,'Whole-horizon attack probability 0.9999',"Phase 8B: raw test ECE 0.112, Platt worse (0.170)",YELLOW,Value is real; 'probability' label overstates calibration; disclaimer exists in Limitations panel
+C03,Dashboard/API,Six-step future state rollout (157-dim per step),engine future_state_rollout; Phase 6B per-horizon state error,GREEN,Produced by frozen checkpoint; no accuracy claim made on page
+C04,Dashboard/API,Predicted attack-stage trajectory t+1..t+6 from the Phase 7B stage head,stage-head perturbation test; 7B test acc 0.839 / macro-F1 0.609,GREEN,Provenance verified; quality is YELLOW (H2)
+C05,Dashboard,"Stage labels are a reasoned mapping, not MITRE ground truth or kill-chain inference",docs/MITRE_MAPPING_AUDIT.md; 7B README,GREEN,Honest caveat present
+C06,Dashboard,INITIAL_ACCESS zero validation/test examples,7B metrics.json,GREEN,Disclosed; but predicted in 6.8% of test step-cells (YELLOW H2)
+C07,Dashboard,Top features driving the whole-horizon attack probability (gradient-based feature attribution),engine explanations; saturation study,RED,Method label true; demo sample values all render 0.0000 (I3)
+C08,Dashboard/API,Attribution method is Gradient x Input (never SHAP),explanation_method in 300/300 calls,GREEN,Matches Phase 7C artifacts
+C09,SIH deck slide 3,Explainability: SHAP values + feature importance,"SHAP path raises ModuleNotFoundError(tensorflow), swallowed; fallback Gradient x Input",RED,Inaccurate; fix wording
+C10,Dashboard,"Provenance: model id, checkpoint/scaler/feature-schema hashes verified",hash re-verification,GREEN,All match Phase 9K manifest
+C11,Dashboard,Provenance: code commit 4e54c7533fc3,git ls-files,RED,Commit does not contain the engine or template
+C12,Dashboard,No calibrated probabilities / no unseen-attack generalization / no per-step probability / no PCAP / no uncertainty,"Phase 8B, 9M, 9N, 9H/9I",GREEN,Limitations panel is accurate
+C13,Dashboard /dashboard/,'Waiting for trained checkpoint' / 'Model offline' / 'Checkpoint unavailable',authoritative engine loads and predicts,RED,False about the authoritative model
+C14,Dashboard /dashboard/,'Projected across the next five observation windows' / 'Five-window rollout',horizon is 6 windows; no per-window probability exists,RED,Stale legacy copy
+C15,Dashboard /dashboard/,'See the next move before it lands.',"N2: 122 true onsets, onset ROC-AUC 0.834, recall 43%",YELLOW,Marketing framing exceeds evidence
+C16,Legacy page,"'Live model output' badge, risk timeline",AttackForecastService heuristic fallback,YELLOW,Non-authoritative banner present but badge mislabels
+C17,README,Runs a persisted PyTorch forecaster at models/attack_forecaster.pt,file absent; heuristic fallback,RED,Describes legacy path
+C18,README,"Dashboard provides predicted attack type, attack chain, next access step, precautions",AttackChainBuilder +1 placeholder; heuristic,RED,Not outputs of the audited model
+C19,README,Risk is a model probability-like score,8B,YELLOW,Appropriately hedged
+C20,SIH deck slides 2/5/6,Early warning before an attack reaches critical stages / SOC Early Warning Dashboard,N2; Phase 8A claim NOT SUPPORTED,YELLOW,Only weakly supported; no lead-time evaluation
+C21,SIH deck slide 5,Multi-step attack forecasting: what may happen next?,state rollout + stage labels exist; per-step risk absent (9N RED),YELLOW,Multi-step STATE/STAGE yes; multi-step RISK no
+C22,SIH deck slide 3,Input data: PCAP / Zeek / public CTI,Only CIC-IDS2018 flow windows; PCAP alignment RED (9H/9I),YELLOW,Aspirational scope
+C23,SIH deck slide 3,"Baseline: RF / LogReg; Temporal: LSTM, Transformer",Phase 4: LogReg + LSTM; Phase 5 Transformer; no RF,YELLOW,Minor mismatch (RF)
+C32,SIH deck slides 4-5,Deployment reproducibility: Docker containerisation,no Dockerfile or compose file anywhere under the project root,YELLOW,Not implemented; reproducibility currently depends on manual setup (O1/O2)
+C24,Phase 8A,World Model better than conventional baselines at controlled FPR,8A verdict NOT SUPPORTED,GREEN,Correctly recorded as not supported; must never be claimed
+C25,Phase 9K,Engine matches frozen outputs within 1e-3,full test: max 2.4e-3 (fp32); 5e-13 under AMP protocol,YELLOW,"Tolerance holds for 5 samples, not the full split"
+C26,Phase 9K/9L,Deterministic inference,bit-exact repeats/fresh instances; CPU-GPU 2.2e-4,GREEN,
+C27,Phase 9M,"Bot partial (CLAIM B), Infiltration none (CLAIM C), verdict YELLOW",9M report,GREEN,Honestly scoped; not about the World Model itself
+C28,PS SIH26153,Generalize to unseen attack patterns,9M,YELLOW,Unproven for the authoritative model
+C29,PS SIH26153,Infiltration probability over the next K windows,9J/9N,YELLOW,Generic whole-horizon risk only; K=6 fixed; no infiltration-specific / per-step risk
+C30,PS SIH26153,"MITRE stages: Recon, Initial Access, Lateral Movement, C2, Exfiltration",7B: 6 covered classes,YELLOW,Recon/Exfiltration absent from data
+C31,Phase 9N,Native per-step attack risk,9N RED; persistence beats model at all 6 steps,GREEN,Correctly EXCLUDED from authoritative path (not a capability)

@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authoritative Forecast | NetOracle</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="theme-{{ current_theme }}">
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-logo"><span class="brand-mark">NO</span><span class="fancy-logo">NetOracle</span></div>
+        <nav>
+            <a href="{% url 'dashboard:index' %}" class="nav-item"><span class="nav-mark">⌂</span>Dashboard</a>
+            <a href="{% url 'dashboard:forecast' %}" class="nav-item"><span class="nav-mark">R</span>Risk Forecast (legacy)</a>
+            <a href="{% url 'dashboard:authoritative_forecast' %}" class="nav-item active"><span class="nav-mark">A</span>Authoritative Forecast</a>
+            <a href="{% url 'logs:dashboard' %}" class="nav-item"><span class="nav-mark">▤</span>Logs</a>
+            <a href="{% url 'alerts:dashboard' %}" class="nav-item"><span class="nav-mark">♧</span>Alerts</a>
+            {% if user.is_staff or user.is_superuser %}
+            <a href="{% url 'management:dashboard' %}" class="nav-item"><span class="nav-mark">♙</span>Users</a>
+            <a href="{% url 'server:dashboard' %}" class="nav-item"><span class="nav-mark">▣</span>Server</a>
+            {% endif %}
+            <a href="{% url 'api:dashboard' %}" class="nav-item"><span class="nav-mark">&gt;_</span>API Engine</a>
+            <a href="{% url 'settings_app:dashboard' %}" class="nav-item"><span class="nav-mark">⚙</span>Settings</a>
+        </nav>
+        <div style="margin-top: auto;">
+            <form action="{% url 'users:logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="nav-item" style="background: none; border: none; width: 100%; cursor: pointer;"><span class="nav-mark">↪</span>Logout</button>
+            </form>
+        </div>
+    </aside>
+    <main class="main-content forecast-page">
+        <header class="header">
+            <div><p class="eyebrow">NetOracle world model &middot; Phase 9K/9L</p><h1>Authoritative forecast</h1></div>
+            <span class="model-status"><i></i>{% if authoritative_available %}Authoritative model loaded{% else %}Unavailable{% endif %}</span>
+        </header>
+
+        <section class="forecast-panel" style="margin-bottom: 1.5rem;">
+            <p>
+                This page calls the ONE authoritative, checkpoint-backed inference path established in
+                Phase 9K (<code>experiments/inference_engine.py</code>, model
+                <code>VectorWorldModelWithStageHead</code>, checkpoint
+                <code>phase7b_mitre_stage_head/model/best_stage_head.pt</code>) via
+                <code>world_model.inference_service.AuthoritativeForecastService</code>. Because the
+                existing live-capture feature pipeline produces a feature schema that does not match the
+                model's required 157-feature CICFlowMeter-window schema, this page demonstrates the engine
+                on a real, already-validated sample from the frozen Phase 3.5 test split (see PROVENANCE
+                below for exactly which one) rather than on live-captured events. The
+                <a href="{% url 'dashboard:forecast' %}">legacy Risk Forecast page</a> remains a separate,
+                <strong>NON-AUTHORITATIVE</strong> heuristic path and is not this model's prediction.
+            </p>
+        </section>
+
+        {% if authoritative_available %}
+        {% with f=authoritative_forecast %}
+
+        <section class="forecast-metric-grid">
+            <article class="forecast-metric forecast-metric-accent">
+                <span>Attack-risk score (whole horizon, t+1 &hellip; t+6)</span>
+                <strong>{{ f.whole_horizon_attack_probability.value|floatformat:4 }}</strong>
+                <small>One score for the whole horizon &mdash; not a per-step series. Uncalibrated model output.</small>
+            </article>
+            <article class="forecast-metric">
+                <span>Overall predicted MITRE stage</span>
+                <strong>{{ f.explanations.mitre_stage_prediction.overall_stage|default:"n/a" }}</strong>
+                <small>confidence {{ f.explanations.mitre_stage_prediction.overall_confidence|floatformat:3 }}</small>
+            </article>
+            <article class="forecast-metric">
+                <span>Source sample</span>
+                <strong>{{ f.input_metadata.source_file }}</strong>
+                <small>{{ f.input_metadata.window_start }}</small>
+            </article>
+        </section>
+
+        <section class="forecast-dashboard-grid">
+
+            <article class="forecast-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">CURRENT STATE</p><h2>Observed state at window t</h2></div></div>
+                <p>{{ f.input_metadata.feature_count }} features observed across {{ f.input_metadata.window_labels|length }} windows ({{ f.input_metadata.window_labels|join:", " }}).</p>
+            </article>
+
+            <article class="forecast-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">FORECAST</p><h2>Six-step future state rollout</h2></div></div>
+                <p>{{ f.future_state_rollout.note }}</p>
+                <p>Horizon steps: {{ f.future_state_rollout.horizon_labels|join:", " }} (157-dim predicted state at each step; not rendered in full here to keep this page compact -- available via the API endpoint, <code>{% url 'api:authoritative_predict' %}</code>).</p>
+            </article>
+
+            <article class="forecast-panel">
+                <div class="forecast-heading"><div><p class="eyebrow">ATTACK RISK</p><h2>Whole-horizon attack-risk score</h2></div></div>
+                <div class="attack-score"><span>Attack-risk score, whole horizon (t+1 &hellip; t+6)</span><strong>{{ f.whole_horizon_attack_probability.value|floatformat:4 }}</strong></div>
+                <p class="explainability-basis">
+                    This is the model's single score for the whole 60-second horizon. It is <strong>not</strong> a
+                    six-element per-step series, and it is an uncalibrated sigmoid output (Phase 8B: test ECE 0.112),
+                    so read it as a ranking score rather than a statistical probability.
+                </p>
+            </article>
+
+            <article class="forecast-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">MITRE STAGE TRAJECTORY</p><h2>Predicted attack-stage trajectory</h2></div></div>
+                <div class="chain-list">
+                {% for step in mitre_stage_steps %}
+                    <div class="chain-stage"><span>{{ step.horizon_label }}</span><strong>{{ step.stage }}</strong><small title="Softmax confidence of the predicted stage class; this is not an attack risk">stage conf. {{ step.confidence|floatformat:3 }}</small></div>
+                {% endfor %}
+                </div>
+                <p class="explainability-basis">{{ f.mitre_stage_trajectory.semantics }}</p>
+            </article>
+
+            <article class="forecast-panel explainability-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">EXPLANATION</p><h2>Gradient-based feature attribution</h2></div></div>
+                <p>Method: post-hoc <strong>{{ attribution_method|default:"Gradient &times; Input" }}</strong> feature attribution on the frozen checkpoint (no retraining, no surrogate model). The engine reports the exact method for every call.</p>
+                <p class="eyebrow">Top features for the attack-risk score (window t): raw value and share of the top feature</p>
+                <div class="chain-list">
+                {% for row in attribution_rows %}
+                    <div class="chain-stage"><span>{{ row.rank }}</span><strong>{{ row.feature }}</strong><small title="Exact raw value: {{ row.raw }}">{{ row.display }} &middot; {{ row.relative_percent }}% of top</small></div>
+                {% endfor %}
+                </div>
+                <p class="explainability-basis">
+                    Values are magnitudes of (gradient of the risk score) &times; (scaled input). When the score is
+                    saturated near 0 or 1 they are legitimately tiny (for example 1e-06), so a small number does
+                    <strong>not</strong> mean zero importance &mdash; compare the share-of-top column. The exact raw value is
+                    in each tooltip and unchanged in the API response. Attribution describes this model's own score,
+                    not real-world causality, attacker intent, or a confirmed MITRE technique. The full disclosure text
+                    is <code>explanations.faithful_claims_only</code> and the exact method is
+                    <code>explanations.future_attack_risk_prediction.explanation_method</code> in the API response.
+                </p>
+            </article>
+
+            <article class="forecast-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">PROVENANCE</p><h2>Model / checkpoint / run identity</h2></div></div>
+                <div class="explainability-summary">
+                    <div><span>Model</span><strong>{{ f.provenance.model_identifier }}</strong></div>
+                    <div><span>Checkpoint</span><strong>{{ f.provenance.checkpoint_path }}</strong></div>
+                    <div><span>Checkpoint SHA-256</span><strong>{{ f.provenance.checkpoint_sha256|slice:":16" }}&hellip;</strong></div>
+                    <div><span>Scaler SHA-256</span><strong>{{ f.provenance.scaler_sha256|slice:":16" }}&hellip;</strong></div>
+                    <div><span>Feature schema SHA-256</span><strong>{{ f.provenance.feature_schema_sha256|slice:":16" }}&hellip;</strong></div>
+                    <div><span>Code commit</span><strong>{{ f.provenance.code_commit_hash|slice:":12" }}</strong></div>
+                    <div><span>Device</span><strong>{{ f.provenance.device }}</strong></div>
+                    <div><span>Inference duration</span><strong>{{ f.provenance.inference_duration_seconds|floatformat:4 }}s</strong></div>
+                </div>
+            </article>
+
+            <article class="forecast-panel forecast-panel-wide">
+                <div class="forecast-heading"><div><p class="eyebrow">LIMITATIONS</p><h2>What this page does NOT claim</h2></div></div>
+                <ul>
+                    <li>No native per-step attack probability -- only the single whole-horizon scalar above.</li>
+                    <li>MITRE stages are a reasoned label mapping from CIC-IDS-2018 attack labels, not authoritative MITRE ATT&amp;CK ground truth, and not causal attacker kill-chain inference.</li>
+                    <li>No calibrated probabilities (Phase 8B finding).</li>
+                    <li>No PCAP-derived model input (Phase 9H/9I).</li>
+                    <li>No unseen-attack-generalization claim.</li>
+                    <li>No uncertainty quantification or counterfactual simulation.</li>
+                    <li>This page shows a fixed, already-validated demonstration sample, not live network data (see the explanation banner above).</li>
+                </ul>
+            </article>
+
+        </section>
+        {% endwith %}
+        {% else %}
+        <section class="forecast-panel forecast-empty-state">
+            <h2>Authoritative forecast unavailable</h2>
+            <p>{{ authoritative_error|default:"The authoritative inference engine returned no result." }}</p>
+        </section>
+        {% endif %}
+    </main>
+</div>
+</body>
+</html>

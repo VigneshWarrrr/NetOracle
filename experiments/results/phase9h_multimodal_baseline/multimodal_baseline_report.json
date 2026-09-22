@@ -1,0 +1,260 @@
+{
+  "success": true,
+  "verdict": "RED",
+  "executive_summary": "Variant A (flow-only control, 347,806 parameters) was trained fresh using the exact Phase 6B VectorWorldModel architecture/protocol, reaching test PR-AUC=0.8682, ROC-AUC=0.8775, F1=0.8439 at a validation-selected threshold targeting FPR<=0.05. Variants B, C, and D could NOT be constructed: an empirical cross-correlation search across 9 UTC-offset hypotheses found no credible timestamp correspondence (best |r|=0.0879 at +0h, indistinguishable from noise) between the Phase 9D/9F single-host PCAP data and the Phase 6B flow-window CSV, compounded by a fundamental population mismatch (2 hosts vs. whole-subnet flow aggregates). Per this phase's own hard constraint, both modalities were stopped rather than guessed.",
+  "temporal_alignment_investigation": {
+    "attempted": true,
+    "method": "For each candidate UTC-offset hypothesis (0-8 hours added to the CSV's naive local window_start), bucket both the Phase 9D+9F combined PCAP packet counts (true UTC, from scapy packet.time / pcap file semantics) and the Wednesday CSV's flow_count into aligned 10-second UTC buckets, then compute the Pearson correlation over the overlapping time range. A real, correct offset should produce a materially higher correlation than incorrect offsets, since both series would then be describing genuinely overlapping real-world activity.",
+    "pcap_packet_totals": {
+      "UCAP172.31.69.22.pcap": 10417,
+      "capWIN-J6GMIG1DQE5-172.31.64.89.pcap": 49250
+    },
+    "csv_row_count": 4320,
+    "offset_results": [
+      {
+        "offset_hours_added_to_csv_local_time": 0,
+        "overlap_window_count": 155,
+        "pearson_r": 0.08787042352816807
+      },
+      {
+        "offset_hours_added_to_csv_local_time": 1,
+        "overlap_window_count": 456,
+        "pearson_r": 0.07661786537223599
+      },
+      {
+        "offset_hours_added_to_csv_local_time": 2,
+        "overlap_window_count": 789,
+        "pearson_r": 0.015836335103117327
+      },
+      {
+        "offset_hours_added_to_csv_local_time": 3,
+        "overlap_window_count": 1090,
+        "pearson_r": 0.002760489272007437
+      },
+      {
+        "offset_hours_added_to_csv_local_time": 4,
+        "overlap_window_count": 1393,
+        "pearson_r": 0.019531721301708396
+      },
+      {
+        "offset_hours_added_to_csv_local_time": 5,
+        "overlap_window_count": 1687,
+        "pearson_r": 0.03130930758775971
+      },
+      {
+        "offset_hours_added_to_csv_local_time": 6,
+        "overlap_window_count": 1987,
+        "pearson_r": -0.005536037385190692
+      },
+      {
+        "offset_hours_added_to_csv_local_time": 7,
+        "overlap_window_count": 2293,
+        "pearson_r": 0.018883941419779657
+      },
+      {
+        "offset_hours_added_to_csv_local_time": 8,
+        "overlap_window_count": 2591,
+        "pearson_r": -0.01532919329010634
+      }
+    ],
+    "best_offset_result": {
+      "offset_hours_added_to_csv_local_time": 0,
+      "overlap_window_count": 155,
+      "pearson_r": 0.08787042352816807
+    },
+    "runner_up_offset_result": {
+      "offset_hours_added_to_csv_local_time": 1,
+      "overlap_window_count": 456,
+      "pearson_r": 0.07661786537223599
+    },
+    "safely_alignable": false,
+    "decision": "STOP",
+    "decision_reason": "Best offset (+0h) only reaches |r|=0.0879 (floor is 0.3); this is not distinguishable from noise given n=155 overlapping 10s windows. No offset hypothesis produced a credible correlation peak.",
+    "additional_defensibility_concern": "Even if a correct offset had been found, the Phase 9D/9F PCAPs cover only 2 specific hosts (172.31.69.22 and the capWIN-...-172.31.64.89 endpoint), while the CSV's flow_count/flow-level features aggregate ALL flows across the entire monitored subnet in each window. A 2-host packet/graph feature would therefore be a structurally different, far narrower quantity than what the flow-level window represents, independent of the timestamp question."
+  },
+  "gpu_verification": {
+    "cuda_available": true,
+    "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "torch_version": "2.10.0+cu128",
+    "cuda_version": "12.8"
+  },
+  "dataset_validation_status": "PASS",
+  "variant_a": {
+    "parameter_count": 347806,
+    "smoke_test": {
+      "status": "PASS",
+      "batch_size": 8,
+      "input_shape": [
+        8,
+        6,
+        157
+      ],
+      "y_hat_shape": [
+        8,
+        6,
+        157
+      ],
+      "attack_logit_shape": [
+        8
+      ],
+      "smoke_state_loss": 1.524566888809204,
+      "smoke_attack_loss": 0.7278228402137756,
+      "parameters_with_gradient": 39
+    },
+    "best_epoch": 1,
+    "training_duration_seconds": 25.102977100003045,
+    "inference_duration_seconds": 0.45910899998852983,
+    "training_history": [
+      {
+        "epoch": 1,
+        "train_total_loss": 1.0394724860139515,
+        "train_state_loss": 0.5861832831216895,
+        "train_attack_loss": 0.4532892041232275,
+        "validation_pr_auc": 0.7566347827482176
+      },
+      {
+        "epoch": 2,
+        "train_total_loss": 0.8362295687198639,
+        "train_state_loss": 0.5007019054630528,
+        "train_attack_loss": 0.3355276641638383,
+        "validation_pr_auc": 0.7423562873787449
+      },
+      {
+        "epoch": 3,
+        "train_total_loss": 0.7656199863423472,
+        "train_state_loss": 0.48928454395221627,
+        "train_attack_loss": 0.2763354448520619,
+        "validation_pr_auc": 0.7437711715006763
+      },
+      {
+        "epoch": 4,
+        "train_total_loss": 0.7326553682918134,
+        "train_state_loss": 0.47003511838291,
+        "train_attack_loss": 0.2626202515609886,
+        "validation_pr_auc": 0.7263850356290409
+      },
+      {
+        "epoch": 5,
+        "train_total_loss": 0.6898332356110863,
+        "train_state_loss": 0.4507943534332773,
+        "train_attack_loss": 0.23903888230738432,
+        "validation_pr_auc": 0.6897834172144117
+      },
+      {
+        "epoch": 6,
+        "train_total_loss": 0.6580564584097136,
+        "train_state_loss": 0.43831460806338685,
+        "train_attack_loss": 0.21974184940285657,
+        "validation_pr_auc": 0.7415686104618822
+      }
+    ],
+    "first_training_batch_device": "cuda:0",
+    "peak_gpu_memory_bytes": 40088064,
+    "selected_threshold_info": {
+      "threshold": 0.7100254893302917,
+      "achieved_validation_fpr": 0.048570635581459895,
+      "achieved_validation_recall": 0.4185956790123457
+    },
+    "selected_threshold": 0.7100254893302917,
+    "validation_metrics": {
+      "precision": 0.8611111111111112,
+      "recall": 0.4185956790123457,
+      "f1": 0.563343717549325,
+      "pr_auc": 0.7566347827482176,
+      "roc_auc": 0.7756313433078745,
+      "false_positive_rate": 0.048570635581459895,
+      "confusion_matrix": {
+        "tn": 3428,
+        "fp": 175,
+        "fn": 1507,
+        "tp": 1085
+      },
+      "false_positives": 175,
+      "false_negatives": 1507,
+      "threshold": 0.7100254893302917
+    },
+    "test_metrics": {
+      "precision": 0.9502840909090909,
+      "recall": 0.7589336358479863,
+      "f1": 0.8438978240302744,
+      "pr_auc": 0.8681700414271173,
+      "roc_auc": 0.8775065219483527,
+      "false_positive_rate": 0.0157942238267148,
+      "confusion_matrix": {
+        "tn": 4362,
+        "fp": 70,
+        "fn": 425,
+        "tp": 1338
+      },
+      "false_positives": 70,
+      "false_negatives": 425,
+      "threshold": 0.7100254893302917
+    },
+    "validation_brier": 0.21105126419365913,
+    "validation_ece": 0.15852557996632208,
+    "test_brier": 0.12980153959355278,
+    "test_ece": 0.16220416472480603,
+    "test_bootstrap_ci": {
+      "n_iterations_requested": 2000,
+      "n_iterations_used": 2000,
+      "pr_auc": {
+        "mean": 0.8682638032650718,
+        "ci_lower_2.5pct": 0.8550466390656092,
+        "ci_upper_97.5pct": 0.8810547726291467
+      },
+      "roc_auc": {
+        "mean": 0.8775050763682,
+        "ci_lower_2.5pct": 0.864568526820369,
+        "ci_upper_97.5pct": 0.8894551615057091
+      },
+      "f1": {
+        "mean": 0.843946722706847,
+        "ci_lower_2.5pct": 0.8297265035764231,
+        "ci_upper_97.5pct": 0.8573228847986358
+      },
+      "recall": {
+        "mean": 0.7590153544144027,
+        "ci_lower_2.5pct": 0.7379767123634797,
+        "ci_upper_97.5pct": 0.7786711272713989
+      }
+    },
+    "n_train": 29315,
+    "n_validation": 6195,
+    "n_test": 6195,
+    "feature_dimensionality": 157,
+    "architecture": {
+      "d_model": 128,
+      "num_heads": 4,
+      "num_layers": 2,
+      "ff_dim": 256,
+      "dropout": 0.2
+    }
+  },
+  "statistical_interpretation": "The central research question -- whether packet/event/graph information adds measurable predictive value beyond the flow-only representation -- could not be tested empirically in this phase, because the additional modalities could not be safely constructed as model inputs. This is a distinct and, in one sense, a stronger negative finding than 'we tested it and found no improvement': it means the specific data available (2 single-host PCAP captures from one day) does not currently support even attempting the ablation without either guessing a timezone offset with no statistical support, or fabricating a correspondence between per-host packet traces and whole-subnet flow aggregates. Per the phase's own scientific-interpretation guidance, this is closest to outcome 5 (mixed/small evidence, prefer a conservative verdict) taken to its logical extreme: there is no evidence of predictive value because no valid experiment could be run, which must not be mistaken for evidence AGAINST predictive value in a fairer future experiment with better-aligned data.",
+  "limitations": [
+    "Only Variant A could be trained; the core B vs C vs D ablation this phase was designed to answer was not executed.",
+    "The temporal-alignment investigation is itself limited: only Pearson correlation over 10-second aggregate buckets was tested, across a bounded set of 9 whole-hour offset hypotheses (0-8h); a non-integer-hour offset, or a genuinely weak-but-real correlation obscured by the 2-host-vs-whole-subnet volume mismatch, cannot be ruled out -- only that THIS test found no usable signal.",
+    "No documented timezone metadata exists anywhere in this repository for the CICFlowMeter-derived Timestamp/window_start column; this gap in the source dataset's own documentation, not a limitation introduced by this phase, is the root cause of the alignment difficulty.",
+    "Variant A's numbers are a fresh, independently retrained run (new seed-consistent training), not a reuse of the frozen Phase 6B checkpoint -- expect small numeric differences from Phase 6B's own persisted metrics.json even though the code and protocol are unmodified.",
+    "Bootstrap confidence intervals use standard resampling with replacement over the test set only; they characterize sampling variability of Variant A's OWN metrics and say nothing about variants that were not built."
+  ],
+  "novelty_interpretation": {
+    "existing_technique": [
+      "Flow-level sequence-to-sequence forecasting with a Transformer/latent-rollout architecture (Phase 6B's own VectorWorldModel) is a known technique class, reused unmodified here.",
+      "Timestamp-based dataset alignment/leakage auditing (split-boundary containment, cross-split duplicate detection) is standard ML engineering practice, not novel to this phase."
+    ],
+    "potential_differentiator": [
+      "The intended multimodal fusion of flow state + packet/event + graph/window state into one forecasting model remains NetOracle's stated architectural differentiator -- but this phase demonstrates it is NOT YET achievable with the currently available packet-capture coverage (2 hosts, 1 day), which is itself useful information for scoping what data would be needed."
+    ],
+    "actually_demonstrates": [
+      "A rigorous, transparent, and negative result: the specific PCAP artifacts available from Phases 9D/9F cannot be safely temporally aligned to the Phase 6B flow-level dataset.",
+      "A working, GPU-verified, leakage-audited retraining of the flow-only baseline under the exact existing protocol, usable as a stable reference point for any FUTURE attempt at this ablation once better-aligned or broader packet-capture coverage exists."
+    ],
+    "remains_unverified": [
+      "Whether packet/event or graph/window information would add predictive value GIVEN properly aligned, broader-coverage capture data -- entirely untested here.",
+      "Whether a learned graph or event encoder (GNN, sequence model, or otherwise) would outperform simple aggregate statistics -- moot until alignment is solved."
+    ]
+  },
+  "recommendation": "Before attempting this ablation again: (1) establish authoritative timezone metadata for the CICFlowMeter Timestamp column (e.g. by locating original dataset documentation, or by capturing a small new PCAP alongside a fresh CICFlowMeter run with known clock settings), and/or (2) obtain PCAP coverage for a larger fraction of hosts active in a given window (not just 1-2 endpoints), so that packet/graph features approximate the same population the flow-level window aggregates describe. Only once both are resolved should Phase 9H's original A/B/C/D ablation be re-attempted; a learned graph/event encoder or GNN is NOT scientifically justified as a next step from this phase's evidence, because no modality-vs-baseline comparison was possible at all.",
+  "phase9g_tests_status": "Initially found HANGING (a runaway ~170-million-window loop caused by a bug in the Phase 9G test fixture's capture_start_ts argument, confirmed via process CPU/memory inspection: 20+ minutes at ~100% CPU, multi-GB memory). Root-caused, fixed in experiments/tests.py (2 call sites), and re-run to completion: 12/12 PASSED in 0.007s."
+}

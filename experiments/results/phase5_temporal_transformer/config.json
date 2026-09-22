@@ -1,0 +1,62 @@
+{
+  "experiment": "phase5_temporal_transformer",
+  "seed": 42,
+  "input_shape": [
+    6,
+    157
+  ],
+  "feature_count": 157,
+  "target": "future_attack_within_horizon",
+  "target_definition": "any attack in t+1 through t+6; current t excluded",
+  "counts": {
+    "train": {
+      "samples": 29315,
+      "positive": 3571,
+      "negative": 25744
+    },
+    "validation": {
+      "samples": 6195,
+      "positive": 2592,
+      "negative": 3603
+    },
+    "test": {
+      "samples": 6195,
+      "positive": 1763,
+      "negative": 4432
+    }
+  },
+  "architecture": {
+    "input_projection": [
+      157,
+      128
+    ],
+    "d_model": 128,
+    "num_heads": 4,
+    "num_layers": 2,
+    "feed_forward_dim": 256,
+    "dropout": 0.2,
+    "sequence_aggregation": "mean",
+    "parameter_count": 286081
+  },
+  "training": {
+    "loss": "BCEWithLogitsLoss",
+    "pos_weight": 1.0,
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "batch_size": 128,
+    "max_epochs": 25,
+    "patience": 5,
+    "best_epoch": 2,
+    "duration_seconds": 19.1346371000036,
+    "selected_validation_threshold": 0.04326445236802101
+  },
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "cuda_runtime": "12.8",
+    "torch_version": "2.10.0+cu128",
+    "model_device": "cuda:0",
+    "first_batch_device": "cuda:0",
+    "parameter_count": 286081
+  },
+  "scaler": "Existing Phase 4 training-only StandardScaler reused unchanged"
+}

@@ -1,0 +1,882 @@
+{
+  "phase": "9J",
+  "success": true,
+  "audit_only": true,
+  "repo_facts": {
+    "commit_hash": "4e54c7533fc327331d1ea44a609a52a6010424e0",
+    "branch": "main",
+    "audited_checkpoints_present": {
+      "experiments/results/phase4_baseline/lstm/best_model.pt": true,
+      "experiments/results/phase5_temporal_transformer/transformer/best_model.pt": true,
+      "experiments/results/phase6b_vector_world_model/model/best_model.pt": true,
+      "experiments/results/phase6b_vector_world_model_ablation/run1_existing_scaling/model/best_model.pt": true,
+      "experiments/results/phase7b_mitre_stage_head/model/best_stage_head.pt": true,
+      "experiments/results/phase9h_multimodal_baseline/variant_a_model/best_model.pt": true
+    },
+    "unaudited_track_checkpoints_absent": {
+      "models/attack_forecaster.pt": true,
+      "models/best_world_model.pth": true
+    },
+    "unaudited_evaluation_results_json_exists": true,
+    "unaudited_zero_shot_results_json_exists": true,
+    "prior_result_directory_file_counts": {
+      "phase4_3_class_weight_ablation": 11,
+      "phase4_baseline": 17,
+      "phase5_temporal_transformer": 11,
+      "phase6b_vector_world_model": 20,
+      "phase6b_vector_world_model_ablation": 22,
+      "phase7b_mitre_stage_head": 9,
+      "phase7c_explainability": 6,
+      "phase7d_trajectory": 8,
+      "phase8_final_evaluation": 5,
+      "phase8b_calibration": 9,
+      "phase9b_pcap_discovery": 2,
+      "phase9c_pcap_archive_inspection": 2,
+      "phase9d_pcap_validation": 2,
+      "phase9e_temporal_packet_graph": 2,
+      "phase9f_cross_host_graph": 2,
+      "phase9g_event_representation": 2,
+      "phase9h_multimodal_baseline": 4,
+      "phase9i_pcap_flow_alignment": 2
+    }
+  },
+  "official_ps_source": "https://sih2026.vuce.in/ps/SIH26153 (fetched directly; used as authoritative wording)",
+  "dual_implementation_finding": {
+    "headline": "The repository contains TWO divergent, unreconciled World Model implementations, and neither is currently wired into a working, checkpoint-backed demo.",
+    "track_a_audited": {
+      "name": "Audited research track (Phases 3.5-9I)",
+      "model": "VectorWorldModel (experiments/phase6b_vector_world_model.py)",
+      "architecture": "d_model=128, heads=4, layers=2, input=[6,157] from data/windows/*.csv via world_model_dataset.py",
+      "status": "Rigorously trained, evaluated under a shared fair protocol (Phase 8A), leakage-audited (Phase 3.5/world_model_dataset.validate_world_model_samples), calibration-audited (Phase 8B), explainability-audited (Phase 7C), MITRE-stage-audited (Phase 7B). Real checkpoints exist (experiments/results/phase6b_vector_world_model*/model/best_model.pt, confirmed present).",
+      "gap": "Never imported or called by any Django-reachable code path (confirmed by repo-wide grep for VectorWorldModel: 16 hits, all under experiments/). It is not the model behind any live demo."
+    },
+    "track_b_unaudited": {
+      "name": "Unaudited demo track",
+      "model": "NetworkWorldModel (world_model/world_model.py)",
+      "architecture": "state_dim=128, heads=8, layers=4, sequence_length=20, forecast_horizon=5, native per-step attack_probs AND mitre_logits outputs -- architecturally capable of per-step forecasting, which Track A is not",
+      "status": "Backs a fully-built 5-tab Streamlit dashboard (world_model/src/streamlit.py, 954 lines: Real Traffic Forecast, Benchmark, Explainability, MITRE ATT&CK, Architecture tabs) with its own feature pipeline (world_model/feature_extraction.py, reads raw CIC-IDS-2018 CSVs directly, NOT data/windows/*.csv) and its own 7-class MITRE taxonomy (world_model/config.yaml: Benign, Reconnaissance, Initial Access, Execution, Lateral Movement, Command & Control, Exfiltration).",
+      "gap": "No checkpoint exists anywhere in the repository (models/best_world_model.pth absent, confirmed by verify_repository_facts) -- the Streamlit app currently fails to load the model and shows an error. Its 'Benchmark' tab's hardcoded comparison numbers (F1=0.6941, AUC=0.8323 for 'World Model') are traced to world_model/evaluation_results.json, which used a NON-STANDARD split (files literally named Wednesday-28-INFIL-TRAIN.csv / -INFIL-TEST.csv that do not exist in data/windows/ or data/raw/ -- an ad-hoc, undocumented split of the single Infiltration day) and shows a scientifically suspicious pattern: precision=0, recall=0, F1=0 on validation at ALL 5 forecast horizons at the selected threshold, yet recall 0.79-0.85 on test -- a validation/test inversion consistent with leakage or an invalid evaluation methodology. These numbers MUST NOT be cited as evidence of anything."
+    },
+    "track_b_zero_shot_note": "A separate, better-designed (but still unaudited) experiment also exists: world_model/zero_shot_results.json trains on 5 attack-free-of-Infiltration days, validates on a 6th, and tests on the ENTIRE held-out Wednesday-28-02-2018 Infiltration day (a genuine leave-one-attack-family-out design). Result: validation AUC 0.9999 collapses to test AUC 0.37-0.43 (worse than random) with <1.5% recall at every horizon on the wholly unseen attack family. This is a believable, useful PRELIMINARY negative signal for unseen-attack generalization (Step 5 of this audit), but was never run through the audited/leakage-checked Phase 3.5 dataset interface, so it is cited here only as motivating evidence for a properly audited repeat experiment (see roadmap P1), never as a validated finding.",
+    "production_path_note": "The Django dashboard (dashboard/views.py -> feature_engine.services.ingest_live_events -> run_pipeline.run_pipeline_events -> forecasting.mitre_mapping/attack_chain/victim + world_model.inference_service.AttackForecastService) is a THIRD code path, distinct from both tracks above. Its model loader (world_model/inference_service.py:92-94) looks for models/attack_forecaster.pt, which also does not exist, so it falls back to a 2-layer sigmoid heuristic (world_model/inference_service.py:13-24, 113-115) -- reporting model_source: 'heuristic_fallback'. Its MITRE/attack-chain/victim outputs come from forecasting.attack_chain.AttackChainBuilder and forecasting.victim.NextVictimForecaster, which are real, tested, production-reachable, but were DELIBERATELY EXCLUDED from Phase 7D's audited MITRE trajectory narrative (experiments/tests.py: test_attack_chain_builder_never_used verifies AttackChainBuilder.predict_next_stage() is never called by the audited research scripts) -- meaning the live dashboard's stage/chain output is a separate, less-rigorously-validated heuristic than what Phases 7B/7D actually validated.",
+    "mitre_taxonomy_inconsistency": "Three different MITRE taxonomies coexist: (1) PS requires 5 named stages (Reconnaissance, Initial Access, Lateral Movement, Command & Control, Exfiltration); (2) Phase 7B's audited 6 classes are BENIGN, CREDENTIAL_ACCESS, LATERAL_MOVEMENT, COMMAND_AND_CONTROL, IMPACT, INITIAL_ACCESS -- missing Reconnaissance and Exfiltration, includes two classes the PS doesn't name; (3) world_model/config.yaml (unaudited track) has 7 classes including Reconnaissance and Exfiltration but is untrained/unvalidated. No single audited taxonomy in this repository fully covers the PS's 5 named stages."
+  },
+  "requirement_matrix": [
+    {
+      "ID": "R1",
+      "PS Requirement": "Flow-level features (NetFlow/IPFIX): src/dst IP/port pairs, TCP flags, protocol, bytes/packets/flow, duration, IAT stats, bidirectional ratios",
+      "Exact/faithful PS interpretation": "Model input should be built from these flow-level fields",
+      "Current NetOracle implementation": "157 features from CICFlowMeter-derived data/windows/*.csv (protocol, ports [dst_port__sum/mean], byte/packet counts, flow duration, IAT-style aggregates, TCP flag counts all present); raw Src/Dst IP identity is DELIBERATELY EXCLUDED from model features (POTENTIAL_IDENTIFIER policy, docs/CIC_IDS2018_FEATURE_POLICY.md) to avoid host-memorization shortcuts",
+      "Evidence/artifact": "data/windows/*.csv; scripts/build_temporal_dataset.py; docs/CIC_IDS2018_FEATURE_POLICY.md; world_model_dataset.py (EXPECTED_FEATURE_COUNT=157)",
+      "Status": "YELLOW",
+      "Scientific confidence": "High confidence the design choice is defensible; not a literal match to PS wording (IP identity excluded by design)",
+      "Missing work": "None required for correctness; optionally document the exclusion rationale in the architecture doc for judges",
+      "Priority": "P3"
+    },
+    {
+      "ID": "R2",
+      "PS Requirement": "Packet-level features (PCAP-derived): TTL/variance, TCP window size, IP fragment flags, payload size distribution, port-scan signatures, retransmission counts",
+      "Exact/faithful PS interpretation": "Model input should also incorporate packet-level signal",
+      "Current NetOracle implementation": "Extraction capability DEMONSTRATED on real PCAPs (Phase 9D-9G: TTL, TCP window, IP fragmentation, payload length all confirmed DIRECT/available; retransmission and port-scan indicators explicitly classified NOT IMPLEMENTED / DERIVED-HEURISTIC, honestly). NOT integrated into the trained forecasting model: Phase 9H/9I established the only available PCAP data (449/449 per-host captures) cannot be validly paired with the flow-level CSV population (RED verdict both phases)",
+      "Evidence/artifact": "experiments/results/phase9e_temporal_packet_graph, phase9g_event_representation, phase9h_multimodal_baseline (RED), phase9i_pcap_flow_alignment (RED)",
+      "Status": "YELLOW",
+      "Scientific confidence": "High confidence extraction works; high confidence current integration is NOT scientifically valid with available data",
+      "Missing work": "Requires new, non-single-host PCAP data or authoritative timezone documentation before packet-level features can be legitimately integrated (see Phase 9I recommendation)",
+      "Priority": "P1"
+    },
+    {
+      "ID": "R3",
+      "PS Requirement": "Network state represented as structured feature vector OR graph encoding active flows at time t",
+      "Exact/faithful PS interpretation": "Either representation is explicitly acceptable per PS wording",
+      "Current NetOracle implementation": "Feature vector representation S(t) in R^157, used throughout Phases 3.5-9I. Graph representation explored and characterized (Phase 9E: sparse, host-dependent, 30.9%-80.5% non-empty windows) but not used as the production representation",
+      "Evidence/artifact": "world_model_dataset.py; experiments/phase9e_temporal_packet_graph.py",
+      "Status": "GREEN",
+      "Scientific confidence": "High",
+      "Missing work": "None -- PS explicitly permits vector-only representation",
+      "Priority": "P3"
+    },
+    {
+      "ID": "R4",
+      "PS Requirement": "Learn P(S_t+1 | S_t) via sequence model (LSTM / Temporal Transformer / GNN suggested)",
+      "Exact/faithful PS interpretation": "Core world-model requirement: learned state-transition dynamics",
+      "Current NetOracle implementation": "VectorWorldModel's LatentTransition module: learned residual z(k+1)=z(k)+f(z(k)), applied recursively 6x, trained end-to-end with a real state-reconstruction (MSE) loss against ground-truth future states Y",
+      "Evidence/artifact": "experiments/phase6b_vector_world_model.py (LatentTransition, StateDecoder); experiments/results/phase6b_vector_world_model/metrics.json",
+      "Status": "GREEN",
+      "Scientific confidence": "High -- this is the most rigorously validated part of the project",
+      "Missing work": "None",
+      "Priority": "P3"
+    },
+    {
+      "ID": "R5",
+      "PS Requirement": "Generalize to unseen attack patterns, not merely memorize signatures",
+      "Exact/faithful PS interpretation": "Requires an evaluation design that actually holds out an attack TYPE/family, not just a random or purely temporal split",
+      "Current NetOracle implementation": "NOT tested in the audited Phase 3-9I pipeline (that pipeline uses a chronological-within-day split, not an attack-family holdout). A preliminary, UNAUDITED experiment exists (world_model/zero_shot_results.json) suggesting POOR generalization to a wholly unseen attack family (Infiltration): test AUC 0.37-0.43 (worse than random), recall <1.5% at every horizon, despite near-perfect in-distribution validation (AUC 0.9999)",
+      "Evidence/artifact": "world_model/zero_shot_results.json (UNAUDITED -- cited as motivating evidence only, not a validated result)",
+      "Status": "RED",
+      "Scientific confidence": "No audited evidence either way; preliminary unaudited evidence points to a real, unresolved risk",
+      "Missing work": "A properly audited leave-one-attack-family-out experiment using the canonical Phase 3.5 dataset interface (see Step 5 / roadmap P1)",
+      "Priority": "P1"
+    },
+    {
+      "ID": "R6",
+      "PS Requirement": "Time-series probability score: likelihood of infiltration in the next K time windows",
+      "Exact/faithful PS interpretation": "Reads as a K-indexed (per-step) series, not one whole-horizon scalar",
+      "Current NetOracle implementation": "VectorWorldModel's AttackForecastHead outputs exactly ONE whole-horizon probability P(attack somewhere in t+1..t+6) via mean-pooling the rollout (established limitation, Phase 7D). The six-step MITRE STAGE trajectory IS genuinely per-step. An unaudited alternate architecture (NetworkWorldModel) already has native per-step attack_probs/mitre_logits outputs, but is untrained (no checkpoint)",
+      "Evidence/artifact": "experiments/phase6b_vector_world_model.py (AttackForecastHead.forward: pooled = z_future.mean(dim=1)); experiments/results/phase7d_trajectory; world_model/world_model.py (unaudited, architecturally per-step)",
+      "Status": "YELLOW",
+      "Scientific confidence": "High confidence in the gap; the per-step MITRE stage trajectory partially substitutes but 1-P(BENIGN) must never be called native per-step attack probability",
+      "Missing work": "Add a genuine per-step attack-probability head to the AUDITED VectorWorldModel backbone (see Step 6 / roadmap P1)",
+      "Priority": "P1"
+    },
+    {
+      "ID": "R7",
+      "PS Requirement": "MITRE ATT&CK stage mapping: Reconnaissance, Initial Access, Lateral Movement, Command & Control, Exfiltration",
+      "Exact/faithful PS interpretation": "5 named stages must be representable",
+      "Current NetOracle implementation": "Real, tested, production-reachable stage mapping exists (forecasting.mitre_mapping, wired via run_pipeline.py into the dashboard) and an audited 6-class research taxonomy (Phase 7B). Neither fully matches the PS's 5 named stages: Phase 7B's taxonomy is missing Reconnaissance and Exfiltration and includes 2 non-PS classes (CREDENTIAL_ACCESS, IMPACT); INITIAL_ACCESS additionally has zero validation/test examples in the established split",
+      "Evidence/artifact": "forecasting/mitre_mapping.py; experiments/results/phase7b_mitre_stage_head; DUAL_IMPLEMENTATION_FINDING.mitre_taxonomy_inconsistency",
+      "Status": "YELLOW",
+      "Scientific confidence": "High confidence the mapping mechanism works; high confidence the taxonomy doesn't fully cover the PS's named stages",
+      "Missing work": "Reconcile taxonomy to cover all 5 PS-named stages; either source more INITIAL_ACCESS examples or explicitly document the limitation",
+      "Priority": "P1"
+    },
+    {
+      "ID": "R8",
+      "PS Requirement": "Explainability via attention or SHAP values; 'black-box outputs without interpretability are not acceptable'",
+      "Exact/faithful PS interpretation": "Non-negotiable, explicit deliverable",
+      "Current NetOracle implementation": "Real gradient-based attribution + SHAP-compatible infrastructure exists and was audited (Phase 7C: 943-line explainability/shap_explainer.py). True SHAP GradientExplainer unavailable (TensorFlow absent) -- actual method is Gradient x Input fallback. NOT reachable from any Django view; only invoked by standalone research scripts and the non-functional Streamlit app",
+      "Evidence/artifact": "explainability/shap_explainer.py; experiments/phase7c_explainability.py; experiments/results/phase7c_explainability",
+      "Status": "YELLOW",
+      "Scientific confidence": "High confidence the attribution method itself is real and correct; wording must always say 'gradient-based attribution with SHAP-compatible infrastructure', never 'uses SHAP'",
+      "Missing work": "Wire explainability output into whatever the final demo interface is (see roadmap P0)",
+      "Priority": "P0"
+    },
+    {
+      "ID": "R9",
+      "PS Requirement": "Feature-extraction pipeline supporting CIC-IDS-2018 or CTU-13; PCAP parsing via Scapy/PyShark",
+      "Exact/faithful PS interpretation": "Either dataset acceptable; PCAP parsing via a named library",
+      "Current NetOracle implementation": "CIC-IDS-2018 CSV support extensively validated (Phase 2-3.5, 16.2M raw flow rows audited). scapy-based PCAP parsing validated against real S3 PCAP archive data (Phase 9D-9I). CTU-13 not supported (not required -- PS says 'or')",
+      "Evidence/artifact": "docs/CIC_IDS2018_DATA_READINESS.md; experiments/phase9d_pcap_validation.py (scapy)",
+      "Status": "GREEN",
+      "Scientific confidence": "High",
+      "Missing work": "None",
+      "Priority": "P3"
+    },
+    {
+      "ID": "R10",
+      "PS Requirement": "Trained world model with reproducible training scripts and model weights",
+      "Exact/faithful PS interpretation": "A real, reproducible, weight-bearing artifact",
+      "Current NetOracle implementation": "VectorWorldModel checkpoints exist and are reproducible (Phase 9H reproduced Phase 6B's exact test metrics bit-for-bit with the same seed). The alternate NetworkWorldModel has no checkpoint anywhere in the repo",
+      "Evidence/artifact": "experiments/results/phase6b_vector_world_model/model/best_model.pt (confirmed present); experiments/results/phase9h_multimodal_baseline/multimodal_baseline_report.md (exact reproduction)",
+      "Status": "GREEN",
+      "Scientific confidence": "High",
+      "Missing work": "None for the audited track",
+      "Priority": "P3"
+    },
+    {
+      "ID": "R11",
+      "PS Requirement": "Infiltration prediction ENGINE: K-step forward simulation + probability scores + MITRE stage mapping + feature attribution, combined into one usable engine",
+      "Exact/faithful PS interpretation": "One integrated pipeline producing all of the above together",
+      "Current NetOracle implementation": "Individual pieces exist and are each independently validated in research scripts (rollout, whole-horizon probability, per-step MITRE stage, attribution), but they are NEVER assembled into one working, checkpoint-backed engine. The one integrated pipeline that DOES exist (run_pipeline.py, reachable from the dashboard) uses the heuristic fallback, not the trained VectorWorldModel, and its stage/chain output uses a DIFFERENT, less-audited heuristic (AttackChainBuilder/NextVictimForecaster) than Phase 7B/7D's validated research",
+      "Evidence/artifact": "run_pipeline.py; world_model/inference_service.py (heuristic_fallback); DUAL_IMPLEMENTATION_FINDING",
+      "Status": "RED",
+      "Scientific confidence": "High confidence this is the single biggest integration gap in the project",
+      "Missing work": "Build one production inference path that loads the actual VectorWorldModel checkpoint and calls the actual audited MITRE/explainability code (see roadmap P0)",
+      "Priority": "P0"
+    },
+    {
+      "ID": "R12",
+      "PS Requirement": "Demonstration interface (Streamlit/Flask/CLI), accepts PCAP/CSV, runs fully offline, shows probability timeline + flagged flows + stage annotations",
+      "Exact/faithful PS interpretation": "A working, demoable interface",
+      "Current NetOracle implementation": "Django dashboard exists but shows a 'Model offline' fallback state (templates/dashboard/index.html) because no production checkpoint exists. A fully-built 5-tab Streamlit dashboard also exists (world_model/src/streamlit.py) but its model checkpoint is also absent -- it currently fails to load and shows an error, and its one working demo ('Benchmark' tab) shows scientifically suspicious, unaudited numbers",
+      "Evidence/artifact": "templates/dashboard/index.html; world_model/src/streamlit.py; DUAL_IMPLEMENTATION_FINDING",
+      "Status": "RED",
+      "Scientific confidence": "High confidence neither current interface currently demonstrates the validated Phase 6B/8A results",
+      "Missing work": "Pick ONE interface, wire it to the audited VectorWorldModel checkpoint, remove/replace the suspicious hardcoded benchmark numbers with the real Phase 8A comparison (see roadmap P0)",
+      "Priority": "P0"
+    },
+    {
+      "ID": "R13",
+      "PS Requirement": "Benchmark results (F1, precision, recall, FPR) vs. logistic regression baseline, demonstrating temporal-learning advantage",
+      "Exact/faithful PS interpretation": "A fair, real comparison",
+      "Current NetOracle implementation": "Rigorously done under a SHARED, fair, validation-selected-threshold protocol (Phase 8A). Real, audited, reproducible: Temporal Transformer test F1~=0.8279 / FPR~=0.0255 at FPR<=5%; Logistic Regression baseline substantially weaker; World Model also beats logistic regression but is NOT the strongest model overall",
+      "Evidence/artifact": "experiments/results/phase8_final_evaluation; Phase 8A comparison_report.md",
+      "Status": "GREEN",
+      "Scientific confidence": "High -- this is the best-executed part of the whole project",
+      "Missing work": "None; do not claim 'World Model beats all baselines' -- the Transformer is the strongest model per Phase 8A",
+      "Priority": "P3"
+    },
+    {
+      "ID": "R14",
+      "PS Requirement": "Open-source, fully offline solution",
+      "Exact/faithful PS interpretation": "No network dependency for the shipped system's own operation",
+      "Current NetOracle implementation": "Trained-model inference (Phase 6B predict()) requires no network access. PCAP research phases (9B-9I) used S3 for one-time DATA ACQUISITION, not for the shipped system's own operation. Open-source licensing not independently verified in this audit",
+      "Evidence/artifact": "experiments/phase6b_vector_world_model.py (predict function, local-only)",
+      "Status": "GREEN",
+      "Scientific confidence": "Moderate -- inference path is genuinely offline-capable; licensing unverified (requires verification)",
+      "Missing work": "Confirm an explicit open-source license file exists",
+      "Priority": "P3"
+    },
+    {
+      "ID": "R15",
+      "PS Requirement": "Enterprise and Critical Infrastructure applicability",
+      "Exact/faithful PS interpretation": "General suitability statement, not independently testable as a discrete deliverable",
+      "Current NetOracle implementation": "CIC-IDS-2018 dataset is itself designed to emulate an enterprise network testbed; no additional domain-specific validation performed",
+      "Evidence/artifact": "docs/CIC_IDS2018_DATA_READINESS.md (dataset description)",
+      "Status": "YELLOW",
+      "Scientific confidence": "Low -- plausible via dataset design, not independently demonstrated",
+      "Missing work": "None actionable; note as an inherent property of the chosen dataset in the architecture document",
+      "Priority": "P3"
+    }
+  ],
+  "novelty_matrix": [
+    {
+      "FEATURE": "GNN (graph neural network over network state)",
+      "REQUIRED BY PS?": "No (one of 3 SUGGESTED approaches, not mandatory)",
+      "CURRENTLY IMPLEMENTED?": "No -- only graph FEASIBILITY was characterized (Phase 9E), no GNN built",
+      "SCIENTIFICALLY VALIDATED?": "N/A -- not built",
+      "NOVELTY VALUE": "Moderate (PS explicitly names it as an acceptable approach)",
+      "IMPLEMENTATION COST": "High (needs valid graph-structured input, which currently doesn't exist -- see R2/R5)",
+      "RISK": "High -- Phase 9E found graph structure highly host-dependent and often sparse (30.9%-80.5% non-empty windows)",
+      "RECOMMENDATION": "C -- Nice-to-have, blocked on data (not buildable on currently valid inputs)"
+    },
+    {
+      "FEATURE": "Temporal GNN",
+      "REQUIRED BY PS?": "No",
+      "CURRENTLY IMPLEMENTED?": "No",
+      "SCIENTIFICALLY VALIDATED?": "N/A",
+      "NOVELTY VALUE": "Low-moderate (compounds GNN's blockers with added complexity)",
+      "IMPLEMENTATION COST": "Very high",
+      "RISK": "Same as GNN, plus higher overfitting/engineering risk for the timeline available",
+      "RECOMMENDATION": "C -- lower priority than plain GNN, same data blocker"
+    },
+    {
+      "FEATURE": "Packet+flow fusion",
+      "REQUIRED BY PS?": "Implied by dual-level input requirement (R1/R2), not literally mandatory as 'fusion'",
+      "CURRENTLY IMPLEMENTED?": "Attempted and explicitly tested",
+      "SCIENTIFICALLY VALIDATED?": "Tested and found scientifically INVALID with current data (Phase 9H RED, Phase 9I RED)",
+      "NOVELTY VALUE": "Would be high IF the data problem were solved",
+      "IMPLEMENTATION COST": "Low to re-attempt once blockers are resolved (pipeline already built)",
+      "RISK": "High if re-attempted on the SAME data -- would repeat an already-falsified experiment",
+      "RECOMMENDATION": "D -- Novelty theater / reject for now; already tested, RED verdict twice; do not rebuild until new data resolves the Phase 9I blockers"
+    },
+    {
+      "FEATURE": "Temporal Transformer",
+      "REQUIRED BY PS?": "Yes (explicitly suggested, and it is the strongest validated benchmark)",
+      "CURRENTLY IMPLEMENTED?": "Yes",
+      "SCIENTIFICALLY VALIDATED?": "Yes -- Phase 5, strongest model in the Phase 8A fair comparison",
+      "NOVELTY VALUE": "Core, not novelty",
+      "IMPLEMENTATION COST": "Already paid",
+      "RISK": "Low",
+      "RECOMMENDATION": "A -- Mandatory compliance, already satisfied"
+    },
+    {
+      "FEATURE": "World Model (learned state-transition dynamics)",
+      "REQUIRED BY PS?": "Yes -- this is the PS's named core paradigm",
+      "CURRENTLY IMPLEMENTED?": "Yes",
+      "SCIENTIFICALLY VALIDATED?": "Yes -- Phase 6B, real rollout, real reconstruction loss",
+      "NOVELTY VALUE": "Core project identity, not optional novelty",
+      "IMPLEMENTATION COST": "Already paid",
+      "RISK": "Low for the model itself; high for the fact it's not wired into any demo (see R11/R12)",
+      "RECOMMENDATION": "A -- Mandatory compliance, already satisfied; INTEGRATION is the real remaining work"
+    },
+    {
+      "FEATURE": "Uncertainty estimation",
+      "REQUIRED BY PS?": "Not explicit, but a 'probability score' implies some notion of confidence, and Phase 8B already found raw probabilities transfer better than calibration under prevalence shift",
+      "CURRENTLY IMPLEMENTED?": "No",
+      "SCIENTIFICALLY VALIDATED?": "N/A",
+      "NOVELTY VALUE": "Moderate-high; directly addresses a known, documented weakness (Phase 8B)",
+      "IMPLEMENTATION COST": "Low-moderate depending on approach (see Step 7)",
+      "RISK": "Moderate -- easy to overclaim calibration quality if not validated carefully",
+      "RECOMMENDATION": "B -- Strong differentiator"
+    },
+    {
+      "FEATURE": "Multi-step (native per-step) attack-risk forecasting",
+      "REQUIRED BY PS?": "Yes -- PS wording ('likelihood of infiltration in the next K time windows') reads as a K-indexed series",
+      "CURRENTLY IMPLEMENTED?": "No (only whole-horizon scalar exists in the audited model)",
+      "SCIENTIFICALLY VALIDATED?": "N/A -- not built",
+      "NOVELTY VALUE": "Compliance-critical, not novelty",
+      "IMPLEMENTATION COST": "Moderate -- can likely reuse the existing backbone with a new per-step head (see Step 6)",
+      "RISK": "Moderate -- must avoid target leakage across horizon steps",
+      "RECOMMENDATION": "A -- Mandatory compliance gap, highest-priority fix"
+    },
+    {
+      "FEATURE": "MITRE stage trajectory",
+      "REQUIRED BY PS?": "Yes",
+      "CURRENTLY IMPLEMENTED?": "Yes (per-step, 6-class)",
+      "SCIENTIFICALLY VALIDATED?": "Yes, with known taxonomy-coverage and INITIAL_ACCESS-sparsity limitations",
+      "NOVELTY VALUE": "Compliance-critical, not novelty",
+      "IMPLEMENTATION COST": "Low to fix taxonomy coverage",
+      "RISK": "Low",
+      "RECOMMENDATION": "A -- Mandatory compliance, mostly satisfied, needs taxonomy reconciliation"
+    },
+    {
+      "FEATURE": "Explainability (gradient attribution / SHAP-compatible)",
+      "REQUIRED BY PS?": "Yes, explicitly non-negotiable",
+      "CURRENTLY IMPLEMENTED?": "Yes, but not production-wired",
+      "SCIENTIFICALLY VALIDATED?": "Yes (Phase 7C)",
+      "NOVELTY VALUE": "Compliance-critical, not novelty",
+      "IMPLEMENTATION COST": "Low (wiring only, method already built)",
+      "RISK": "Low",
+      "RECOMMENDATION": "A -- Mandatory compliance, needs production wiring only"
+    },
+    {
+      "FEATURE": "Counterfactual defense simulation",
+      "REQUIRED BY PS?": "No -- not mentioned anywhere in the fetched PS text",
+      "CURRENTLY IMPLEMENTED?": "No",
+      "SCIENTIFICALLY VALIDATED?": "N/A",
+      "NOVELTY VALUE": "High IF narrowly scoped as simulation (not causal inference)",
+      "IMPLEMENTATION COST": "Low-moderate (reuses the existing rollout mechanism)",
+      "RISK": "High if oversold as causal; low if explicitly labeled as hypothetical-input simulation",
+      "RECOMMENDATION": "B -- Strong differentiator IF scoped narrowly (see Step 8); otherwise reject the broad framing"
+    },
+    {
+      "FEATURE": "Reinforcement learning",
+      "REQUIRED BY PS?": "No -- no action space, reward, or policy language anywhere in the PS",
+      "CURRENTLY IMPLEMENTED?": "No",
+      "SCIENTIFICALLY VALIDATED?": "N/A",
+      "NOVELTY VALUE": "None for this PS",
+      "IMPLEMENTATION COST": "Very high",
+      "RISK": "Very high -- no defined environment/reward, high chance of an unvalidatable demo",
+      "RECOMMENDATION": "D -- Novelty theater / reject"
+    },
+    {
+      "FEATURE": "LLM chatbot",
+      "REQUIRED BY PS?": "No",
+      "CURRENTLY IMPLEMENTED?": "No",
+      "SCIENTIFICALLY VALIDATED?": "N/A",
+      "NOVELTY VALUE": "None for this PS's technical requirements",
+      "IMPLEMENTATION COST": "Moderate",
+      "RISK": "High -- adds an unaudited generation surface with no PS requirement it satisfies",
+      "RECOMMENDATION": "D -- Novelty theater / reject"
+    },
+    {
+      "FEATURE": "Blockchain",
+      "REQUIRED BY PS?": "REQUIRES VERIFICATION -- the SIH theme category is 'Blockchain & Cybersecurity', but the fetched official PS text contains ZERO mention of blockchain in its technical requirements or deliverables",
+      "CURRENTLY IMPLEMENTED?": "No",
+      "SCIENTIFICALLY VALIDATED?": "N/A",
+      "NOVELTY VALUE": "None demonstrated by PS text",
+      "IMPLEMENTATION COST": "High",
+      "RISK": "High -- would address a theme label, not an actual PS requirement, if added",
+      "RECOMMENDATION": "D -- Novelty theater / reject based on PS text as fetched; FLAG FOR HUMAN VERIFICATION with mentors given the theme name, since SIH themes can bundle multiple problem statements under one category"
+    },
+    {
+      "FEATURE": "GAN / synthetic data",
+      "REQUIRED BY PS?": "No",
+      "CURRENTLY IMPLEMENTED?": "No (world_model/zero_shot_results.json even explicitly logs synthetic_data_used: false, suggesting prior awareness this should be avoided/disclosed)",
+      "SCIENTIFICALLY VALIDATED?": "N/A",
+      "NOVELTY VALUE": "None -- would introduce fabrication risk without addressing any requirement",
+      "IMPLEMENTATION COST": "Moderate-high",
+      "RISK": "High -- directly conflicts with this project's own established evidence-only discipline",
+      "RECOMMENDATION": "D -- Novelty theater / reject"
+    },
+    {
+      "FEATURE": "Federated learning",
+      "REQUIRED BY PS?": "No -- no multi-party/privacy-preserving-training requirement anywhere in the PS",
+      "CURRENTLY IMPLEMENTED?": "No",
+      "SCIENTIFICALLY VALIDATED?": "N/A",
+      "NOVELTY VALUE": "None for this PS",
+      "IMPLEMENTATION COST": "Very high",
+      "RISK": "Very high -- unnecessary complexity, no requirement addressed",
+      "RECOMMENDATION": "D -- Novelty theater / reject"
+    }
+  ],
+  "scientific_gaps": [
+    {
+      "rank": 1,
+      "gap": "No integrated, checkpoint-backed inference engine or demo (R11/R12)",
+      "why_it_matters": "The PS's core deliverables (infiltration prediction engine, demonstration interface) are unmet even though the underlying trained model exists -- this is the single biggest gap between 'we built something good' and 'we can show it'",
+      "ps_explicit_requirement": true,
+      "solvable_with_existing_dataset": true,
+      "objectively_validatable": true,
+      "proof_metric": "A demo run end-to-end against a held-out CSV, showing the exact Phase 8A/6B numbers reproduced live, not hardcoded",
+      "implementation_cost": "Low-moderate -- all pieces exist, this is integration work, not new modeling",
+      "what_could_go_wrong": "Accidentally wiring the unaudited world_model/ track instead of the audited experiments/ track; accidentally reusing the suspicious evaluation_results.json numbers"
+    },
+    {
+      "rank": 2,
+      "gap": "No audited unseen-attack-family generalization result (R5)",
+      "why_it_matters": "PS explicitly requires generalization beyond signature memorization; preliminary unaudited evidence suggests this may currently FAIL (near-random AUC on held-out Infiltration)",
+      "ps_explicit_requirement": true,
+      "solvable_with_existing_dataset": true,
+      "objectively_validatable": true,
+      "proof_metric": "PR-AUC/ROC-AUC/recall on a properly leakage-checked leave-one-attack-family-out split, compared against the in-distribution numbers",
+      "implementation_cost": "Moderate -- needs a new split construction respecting Phase 3.5's leakage-audit rigor",
+      "what_could_go_wrong": "Too few positive examples in the held-out family for a stable metric; must report confidence intervals"
+    },
+    {
+      "rank": 3,
+      "gap": "No native per-step attack-risk forecast (R6)",
+      "why_it_matters": "PS wording implies a K-indexed probability series, not one whole-horizon scalar",
+      "ps_explicit_requirement": true,
+      "solvable_with_existing_dataset": true,
+      "objectively_validatable": true,
+      "proof_metric": "Per-horizon-step precision/recall/F1/AUC, each computed on its own strictly-labeled target",
+      "implementation_cost": "Moderate -- can reuse the VectorWorldModel backbone with a new per-step head",
+      "what_could_go_wrong": "Constructing 6 independent per-step targets that leak information about each other, or reusing the existing single 'any-attack-in-horizon' label incorrectly"
+    },
+    {
+      "rank": 4,
+      "gap": "MITRE taxonomy doesn't fully cover the PS's 5 named stages (R7)",
+      "why_it_matters": "Direct, easily-checked PS wording match",
+      "ps_explicit_requirement": true,
+      "solvable_with_existing_dataset": "Partially -- depends on whether Reconnaissance/Exfiltration-labeled traffic exists in CIC-IDS-2018 at all",
+      "objectively_validatable": true,
+      "proof_metric": "Confusion matrix over all 5 PS-named classes plus BENIGN",
+      "implementation_cost": "Low-moderate",
+      "what_could_go_wrong": "CIC-IDS-2018's label taxonomy may not cleanly map to Reconnaissance/Exfiltration at all -- would need honest documentation if so"
+    },
+    {
+      "rank": 5,
+      "gap": "No calibrated/trustworthy uncertainty (compounds Phase 8B's finding)",
+      "why_it_matters": "SOC operators need to know how much to trust a probability number; Phase 8B already showed naive calibration fails under prevalence shift",
+      "ps_explicit_requirement": false,
+      "solvable_with_existing_dataset": true,
+      "objectively_validatable": true,
+      "proof_metric": "Reliability diagrams / ECE on a genuinely held-out distribution shift, not just the standard test split",
+      "implementation_cost": "Low-moderate depending on approach (see Step 7)",
+      "what_could_go_wrong": "Choosing a fashionable method (deep ensembles, full Bayesian) that doesn't fit the RTX 4060 8GB budget or the timeline"
+    },
+    {
+      "rank": 6,
+      "gap": "Explainability not wired to any reachable interface (R8)",
+      "why_it_matters": "PS calls this non-negotiable; the capability exists but judges cannot see it run",
+      "ps_explicit_requirement": true,
+      "solvable_with_existing_dataset": true,
+      "objectively_validatable": true,
+      "proof_metric": "Attribution values rendered in the demo, traceable to the actual model's gradients",
+      "implementation_cost": "Low (wiring only)",
+      "what_could_go_wrong": "Minimal risk -- this is the cheapest fix in the whole roadmap"
+    },
+    {
+      "rank": 7,
+      "gap": "Packet-level requirement vs. invalid current PCAP pairing (R2)",
+      "why_it_matters": "PS explicitly wants packet-level features; current evidence says this can't be validly combined with the flow dataset",
+      "ps_explicit_requirement": true,
+      "solvable_with_existing_dataset": false,
+      "objectively_validatable": true,
+      "proof_metric": "N/A until new data exists",
+      "implementation_cost": "Blocked -- requires new data acquisition, not modeling work",
+      "what_could_go_wrong": "Re-attempting fusion on the same invalid data, repeating an already-falsified result"
+    }
+  ],
+  "unseen_attack_generalization": {
+    "candidate_designs_considered": [
+      {
+        "design": "Leave-one-attack-family-out",
+        "defensible": true,
+        "notes": "Most defensible option given CIC-IDS-2018's per-day-per-attack-type structure (docs/CIC_IDS2018_DATA_READINESS.md attack timeline: each day/attack-type is largely confined to a specific time window and file). Train on days/windows NOT containing the held-out attack family; test only on windows that DO contain it."
+      },
+      {
+        "design": "Attack-class holdout (finer than family, e.g. hold out one DoS variant but keep others)",
+        "defensible": true,
+        "notes": "Also defensible but tests a weaker form of generalization (still seen the broader family); useful as a secondary, easier benchmark."
+      },
+      {
+        "design": "Temporal holdout (chronological, within-day)",
+        "defensible": "Already the existing protocol",
+        "notes": "This is what Phase 3.5-9I already do. It does NOT test attack-family generalization -- it tests whether the model generalizes across time within the same attack types it has seen."
+      },
+      {
+        "design": "Source-day holdout (hold out an entire day)",
+        "defensible": "Partially",
+        "notes": "Conflates day-of-capture effects (different attack types happen on different days in CIC-IDS-2018) with attack-family generalization -- less clean than explicit family holdout, but easy to construct and a reasonable secondary check."
+      },
+      {
+        "design": "Label-family holdout (broad label groupings, e.g. all *BruteForce* labels)",
+        "defensible": true,
+        "notes": "A pragmatic middle ground between exact-class and whole-day holdout; groups related labels (e.g. FTP-BruteForce + SSH-Bruteforce) as one family."
+      },
+      {
+        "design": "Random row-level split",
+        "defensible": false,
+        "notes": "Explicitly rejected -- violates temporal ordering and would leak flow-adjacency information Phase 3.5's guards exist specifically to prevent."
+      }
+    ],
+    "recommended_protocol": {
+      "design": "Leave-one-attack-family-out, built on top of the EXISTING Phase 3.5 canonical windowed dataset interface (world_model_dataset.py), not a new pipeline",
+      "train_validation_test_construction": "Select ONE attack family present in a clearly bounded time window (e.g. Infiltration, confined to Wednesday-28-02-2018 and Thursday-01-03-2018 per the Phase 2 attack timeline). TRAIN on all windows from the other source days (which contain zero Infiltration-labeled rows). VALIDATE on a held-out slice of the same non-Infiltration days (chronologically, as today). TEST exclusively on windows from the Infiltration day(s).",
+      "target_definition": "Unchanged: future_attack_within_horizon, but now computed with the held-out family's labels only present in the TEST windows",
+      "leakage_risks": [
+        "Must verify NO Infiltration-labeled row appears anywhere in train/validation (a stricter version of the existing split-boundary guard)",
+        "Must verify the feature scaler is fit on the NEW train set only (not reuse the old chronological-split scaler)",
+        "Must check the held-out day doesn't ALSO contain other, already-seen attack types mixed into the same windows (would partially leak familiarity)"
+      ],
+      "metrics": "PR-AUC, ROC-AUC, recall at a fixed FPR (reuse choose_threshold_recall_at_fpr from phase6b_ablation.py for consistency with Phase 8A), plus a bootstrap CI given the likely small positive count",
+      "limitations": "CIC-IDS-2018 only has a handful of distinct attack families, each concentrated on 1-2 days -- this limits how many independent held-out-family repeats are possible, and each repeat trains a materially different model (fewer families to learn from), so results should be read as case-study evidence per family, not one aggregate 'generalization score'."
+    },
+    "can_dataset_support_the_claim": "PARTIALLY. The dataset supports building and running the experiment (attack families are cleanly day-bounded per the existing Phase 2 audit), but the SMALL NUMBER of distinct attack families limits how strong or general any resulting claim can be -- a single held-out family (e.g. Infiltration) is a real, useful data point, not proof of generalization to attack types outside CIC-IDS-2018 entirely."
+  },
+  "per_step_risk_forecasting": {
+    "exact_target_needed": "For each future step k in 1..6, a binary label current_attack(t+k) (already available per-row in data/windows/*.csv -- this is literally the 'current_attack' field of the future row, already read by world_model_dataset.read_world_model_samples into window_start_sequence/future_attack_step, just not currently exposed as 6 separate per-step training targets).",
+    "existing_labels_support_it": true,
+    "horizon_windows_complete": "Yes for eligible samples -- read_world_model_samples already guards 'index + FORECAST_HORIZON_WINDOWS >= len(rows)' and requires the full t-5..t+6 span to stay inside one split, so every training sample already has 6 complete, real future rows available.",
+    "target_leakage_risk": "Low if implemented as 6 independent binary heads trained with the existing per-step current_attack(t+k) ground truth (this is exactly what Phase 6B's WorldModelSampleSet.future_attack_step already computes, just collapsed into a single scalar today). Risk would only appear if per-step targets were constructed by re-deriving from PREDICTED states rather than the real logged future rows.",
+    "backbone_reusable": "Yes -- the existing rollout already produces 6 distinct latent states z(t+1)...z(t+6) (experiments/phase6b_vector_world_model.py: rollout list before mean-pooling). The AttackForecastHead currently DISCARDS this per-step structure by mean-pooling before the final linear layer -- a per-step head would apply the same small MLP to EACH z(t+k) independently instead of the pooled mean.",
+    "suitable_losses": "BCEWithLogitsLoss per step, summed or averaged across the 6 steps, with a per-step pos_weight computed from TRAIN labels only (mirroring the existing whole-horizon approach)",
+    "evaluation_metrics": "Per-step PR-AUC/ROC-AUC/F1/recall/FPR (already have per_horizon_state_error and per_horizon_attack_performance as templates in phase6b_vector_world_model.py)",
+    "explicit_warning": "1 - P(BENIGN) derived from the MITRE stage head is NOT a substitute for this and must never be presented as native per-step attack probability -- it answers a different question (which stage is most likely) and was fit with a different, stage-classification loss, not an attack/no-attack loss."
+  },
+  "uncertainty_evaluation": {
+    "approaches_considered": [
+      {
+        "approach": "Deep ensembles",
+        "suitability": "Good statistical properties, but N x training/inference cost",
+        "rtx4060_feasibility": "Feasible -- VectorWorldModel is only 347,806 params; training 5 ensemble members sequentially is cheap on an 8GB card",
+        "interpretation": "Variance across ensemble members' predictions as an uncertainty proxy",
+        "validation_requirements": "Reliability diagrams on held-out data; check ensemble diversity isn't collapsing",
+        "calibration_implications": "Improves epistemic uncertainty estimates; does not fix the Phase 8B prevalence-shift calibration problem by itself",
+        "risk": "5x training time; still needs the same care about calibration transfer Phase 8B already found tricky"
+      },
+      {
+        "approach": "Monte Carlo dropout",
+        "suitability": "Cheapest to add (model already has Dropout layers)",
+        "rtx4060_feasibility": "Very feasible -- just run N forward passes at inference with dropout active",
+        "interpretation": "Variance across stochastic forward passes",
+        "validation_requirements": "Same reliability-diagram checks as ensembles, generally weaker uncertainty quality",
+        "calibration_implications": "Known in the literature to often underestimate true uncertainty",
+        "risk": "Lower engineering risk, but weaker theoretical guarantees than ensembles or conformal prediction"
+      },
+      {
+        "approach": "Quantile prediction",
+        "suitability": "Natural fit for the state-reconstruction (regression) side, less natural for the binary attack-probability side",
+        "rtx4060_feasibility": "Feasible",
+        "interpretation": "Direct prediction intervals on future state values",
+        "validation_requirements": "Pinball loss evaluation, coverage checks",
+        "calibration_implications": "Doesn't directly address the classification-probability calibration question this project actually needs",
+        "risk": "Solves a different problem (state uncertainty) than the one that matters most (attack-probability trust)"
+      },
+      {
+        "approach": "Conformal prediction",
+        "suitability": "Strong fit: distribution-free, finite-sample coverage GUARANTEES, and directly wraps the existing trained classifier without retraining or architecture changes",
+        "rtx4060_feasibility": "Trivial -- pure post-hoc calibration set computation, no GPU needed",
+        "interpretation": "A prediction set/interval with a guaranteed coverage rate, computed from a held-out calibration split",
+        "validation_requirements": "Empirical coverage check on a genuinely held-out calibration set (separate from Phase 8B's validation-fitted calibrators, to avoid repeating that failure)",
+        "calibration_implications": "Directly and formally addresses what Phase 8B found broken (naive calibration transfer under prevalence shift) via a method designed to be robust to exactly that",
+        "risk": "Low -- well-understood, well-published method; main risk is exchangeability assumptions under real distribution shift, which must be explicitly tested, not assumed"
+      }
+    ],
+    "primary_recommendation": "Conformal prediction. It requires no architecture change, no retraining, trivial compute cost, and directly targets the exact failure mode Phase 8B already documented (naive probability calibration degrading under prevalence shift) with a method that has formal coverage guarantees rather than just empirical hope.",
+    "fallback_recommendation": "Monte Carlo dropout, as a cheap secondary signal (epistemic-uncertainty flag) if conformal prediction's coverage checks fail under the project's specific distribution shift."
+  },
+  "counterfactual_defense": {
+    "representable_interventions_in_157_feature_state": [
+      "Suppress/zero traffic-volume-related aggregates for a feature group (approximates 'isolate host' or 'block source' at the STATE level, not the packet level, since raw IP identity is not a feature -- R1)",
+      "Reduce port-diversity / rate-related aggregates (approximates 'block destination port' for scan-like behavior)",
+      "Reduce specific attack-correlated feature aggregates identified by the explainability output (a direct, feature-space intervention)"
+    ],
+    "not_representable": [
+      "Literal 'isolate host X' or 'block destination IP Y' -- no endpoint identity exists in the 157-feature state (R1), so host/IP-specific interventions cannot be represented without fabricating identity information that was deliberately excluded"
+    ],
+    "physical_plausibility_concern": "Modifying a subset of the 157 standardized features independently can easily produce a state vector that lies outside the manifold of states the StandardScaler/model ever saw during training (e.g. zeroing byte-count aggregates while leaving packet-count aggregates unchanged is not how real traffic behaves) -- the World Model would happily roll forward an unrealistic state without any signal that it left the training distribution.",
+    "world_model_rollout_compatible": "Yes, mechanically -- LatentTransition is a pure function of the current latent state and can be applied to ANY input state, including a hypothetically edited one. This is precisely why the physical-plausibility concern above matters: mechanical compatibility does not imply the output is meaningful.",
+    "simulation_vs_causal_effect_distinction": "This must be presented strictly as 'if the observed feature vector had been X instead, the trained model would forecast Y' -- a statement about the MODEL's learned function, not a statement about what would physically happen on the real network if a defender took that action. No causal inference (e.g. do-calculus, actual intervention data) is performed or possible with this setup.",
+    "possible_validation": "Compare counterfactual-intervention outputs against a real, naturally-occurring state from the dataset that resembles the hypothetical one (nearest-neighbor sanity check) as a weak plausibility signal -- NOT proof of causal validity.",
+    "recommendation": "SCIENTIFICALLY SAFE ONLY IN A NARROW FORM: (1) restrict interventions to feature-space edits explicitly identified by the explainability output (not arbitrary host/IP actions, which aren't representable anyway), (2) always label the output 'simulated trajectory under a hypothetical feature-state edit', never 'predicted effect of this defensive action', (3) report the nearest-neighbor plausibility check alongside every counterfactual result. If this narrow framing cannot be maintained in the demo UI, DO NOT build this capability -- the broader framing risks a serious, easily-critiqued overclaim."
+  },
+  "final_architecture": {
+    "diagram": "INPUT (CSV/PCAP) [CURRENT: CSV only, GREEN]\n  -> STATE REPRESENTATION (157-dim feature vector) [CURRENT, GREEN]\n  -> TEMPORAL MODEL (self-attention over 6 observed states) [CURRENT, GREEN]\n  -> WORLD MODEL (LatentTransition, recursive x6 rollout) [CURRENT, GREEN]\n  -> K-STEP ROLLOUT (z(t+1)...z(t+6)) [CURRENT, GREEN]\n  -> PER-STEP ATTACK RISK (new per-step head on existing rollout) [PLANNED, P1]\n  -> MITRE STAGE TRAJECTORY (per-step, needs taxonomy fix) [CURRENT + PLANNED FIX, P1]\n  -> UNCERTAINTY (conformal prediction wrapper) [PLANNED, P2]\n  -> EXPLAINABILITY (gradient attribution, needs wiring) [CURRENT + PLANNED WIRING, P0]\n  -> OPTIONAL COUNTERFACTUAL SIMULATION (narrow feature-space form only) [OPTIONAL FUTURE, P2/reject-if-broad]\n  -> OFFLINE SOC INTERFACE (ONE interface, wired to the audited checkpoint) [PLANNED, P0]\n",
+    "packet_graph_branch": "NOT included as a required production branch. Phase 9H/9I established the currently-available PCAP data cannot be validly paired with the flow dataset (RED, RED). It remains a documented, evidence-based OPTIONAL FUTURE branch, contingent on new data per Phase 9I's recommendation -- never presented as part of the current production architecture.",
+    "current_vs_planned_vs_optional": {
+      "CURRENT": [
+        "157-dim flow-state representation",
+        "StateEncoder + TemporalContextEncoder (self-attention)",
+        "LatentTransition world model, 6-step rollout",
+        "Whole-horizon attack probability head",
+        "Per-step MITRE stage trajectory (6-class, with known gaps)",
+        "Gradient-based attribution (SHAP-compatible infrastructure)",
+        "Fair benchmark vs. logistic regression (Phase 8A)"
+      ],
+      "PLANNED": [
+        "Per-step native attack-probability head (reuses existing backbone)",
+        "MITRE taxonomy reconciliation to the PS's 5 named stages",
+        "Conformal-prediction uncertainty wrapper",
+        "ONE integrated, checkpoint-backed inference engine + demo interface",
+        "Properly audited leave-one-attack-family-out generalization experiment"
+      ],
+      "OPTIONAL FUTURE": [
+        "Packet/graph fusion branch (contingent on new, non-single-host PCAP data or authoritative timezone documentation)",
+        "GNN/temporal-GNN over network state (contingent on the above)",
+        "Narrowly-scoped counterfactual feature-space simulation"
+      ]
+    }
+  },
+  "demo_requirements": {
+    "user_provides": [
+      "A CIC-IDS-2018-format flow CSV (the one input type that is fully validated end-to-end today)",
+      "Optionally, a raw PCAP file -- accepted for packet-level feature EXTRACTION and display only, explicitly NOT fed into the forecasting model (per the R2/Phase 9I finding), to avoid silently reintroducing the invalid pairing"
+    ],
+    "dashboard_must_display": {
+      "1_current_network_state": "SUPPORTED -- direct readout of the last observed 157-dim state",
+      "2_current_risk": "SUPPORTED -- current-window classification-style score, already validated (Phase 4/5/6B)",
+      "3_future_risk_trajectory": "PARTIALLY SUPPORTED until the per-step head (P1) lands -- today only a single whole-horizon number exists",
+      "4_predicted_attack_stage": "SUPPORTED -- per-step MITRE stage exists (Phase 7B/7D), with documented taxonomy-coverage caveats",
+      "5_stage_progression": "SUPPORTED -- six-step stage trajectory is genuine (Phase 7D)",
+      "6_uncertainty": "NOT SUPPORTED until conformal prediction (P2) is built",
+      "7_top_driving_features": "SUPPORTED once wired (Phase 7C attribution exists, just needs a UI hook -- P0)",
+      "8_flagged_flows_windows": "SUPPORTED -- straightforward once the engine is wired (threshold already validated, Phase 8A)",
+      "9_optional_counterfactual_result": "OPTIONAL, only if narrowly scoped per Step 8 -- otherwise omit entirely rather than oversell it",
+      "10_evidence_provenance": "SUPPORTED -- every phase's report already documents this discipline; the demo should carry it through (e.g. label the benchmark tab's source explicitly, unlike the current unaudited Streamlit numbers)"
+    },
+    "explicit_non_promises": [
+      "Do not promise packet-level model input in the demo (R2/Phase 9H/9I: RED)",
+      "Do not promise calibrated SOC probabilities (Phase 8B finding)",
+      "Do not promise unseen-attack generalization until the P1 experiment (Step 5) is actually run and audited",
+      "Do not reuse world_model/evaluation_results.json's benchmark numbers under any circumstance (suspicious methodology, see DUAL_IMPLEMENTATION_FINDING)"
+    ]
+  },
+  "claims_audit": [
+    {
+      "CLAIM": "Predicts future attacks",
+      "CAN WE SAY THIS?": "PARTIALLY SUPPORTED",
+      "EVIDENCE": "Phase 6B whole-horizon attack probability, validated on held-out test data (Phase 8A)",
+      "CONFIDENCE": "High for whole-horizon; no per-step evidence yet",
+      "REQUIRED QUALIFIER": "'predicts whether an attack occurs somewhere in the next 6 windows' -- not per-step until R6 is closed"
+    },
+    {
+      "CLAIM": "Forecasts attacker progression",
+      "CAN WE SAY THIS?": "PARTIALLY SUPPORTED",
+      "EVIDENCE": "Phase 7D six-step MITRE stage trajectory is genuine",
+      "CONFIDENCE": "Moderate -- taxonomy doesn't cover all 5 PS-named stages, INITIAL_ACCESS has no val/test examples, labels are a 'reasoned mapping' not authoritative MITRE ground truth",
+      "REQUIRED QUALIFIER": "'MITRE-stage-derived non-benign signal' for anything computed as 1-P(BENIGN); never call it causal kill-chain inference"
+    },
+    {
+      "CLAIM": "Predicts infiltration probability",
+      "CAN WE SAY THIS?": "PARTIALLY SUPPORTED",
+      "EVIDENCE": "Phase 6B whole-horizon head",
+      "CONFIDENCE": "High for the whole-horizon number itself; a genuinely per-step 'infiltration probability at t+k' does not exist yet",
+      "REQUIRED QUALIFIER": "State explicitly which horizon definition is being reported"
+    },
+    {
+      "CLAIM": "Generalizes to unseen attacks",
+      "CAN WE SAY THIS?": "NOT SUPPORTED",
+      "EVIDENCE": "No audited experiment exists; the one preliminary, unaudited signal (world_model/zero_shot_results.json) suggests POOR generalization (near-random AUC on a wholly unseen attack family)",
+      "CONFIDENCE": "Low -- this claim would currently be actively contradicted by the best available (if unaudited) evidence",
+      "REQUIRED QUALIFIER": "Do not make this claim until Step 5's audited experiment is run"
+    },
+    {
+      "CLAIM": "Uses packet-level information",
+      "CAN WE SAY THIS?": "NOT SUPPORTED",
+      "EVIDENCE": "Phase 9D-9G demonstrated packet-level EXTRACTION is feasible in isolation; Phase 9H/9I established it cannot currently be validly integrated into the forecasting model (RED, RED)",
+      "CONFIDENCE": "High confidence this claim would be false if made about the trained model",
+      "REQUIRED QUALIFIER": "'packet-level feature extraction was investigated and characterized, but is not part of the current trained model' if mentioned at all"
+    },
+    {
+      "CLAIM": "Uses a network graph",
+      "CAN WE SAY THIS?": "NOT SUPPORTED",
+      "EVIDENCE": "Phase 9E characterized graph feasibility; the production representation is a feature vector, not a graph",
+      "CONFIDENCE": "High confidence this claim would be false",
+      "REQUIRED QUALIFIER": "'graph representation feasibility was characterized as future work' if mentioned at all"
+    },
+    {
+      "CLAIM": "Uses SHAP",
+      "CAN WE SAY THIS?": "NOT SUPPORTED",
+      "EVIDENCE": "Phase 7C: SHAP GradientExplainer unavailable (TensorFlow absent); actual method is Gradient x Input",
+      "CONFIDENCE": "High confidence 'uses SHAP' would be a false claim",
+      "REQUIRED QUALIFIER": "'post-hoc gradient-based feature attribution with SHAP-compatible explainability infrastructure'"
+    },
+    {
+      "CLAIM": "Learns attacker kill-chain progression",
+      "CAN WE SAY THIS?": "NOT SUPPORTED",
+      "EVIDENCE": "Phase 7B/7D stage labels are a reasoned mapping from dataset labels, not authoritative MITRE ground truth or causal attacker-behavior data",
+      "CONFIDENCE": "High confidence the causal framing is unsupported",
+      "REQUIRED QUALIFIER": "'MITRE-stage classification derived from dataset labels', never 'learns attacker behavior' or 'causal kill-chain'"
+    },
+    {
+      "CLAIM": "Provides calibrated probabilities",
+      "CAN WE SAY THIS?": "NOT SUPPORTED",
+      "EVIDENCE": "Phase 8B: raw probabilities outperformed validation-fitted Platt calibration under observed prevalence shift",
+      "CONFIDENCE": "High confidence 'calibrated' would be a false claim",
+      "REQUIRED QUALIFIER": "'uncalibrated risk scores, ranking-useful but not probability-accurate' -- unless/until conformal prediction (P2) is built and validated"
+    },
+    {
+      "CLAIM": "Supports counterfactual defense",
+      "CAN WE SAY THIS?": "NOT SUPPORTED",
+      "EVIDENCE": "Not built (Step 8 of this audit is a feasibility analysis, not an implementation)",
+      "CONFIDENCE": "N/A -- capability does not exist yet",
+      "REQUIRED QUALIFIER": "Do not claim until built, and even then only as 'simulated trajectory under a hypothetical feature-state edit', never causal"
+    },
+    {
+      "CLAIM": "Outperforms baselines",
+      "CAN WE SAY THIS?": "PARTIALLY SUPPORTED",
+      "EVIDENCE": "Phase 8A: Temporal Transformer beats logistic regression clearly; World Model also beats logistic regression but is NOT the strongest model overall",
+      "CONFIDENCE": "High, but must name WHICH model",
+      "REQUIRED QUALIFIER": "Specify 'the Temporal Transformer' as the strongest model; never say 'the World Model outperforms all baselines' -- it does not beat the Transformer"
+    },
+    {
+      "CLAIM": "Works offline",
+      "CAN WE SAY THIS?": "SUPPORTED",
+      "EVIDENCE": "Trained-model inference path requires no network access; PCAP research phases used the network only for one-time data acquisition, not shipped-system operation",
+      "CONFIDENCE": "High for the inference path itself",
+      "REQUIRED QUALIFIER": "None required, though the demo interface's offline status should be re-verified once R11/R12 integration work is done"
+    }
+  ],
+  "roadmap": [
+    {
+      "Priority": "P0",
+      "Task": "Reconcile the two World Model implementations; retire or clearly quarantine the unaudited world_model/ Streamlit track",
+      "Purpose": "Eliminate the risk of accidentally demoing the unaudited NetworkWorldModel / suspicious evaluation_results.json numbers to judges",
+      "Expected evidence": "A single, documented 'which model is production' decision; the unaudited track's benchmark numbers removed or explicitly labeled UNAUDITED wherever they appear",
+      "Dependencies": "None -- pure documentation/cleanup decision",
+      "Risk": "Low technical risk; high reputational risk if skipped",
+      "Requires new data": false
+    },
+    {
+      "Priority": "P0",
+      "Task": "Build ONE integrated inference engine that loads the actual audited VectorWorldModel checkpoint and calls the actual audited MITRE mapping + explainability code",
+      "Purpose": "Satisfy R11 (infiltration prediction engine) and make R12 (demo) possible at all",
+      "Expected evidence": "An end-to-end run against a held-out CSV reproducing the Phase 6B/8A numbers live",
+      "Dependencies": "P0 reconciliation decision above",
+      "Risk": "Moderate -- integration bugs are the main risk, not modeling risk",
+      "Requires new data": false
+    },
+    {
+      "Priority": "P0",
+      "Task": "Wire Phase 7C's gradient-attribution explainability into the same integrated engine/demo",
+      "Purpose": "Satisfy R8's non-negotiable explainability requirement in a way judges can actually see",
+      "Expected evidence": "Top-feature attribution rendered per prediction in the demo",
+      "Dependencies": "P0 integrated engine",
+      "Risk": "Low",
+      "Requires new data": false
+    },
+    {
+      "Priority": "P1",
+      "Task": "Run a properly audited leave-one-attack-family-out generalization experiment",
+      "Purpose": "Close R5, produce a real answer (positive or negative) to the PS's unseen-attack-generalization requirement",
+      "Expected evidence": "Per-family PR-AUC/ROC-AUC/recall with bootstrap CIs, leakage-audit report matching Phase 3.5's rigor",
+      "Dependencies": "None",
+      "Risk": "Moderate -- may confirm the preliminary negative signal, which is a valid (if less exciting) result",
+      "Requires new data": false
+    },
+    {
+      "Priority": "P1",
+      "Task": "Add a native per-step attack-probability head to the existing VectorWorldModel backbone",
+      "Purpose": "Close R6, make the K-step probability series PS wording literally true",
+      "Expected evidence": "Per-horizon-step PR-AUC/ROC-AUC/F1, compared against the existing whole-horizon head",
+      "Dependencies": "None (reuses existing rollout)",
+      "Risk": "Moderate -- per-step target/leakage construction needs care",
+      "Requires new data": false
+    },
+    {
+      "Priority": "P1",
+      "Task": "Reconcile the MITRE stage taxonomy to cover all 5 PS-named stages",
+      "Purpose": "Close R7's taxonomy-coverage gap",
+      "Expected evidence": "Updated stage-mapping report showing Reconnaissance/Exfiltration coverage (or an honest, evidenced statement that CIC-IDS-2018 cannot support them)",
+      "Dependencies": "None",
+      "Risk": "Low-moderate -- depends on whether the dataset's labels can honestly support the missing stages",
+      "Requires new data": false
+    },
+    {
+      "Priority": "P2",
+      "Task": "Add conformal-prediction uncertainty wrapper",
+      "Purpose": "Address the Phase 8B calibration weakness with a formally-grounded method",
+      "Expected evidence": "Empirical coverage check on a held-out calibration split, under the actual observed prevalence shift",
+      "Dependencies": "P0 integrated engine (to wrap)",
+      "Risk": "Low",
+      "Requires new data": false
+    },
+    {
+      "Priority": "P2",
+      "Task": "Build a narrowly-scoped counterfactual feature-space simulation (only if the narrow framing from Step 8 can be maintained in the UI)",
+      "Purpose": "Differentiator capability, explicitly optional",
+      "Expected evidence": "Simulated trajectories under labeled hypothetical edits, with nearest-neighbor plausibility checks reported alongside",
+      "Dependencies": "P0 integrated engine",
+      "Risk": "High if the narrow framing slips into causal-sounding language",
+      "Requires new data": false
+    },
+    {
+      "Priority": "P3",
+      "Task": "Document the open-source license explicitly",
+      "Purpose": "Close the minor R14 verification gap",
+      "Expected evidence": "A LICENSE file in the repository root",
+      "Dependencies": "None",
+      "Risk": "None",
+      "Requires new data": false
+    },
+    {
+      "Priority": "REJECT",
+      "Task": "Packet+flow fusion / GNN on current PCAP data",
+      "Purpose": "N/A -- already tested and falsified twice (Phase 9H, 9I)",
+      "Expected evidence": "N/A",
+      "Dependencies": "Blocked on new PCAP data acquisition (out of scope for this roadmap)",
+      "Risk": "Repeating an already-falsified experiment",
+      "Requires new data": true
+    },
+    {
+      "Priority": "REJECT",
+      "Task": "Reinforcement learning, LLM chatbot, GAN/synthetic data, federated learning, blockchain (pending PS verification)",
+      "Purpose": "None address any explicit PS requirement",
+      "Expected evidence": "N/A",
+      "Dependencies": "N/A",
+      "Risk": "Scope creep, unvalidatable additions, reputational risk of novelty-for-novelty's-sake",
+      "Requires new data": false
+    }
+  ],
+  "experiment_specifications": [
+    {
+      "roadmap_task": "Leave-one-attack-family-out generalization (P1)",
+      "hypothesis": "The VectorWorldModel architecture, trained without exposure to a given attack family, generalizes poorly to that family at test time (motivated by the preliminary, unaudited zero_shot_results.json signal)",
+      "dataset": "data/windows/*.csv (canonical Phase 3.5 interface), re-split by attack family instead of chronologically within each day",
+      "split": "Train: all windows from source days containing zero examples of the held-out family. Validation: chronological held-out slice of the same train days. Test: all windows from source day(s) containing the held-out family",
+      "inputs": "Identical 157-feature X=[N,6,157] as Phase 6B",
+      "target": "future_attack_within_horizon (unchanged definition)",
+      "model": "VectorWorldModel, identical architecture/hyperparameters to Phase 6B (no architecture search)",
+      "baseline": "The existing Phase 6B chronological-split model, evaluated on the SAME held-out-family test windows for a fair before/after comparison",
+      "metric": "PR-AUC, ROC-AUC, recall at FPR<=5% (choose_threshold_recall_at_fpr, reused unmodified)",
+      "acceptance_criterion": "Documented, reproducible result either way -- a negative result (poor generalization) is an acceptance criterion in itself, per this project's established scientific discipline",
+      "failure_criterion": "N/A -- both outcomes are informative; only a leakage-audit failure would count as an implementation failure",
+      "leakage_checks": "Reuse world_model_dataset.validate_world_model_samples' checks (span-containment, temporal alignment, label recomputation), PLUS a new check confirming zero held-out-family labels appear in train/validation",
+      "expected_artifact": "experiments/results/phaseXX_unseen_attack_generalization/ with metrics.json, leakage-audit report, and comparison against the Phase 6B baseline"
+    },
+    {
+      "roadmap_task": "Native per-step attack-probability head (P1)",
+      "hypothesis": "A per-step head applied independently to each rollout latent z(t+1)...z(t+6) can produce meaningfully differentiated per-step attack probabilities, rather than one pooled whole-horizon number",
+      "dataset": "data/windows/*.csv, unchanged canonical split",
+      "split": "Unchanged Phase 3.5 chronological split",
+      "inputs": "Unchanged X=[N,6,157]",
+      "target": "6 independent per-step binary labels: current_attack(t+k) for k=1..6, already derivable from the existing window_start_sequence",
+      "model": "VectorWorldModel backbone (frozen or fine-tuned, to be decided empirically) + a new small per-step MLP head applied to each z(t+k) independently, mirroring AttackForecastHead's existing architecture but without the mean-pool",
+      "baseline": "The existing whole-horizon AttackForecastHead, evaluated against the SAME per-step targets by broadcasting its single prediction to all 6 steps",
+      "metric": "Per-step PR-AUC/ROC-AUC/F1/recall/FPR, compared step-by-step against the broadcast baseline",
+      "acceptance_criterion": "Per-step head achieves materially better per-step metrics than the broadcast baseline, especially at short horizons (t+1, t+2) where more precise timing should be easiest",
+      "failure_criterion": "Per-step head performs no better than the broadcast baseline at any horizon -- would suggest the whole-horizon pooling wasn't actually losing much information",
+      "leakage_checks": "Verify each per-step target uses only that step's real logged current_attack value, never a value derived from the model's own predictions",
+      "expected_artifact": "experiments/results/phaseXX_per_step_risk/ with per-step metrics.json and a direct comparison table against Phase 6B's whole-horizon numbers"
+    },
+    {
+      "roadmap_task": "MITRE taxonomy reconciliation (P1)",
+      "hypothesis": "CIC-IDS-2018's attack labels can support a taxonomy mapping that covers Reconnaissance and Exfiltration (the two PS-named stages currently missing from Phase 7B's 6-class taxonomy)",
+      "dataset": "The same attack labels already audited in docs/CIC_IDS2018_DATA_READINESS.md",
+      "split": "Unchanged Phase 3.5 split",
+      "inputs": "N/A (label-mapping exercise, not a new model)",
+      "target": "Revised stage-mapping function from raw attack labels to the PS's 5 named stages + BENIGN",
+      "model": "N/A for the mapping itself; re-evaluate the existing Phase 7B stage head under the revised taxonomy",
+      "baseline": "Phase 7B's current 6-class taxonomy and its published confusion matrix",
+      "metric": "Per-class precision/recall/F1 under the revised taxonomy, and an explicit count of PS-named stages actually covered",
+      "acceptance_criterion": "All 5 PS-named stages have at least some validation/test examples under the revised mapping, OR an explicit, evidenced statement of which stages CIC-IDS-2018 genuinely cannot support",
+      "failure_criterion": "If CIC-IDS-2018's labels genuinely cannot support Reconnaissance/Exfiltration as distinct classes, document this as a dataset limitation rather than forcing an unsupported mapping",
+      "leakage_checks": "None beyond the existing Phase 7B audit (this is a label-mapping change, not a new data split)",
+      "expected_artifact": "experiments/results/phaseXX_mitre_taxonomy_reconciliation/ with the revised mapping and its evidence"
+    },
+    {
+      "roadmap_task": "Conformal-prediction uncertainty wrapper (P2)",
+      "hypothesis": "Split conformal prediction, calibrated on a held-out calibration set, achieves its nominal coverage rate on the test set even under the prevalence shift Phase 8B documented",
+      "dataset": "Existing Phase 3.5 validation split, further subdivided into a calibration subset",
+      "split": "Unchanged train; validation split further divided into model-selection and conformal-calibration subsets",
+      "inputs": "The existing trained VectorWorldModel's output probabilities (no architecture change)",
+      "target": "Prediction sets/intervals with a target coverage level (e.g. 90%)",
+      "model": "Post-hoc wrapper only -- no retraining",
+      "baseline": "Raw uncalibrated probabilities (Phase 8B's own finding that these outperform Platt scaling) and the rejected Platt calibrator, for a three-way comparison",
+      "metric": "Empirical coverage rate vs. nominal target; average prediction-set size",
+      "acceptance_criterion": "Empirical coverage on test matches the nominal target within a small, pre-specified tolerance",
+      "failure_criterion": "Coverage falls meaningfully short of nominal on test -- would indicate the exchangeability assumption is violated under the real distribution shift, and must be reported as such, not hidden",
+      "leakage_checks": "Calibration subset must never overlap with the final test evaluation",
+      "expected_artifact": "experiments/results/phaseXX_conformal_uncertainty/ with coverage-check plots/tables"
+    }
+  ],
+  "overall_verdict": "YELLOW",
+  "requirement_status_counts": {
+    "GREEN": 6,
+    "YELLOW": 6,
+    "RED": 3
+  }
+}

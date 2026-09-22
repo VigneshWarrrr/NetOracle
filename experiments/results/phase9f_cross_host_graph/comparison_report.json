@@ -1,0 +1,442 @@
+{
+  "second_member_selection": {
+    "object_url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Original%20Network%20Traffic%20and%20Log%20data/Wednesday-14-02-2018/pcap.zip",
+    "filename": "pcap/capWIN-J6GMIG1DQE5-172.31.64.89",
+    "compressed_size": 6139533,
+    "uncompressed_size": 10894363,
+    "compression_method": 8,
+    "local_header_offset": 38025205144,
+    "expected_crc32": 3513340690,
+    "selection_justification": "Selected from Phase 9C's frozen discovery_report.json (never re-parsed from the archive). Selection rule: among all 9 candidate members with compressed_size in the requested [5,242,880, 7,340,032] byte band (excluding the Phase 9D member pcap/UCAP172.31.69.22), the SMALLEST was chosen -- a deterministic, content-blind tie-break that minimizes bytes downloaded while staying inside the requested band. No filename, hostname, or presumed attack/benign association was used in this decision; the only input to selection was the compressed_size field.",
+    "other_candidates_in_band": [
+      {
+        "filename": "pcap/capWIN-J6GMIG1DQE5-172.31.65.58",
+        "compressed_size": 6361342
+      },
+      {
+        "filename": "pcap/capWIN-J6GMIG1DQE5-172.31.67.26",
+        "compressed_size": 6386111
+      },
+      {
+        "filename": "pcap/capWIN-J6GMIG1DQE5-172.31.64.24",
+        "compressed_size": 6514289
+      },
+      {
+        "filename": "pcap/capWIN-J6GMIG1DQE5-172.31.64.39",
+        "compressed_size": 6571402
+      },
+      {
+        "filename": "pcap/capWIN-J6GMIG1DQE5-172.31.64.61",
+        "compressed_size": 6603485
+      },
+      {
+        "filename": "pcap/capWIN-J6GMIG1DQE5-172.31.65.11",
+        "compressed_size": 6660444
+      },
+      {
+        "filename": "pcap/capWIN-J6GMIG1DQE5-172.31.65.17",
+        "compressed_size": 6983699
+      },
+      {
+        "filename": "pcap/capWIN-J6GMIG1DQE5-172.31.65.115",
+        "compressed_size": 7192981
+      }
+    ]
+  },
+  "download_validation": {
+    "reused_existing_local_artifact": true,
+    "filename_matches_expected": true,
+    "compressed_size_matches_expected": true,
+    "note": "Local file C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\data\\phase9f\\capWIN-J6GMIG1DQE5-172.31.64.89.pcap already present with the expected uncompressed size; verified via CRC-32 below instead of re-fetching over the network."
+  },
+  "capture_validation": {
+    "uncompressed_bytes_expected": 10894363,
+    "uncompressed_bytes_actual": 10894363,
+    "uncompressed_size_matches_expected": true,
+    "expected_crc32": 3513340690,
+    "actual_crc32": 3513340690,
+    "crc32_matches_expected": true,
+    "first_32_bytes_hex": "d4c3b2a1020004000000000000000000ffff000001000000692b845aaba80300",
+    "detected_format": "pcap (microsecond resolution, little-endian byte order)",
+    "is_valid_capture": true
+  },
+  "second_capture_summary": {
+    "total_packets_in_capture": 49250,
+    "total_ip_packets": 46295,
+    "status_counts": {
+      "ok": 46295,
+      "ipv6_not_implemented": 697,
+      "non_ip": 2258
+    },
+    "tcp_packet_count": 44557,
+    "udp_packet_count": 800,
+    "icmp_packet_count": 840,
+    "other_packet_count": 98,
+    "unique_source_ips": 593,
+    "unique_destination_ips": 237,
+    "unique_hosts_overall": 597,
+    "total_bytes": 9896715,
+    "first_timestamp": 1518611305.239787,
+    "last_timestamp": 1518643841.321168,
+    "capture_duration_seconds": 32536.081380844116
+  },
+  "second_graph_statistics": {
+    "total_windows": 3254,
+    "non_empty_windows": 2620,
+    "empty_windows": 634,
+    "total_nodes_observed": 597,
+    "total_unique_directed_source_destination_pairs": 828,
+    "unique_edges_across_entire_capture": 828,
+    "unique_edges_note": "Identical to total_unique_directed_source_destination_pairs above -- both are the count of the set of distinct (src, dst) directed pairs observed anywhere in the capture. Reported under both labels for direct correspondence with the Phase 9E specification.",
+    "total_edges_across_windows": 10101,
+    "total_edges_across_windows_note": "Counts a given (src, dst) pair once per window it appears in (i.e. window-local edge instances), unlike the unique-pair count above which counts each pair once regardless of how many windows it appears in.",
+    "total_packets_represented": 46295,
+    "total_bytes_represented": 9896715,
+    "packet_accounting_check": {
+      "sum_of_edge_window_packet_counts": 46295,
+      "total_ip_packets_parsed": 46295,
+      "matches": true
+    },
+    "per_window_distributions_metrics": {
+      "node_count": {
+        "windows_with_defined_value": 3254,
+        "min": 0.0,
+        "median": 2.0,
+        "mean": 2.504302397049785,
+        "p95": 5.0,
+        "max": 9.0
+      },
+      "edge_count": {
+        "windows_with_defined_value": 3254,
+        "min": 0.0,
+        "median": 2.0,
+        "mean": 3.104179471419791,
+        "p95": 8.0,
+        "max": 16.0
+      },
+      "packet_count": {
+        "windows_with_defined_value": 3254,
+        "min": 0.0,
+        "median": 10.0,
+        "mean": 14.227105101413645,
+        "p95": 44.0,
+        "max": 984.0
+      },
+      "byte_count": {
+        "windows_with_defined_value": 3254,
+        "min": 0.0,
+        "median": 1038.0,
+        "mean": 3041.399815611555,
+        "p95": 7451.75,
+        "max": 2237873.0
+      },
+      "density": {
+        "windows_with_defined_value": 2620,
+        "min": 0.16666666666666666,
+        "median": 0.6666666666666666,
+        "mean": 0.6726984126984127,
+        "p95": 1.0,
+        "max": 1.0
+      },
+      "average_degree": {
+        "windows_with_defined_value": 2620,
+        "min": 1.0,
+        "median": 2.0,
+        "mean": 2.3121567914697687,
+        "p95": 3.2,
+        "max": 3.5555555555555554
+      },
+      "mean_in_degree": {
+        "windows_with_defined_value": 2620,
+        "min": 0.5,
+        "median": 1.0,
+        "mean": 1.1560783957348844,
+        "p95": 1.6,
+        "max": 1.7777777777777777
+      },
+      "mean_out_degree": {
+        "windows_with_defined_value": 2620,
+        "min": 0.5,
+        "median": 1.0,
+        "mean": 1.1560783957348844,
+        "p95": 1.6,
+        "max": 1.7777777777777777
+      },
+      "max_in_degree": {
+        "windows_with_defined_value": 2620,
+        "min": 1.0,
+        "median": 2.0,
+        "mean": 2.0595419847328245,
+        "p95": 5.0,
+        "max": 8.0
+      },
+      "max_out_degree": {
+        "windows_with_defined_value": 2620,
+        "min": 1.0,
+        "median": 1.0,
+        "mean": 1.869083969465649,
+        "p95": 4.0,
+        "max": 8.0
+      },
+      "max_degree": {
+        "windows_with_defined_value": 2620,
+        "min": 1.0,
+        "median": 3.0,
+        "mean": 3.8553435114503816,
+        "p95": 9.0,
+        "max": 16.0
+      },
+      "isolated_node_count": {
+        "windows_with_defined_value": 3254,
+        "min": 0.0,
+        "median": 0.0,
+        "mean": 0.0,
+        "p95": 0.0,
+        "max": 0.0
+      },
+      "weakly_connected_component_count": {
+        "windows_with_defined_value": 3254,
+        "min": 0.0,
+        "median": 1.0,
+        "mean": 0.8051628764597418,
+        "p95": 1.0,
+        "max": 1.0
+      }
+    }
+  },
+  "second_temporal_dynamics": {
+    "consecutive_window_pairs_evaluated": 3253,
+    "node_churn_per_window_pair": {
+      "min": 0,
+      "median": 2,
+      "mean": 2.5410390408853365,
+      "p95": 6.0,
+      "max": 12
+    },
+    "edge_churn_per_window_pair": {
+      "min": 0,
+      "median": 4,
+      "mean": 4.014448201660006,
+      "p95": 10.0,
+      "max": 21
+    },
+    "new_nodes_per_window": {
+      "min": 0,
+      "median": 1,
+      "mean": 1.2702121118967107,
+      "p95": 4.0,
+      "max": 8
+    },
+    "disappearing_nodes_per_window": {
+      "min": 0,
+      "median": 1,
+      "mean": 1.2708269289886258,
+      "p95": 4.0,
+      "max": 8
+    },
+    "new_edges_per_window": {
+      "min": 0,
+      "median": 2,
+      "mean": 2.0070703965570242,
+      "p95": 6.0,
+      "max": 15
+    },
+    "disappearing_edges_per_window": {
+      "min": 0,
+      "median": 2,
+      "mean": 2.007377805102982,
+      "p95": 6.0,
+      "max": 14
+    },
+    "node_set_jaccard_consecutive": {
+      "min": 0.0,
+      "median": 0.25,
+      "mean": 0.3214501662929954,
+      "p95": 1.0,
+      "max": 1.0
+    },
+    "edge_set_jaccard_consecutive": {
+      "min": 0.0,
+      "median": 0.0,
+      "mean": 0.21081104010662968,
+      "p95": 1.0,
+      "max": 1.0
+    },
+    "node_set_jaccard_defined_pairs": 3054,
+    "edge_set_jaccard_defined_pairs": 3054,
+    "longest_consecutive_non_empty_window_run": 71,
+    "total_non_empty_windows_cross_check": 2620,
+    "interpretation": "Low mean Jaccard similarity between consecutive windows' node/edge sets indicates the graph's membership changes substantially window-to-window (a genuinely temporal graph); a mean near 1.0 would indicate a near-static graph merely repeated across time."
+  },
+  "anonymization_validation": {
+    "unique_raw_ips": 597,
+    "unique_anonymized_ids": 597,
+    "collision_count": 0,
+    "bijective_mapping": true,
+    "deterministic_repeatable": true,
+    "id_bit_length": 64,
+    "method": "SHA-256(fixed_salt || raw_ip)[:16 hex chars]",
+    "privacy_caveat": "This is deterministic pseudonymization for internal artifact consistency, NOT cryptographically strong anonymization: IPv4 address space (2^32) is small enough that the mapping is brute-forceable against a known salt. It prevents casual raw-IP exposure in serialized artifacts; it does not guarantee non-reversibility."
+  },
+  "temporal_window_structure": {
+    "window_seconds": 10,
+    "total_windows": 3254
+  },
+  "comparison_table": [
+    {
+      "metric": "packet_count (IP packets)",
+      "phase9d_9e_capture": 7316,
+      "second_capture": 46295,
+      "ratio_second_over_first": 6.327911427009295
+    },
+    {
+      "metric": "duration_seconds",
+      "phase9d_9e_capture": 32220.89963197708,
+      "second_capture": 32536.081380844116,
+      "ratio_second_over_first": 1.0097819040581424
+    },
+    {
+      "metric": "unique_hosts",
+      "phase9d_9e_capture": 551,
+      "second_capture": 597,
+      "ratio_second_over_first": 1.0834845735027223
+    },
+    {
+      "metric": "unique_directed_pairs",
+      "phase9d_9e_capture": 1094,
+      "second_capture": 828,
+      "ratio_second_over_first": 0.7568555758683729
+    },
+    {
+      "metric": "median_nodes_per_window",
+      "phase9d_9e_capture": 0.0,
+      "second_capture": 2.0,
+      "ratio_second_over_first": null
+    },
+    {
+      "metric": "p95_nodes_per_window",
+      "phase9d_9e_capture": 3.0,
+      "second_capture": 5.0,
+      "ratio_second_over_first": 1.6666666666666667
+    },
+    {
+      "metric": "max_nodes_per_window",
+      "phase9d_9e_capture": 5.0,
+      "second_capture": 9.0,
+      "ratio_second_over_first": 1.8
+    },
+    {
+      "metric": "median_edges_per_window",
+      "phase9d_9e_capture": 0.0,
+      "second_capture": 2.0,
+      "ratio_second_over_first": null
+    },
+    {
+      "metric": "p95_edges_per_window",
+      "phase9d_9e_capture": 4.0,
+      "second_capture": 8.0,
+      "ratio_second_over_first": 2.0
+    },
+    {
+      "metric": "max_edges_per_window",
+      "phase9d_9e_capture": 8.0,
+      "second_capture": 16.0,
+      "ratio_second_over_first": 2.0
+    },
+    {
+      "metric": "non_empty_window_fraction",
+      "phase9d_9e_capture": 0.30933912503878375,
+      "second_capture": 0.8051628764597418,
+      "ratio_second_over_first": 2.602848496318704
+    },
+    {
+      "metric": "longest_non_empty_run",
+      "phase9d_9e_capture": 8,
+      "second_capture": 71,
+      "ratio_second_over_first": 8.875
+    },
+    {
+      "metric": "mean_edge_jaccard_consecutive",
+      "phase9d_9e_capture": 0.03034647930608763,
+      "second_capture": 0.21081104010662968,
+      "ratio_second_over_first": 6.946803877322933
+    },
+    {
+      "metric": "mean_node_jaccard_consecutive",
+      "phase9d_9e_capture": 0.08542431660546716,
+      "second_capture": 0.3214501662929954,
+      "ratio_second_over_first": 3.762982006371972
+    },
+    {
+      "metric": "sparsity_fraction",
+      "phase9d_9e_capture": 0.9963900346477479,
+      "second_capture": 0.9976729284003912,
+      "ratio_second_over_first": 1.0012875417336915
+    }
+  ],
+  "richness_classification": {
+    "classification": "B",
+    "richness_metric_ratios": {
+      "packet_count (IP packets)": 6.327911427009295,
+      "unique_hosts": 1.0834845735027223,
+      "unique_directed_pairs": 0.7568555758683729,
+      "p95_nodes_per_window": 1.6666666666666667,
+      "max_nodes_per_window": 1.8,
+      "p95_edges_per_window": 2.0,
+      "max_edges_per_window": 2.0,
+      "non_empty_window_fraction": 2.602848496318704,
+      "longest_non_empty_run": 8.875,
+      "mean_edge_jaccard_consecutive": 6.946803877322933,
+      "mean_node_jaccard_consecutive": 3.762982006371972
+    },
+    "min_ratio_across_richness_metrics": 0.7568555758683729,
+    "max_ratio_across_richness_metrics": 8.875,
+    "both_captures_sparsity_above_99pct": true,
+    "both_captures_max_nodes_per_window_le_10": true,
+    "rationale": "Evidence is mixed, not forced into a single bucket: richness-metric ratios range from 0.76x to 8.88x (second/first). Temporal-continuity metrics grew substantially (non_empty_window_fraction 2.60x, longest_non_empty_run 8.88x, edge/node Jaccard 6.95x / 3.76x), while per-window structural density stayed modest (max_nodes_per_window 1.80x, max_edges_per_window 2.00x) and unique_directed_pairs actually decreased (0.76x) despite ~6x more packets -- the pipeline generalizes correctly across hosts, and temporal richness improves meaningfully, but per-window population remains variable rather than uniformly tiny or uniformly rich."
+  },
+  "graph_model_suitability": {
+    "q1_enough_structure_for_meaningful_gnn": {
+      "answer": "MARGINAL",
+      "observed": "OBSERVED: median nodes/window in the second capture is 2.0, and max edges/window is 16.0 -- individual windows carry very few edges for message passing to aggregate over, in both captures (classification: B).",
+      "hypothesized": "HYPOTHESIZED: a GNN could still exploit structure aggregated across MULTIPLE windows or across hosts (not attempted here), even if any single window's graph is small."
+    },
+    "q2_snapshots_sufficiently_populated": {
+      "answer": "PARTIALLY, AND INCONSISTENTLY BETWEEN THE TWO CAPTURES",
+      "observed": "OBSERVED: the non-empty-window fraction differs sharply between the two captures rather than agreeing: 30.9% of 10-second windows are non-empty in the first capture (a minority) versus 80.5% in the second capture (a majority). Whether most snapshots carry any structure at all is host-dependent in this small two-capture sample, not a fixed property of the representation.",
+      "hypothesized": null
+    },
+    "q3_sufficiently_long_temporal_sequences": {
+      "answer": "LIMITED",
+      "observed": "OBSERVED: longest consecutive non-empty window run in the second capture is 71 windows (710s); sequences this short bound how much temporal context a sequence model could condition on before hitting a gap.",
+      "hypothesized": null
+    },
+    "q4_would_graph_model_add_info_beyond_aggregate_stats": {
+      "answer": "NOT VERIFIED",
+      "observed": "OBSERVED: this phase computed aggregate statistics (the same min/median/mean/p95/max distributions used throughout) and did not compare their predictive content against any graph-model output, because no model was built here.",
+      "hypothesized": "HYPOTHESIZED: given how small and sparse individual window graphs are (mean node-set Jaccard 0.3214501662929954 in the second capture, meaning topology itself changes substantially), a graph model's main candidate advantage would be capturing WHICH specific hosts are connected, not raw volume -- something scalar aggregate statistics cannot represent by construction. This is a hypothesis, not a measured result."
+    },
+    "q5_which_representation_fits_the_observed_data": {
+      "answer": "HYPOTHESIZED: an event/edge-sequence representation (a stream of individual (timestamp, src, dst, features) edge events) looks like a better structural fit than dense per-window graph snapshots, given both captures show most windows empty and populated windows carry only a handful of edges -- a sequence representation avoids paying a fixed per-window cost for windows with little or no content.",
+      "observed": "OBSERVED: a global/static graph would discard all temporal-change information that Phase 9E and this phase both measured as substantial (low consecutive-window Jaccard in both captures)."
+    }
+  },
+  "novelty_decision": {
+    "decision": "CONDITIONAL",
+    "rationale": "Graph construction generalizes correctly across two different hosts (same pipeline, same conventions, both produce internally consistent, exact statistics). Evidence is mixed rather than uniformly weak or uniformly strong: temporal-continuity metrics (non-empty-window fraction, longest non-empty run, consecutive-window Jaccard) improved substantially in the second, larger capture, while per-window structural density (max nodes/edges per window, unique directed pairs) stayed modest or flat. This pattern -- richer WHEN traffic occurs, but not necessarily richer WHERE/HOW MANY hosts per window -- is exactly the kind of result that should not be forced toward a full GNN commitment yet. An event/edge-sequence representation (per Step 8, Q5) should be tried and evaluated first.",
+    "explicit_disclaimer": "This decision is NOT based on 'GNN sounds novel' -- it is based only on the measured sparsity, window population, and temporal-run-length numbers from these two captures."
+  },
+  "limitations": [
+    "Only two endpoint captures have now been examined out of 449 members in the archive; two data points establish that the pipeline generalizes MECHANICALLY (same code runs correctly on a different host) but is a very small basis for claiming statistical generalization of graph richness across the archive.",
+    "No attack labels exist for either capture; nothing here reflects attack detectability.",
+    "The second capture is from the same day (Wednesday-14-02-2018) and the same AWS environment as the first; cross-day generalization is NOT VERIFIED.",
+    "Graph-model suitability answers in Section 7 are grounded in measured sparsity/window-population/run-length numbers, but no model was trained or evaluated -- the Q4 predictive-value question is explicitly NOT VERIFIED.",
+    "Raw per-packet records for the second capture are not persisted beyond the single decompressed .pcap file under C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\data\\phase9f (not committed as a tracked result); only the JSON/Markdown reports are placed under results/."
+  ],
+  "recommended_next_experiment": "If pursued further (not started here): before any GNN work, prototype the event/edge-sequence representation identified in Step 8 Q5 (a chronological stream of (timestamp, src, dst, edge_features) events rather than fixed per-window graph snapshots) against a third capture, and compare its ability to represent the same information more compactly than the sparse per-window snapshot approach used in Phase 9E/9F.",
+  "success": true,
+  "verdict": "YELLOW",
+  "total_bytes_downloaded": 0,
+  "requests_log": [],
+  "max_total_download_budget_bytes": 8388608
+}

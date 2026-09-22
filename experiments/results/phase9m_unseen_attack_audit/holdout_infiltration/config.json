@@ -1,0 +1,37 @@
+{
+  "holdout_family": "Infiltration",
+  "holdout_files": [
+    "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+    "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+  ],
+  "seed": 42,
+  "device": "cuda:0",
+  "feature_count": 157,
+  "input_shape": [
+    6,
+    157
+  ],
+  "target": "future_attack_within_horizon",
+  "target_definition": "any current_attack in t+1..t+6 (current t excluded) -- UNCHANGED binary target, NOT converted to multiclass",
+  "counts": {
+    "train": {
+      "n": 23289,
+      "positive": 2631,
+      "negative": 20658
+    },
+    "validation": {
+      "n": 4921,
+      "positive": 2107,
+      "negative": 2814
+    },
+    "test_full_unmodified": {
+      "n": 6195,
+      "positive": 1763,
+      "negative": 4432
+    }
+  },
+  "preprocessing": {
+    "scaler": "NEW StandardScaler, fit ONLY on the reduced (family-held-out) train set -- never the original Phase 4/5 scaler",
+    "scaler_sha256": "caf3f858039e5b8f025ec9ff03d57f8d48d07a519630cf3689e7ebdb87b6fefb"
+  }
+}

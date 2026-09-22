@@ -1,0 +1,20 @@
+{
+  "target_models": [
+    "temporal_transformer",
+    "vector_world_model_run1"
+  ],
+  "n_reliability_bins": 10,
+  "calibrators_fit_on_validation_only": true,
+  "test_labels_never_used_for_fitting": true,
+  "pr_auc_roc_auc_unchanged_after_calibration": true,
+  "frozen_files_unchanged": true,
+  "deterministic_repeated_computation": true,
+  "interpretation": {
+    "per_model": {
+      "temporal_transformer": "Temporal Transformer: raw test ECE=0.0741 (validation ECE=0.2100), raw test Brier=0.0771. Materially miscalibrated (test ECE > 0.05 threshold, stated explicitly, not fit to this result). Selected calibration method: platt (test Brier does not improve by -0.0266, test ECE does not improve by -0.0857). PR-AUC unchanged after calibration: True. ROC-AUC unchanged: True. Validation-to-test ECE gap: 0.1359 (NOT stable under the chronological prevalence shift, by a 0.05 ECE-gap threshold).",
+      "vector_world_model_run1": "Vector World Model (Run 1): raw test ECE=0.1121 (validation ECE=0.2170), raw test Brier=0.1143. Materially miscalibrated (test ECE > 0.05 threshold, stated explicitly, not fit to this result). Selected calibration method: platt (test Brier does not improve by -0.0222, test ECE does not improve by -0.0576). PR-AUC unchanged after calibration: True. ROC-AUC unchanged: True. Validation-to-test ECE gap: 0.1049 (NOT stable under the chronological prevalence shift, by a 0.05 ECE-gap threshold)."
+    },
+    "suitable_for_dashboard_decision_support": "Calibrated probabilities may be shown as a supporting, approximate risk indicator, but should NOT be presented to a SOC analyst as a statistically guaranteed likelihood -- calibration here is fit on validation and only checked (not re-fit) on test, the ECE gap between validation and test reflects the same chronological prevalence shift documented in Phase 8A, and no confidence interval or statistical guarantee is computed anywhere in this stack. Ranking (PR-AUC/ROC-AUC, unaffected by calibration) remains the more defensible basis for prioritization than the raw calibrated probability value taken literally."
+  },
+  "overall_status": "PASS"
+}

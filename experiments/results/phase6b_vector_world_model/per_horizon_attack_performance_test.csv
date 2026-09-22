@@ -1,0 +1,8 @@
+future_attack_step,meaning,sample_count,mean_predicted_probability,predicted_positive_rate_at_selected_threshold
+0,no attack in horizon (negative),4432,0.22581234574317932,0.4921028880866426
+1,earliest attack at t+1,1643,0.8067449331283569,0.8831405964698722
+2,earliest attack at t+2,47,0.8436892628669739,1.0
+3,earliest attack at t+3,29,0.7706578373908997,1.0
+4,earliest attack at t+4,28,0.7614902257919312,1.0
+5,earliest attack at t+5,11,0.45048415660858154,1.0
+6,earliest attack at t+6,5,0.5387700796127319,1.0

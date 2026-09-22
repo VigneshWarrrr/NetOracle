@@ -6,4 +6,5 @@ app_name = 'dashboard'
 urlpatterns = [
     path('', views.AdminDashboardView.as_view(), name='index'),
     path('forecast/', views.NetworkRiskForecastView.as_view(), name='forecast'),
+    path('forecast/authoritative/', views.AuthoritativeForecastView.as_view(), name='authoritative_forecast'),
 ]

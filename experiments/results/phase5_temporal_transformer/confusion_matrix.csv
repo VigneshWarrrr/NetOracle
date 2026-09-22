@@ -1,0 +1,5 @@
+model,split,tp,tn,fp,fn
+logistic_regression,test,1420,3423,1009,343
+weighted_lstm,test,1577,2343,2089,186
+unweighted_lstm,test,1512,2380,2052,251
+temporal_transformer,test,1422,3553,879,341

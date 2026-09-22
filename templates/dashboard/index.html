@@ -27,6 +27,10 @@
                     <span class="nav-mark">R</span>
                     Risk Forecast
                 </a>
+                <a href="{% url 'dashboard:authoritative_forecast' %}" class="nav-item">
+                    <span class="nav-mark">A</span>
+                    Authoritative Forecast
+                </a>
                 <a href="{% url 'logs:dashboard' %}" class="nav-item">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     Logs
@@ -91,62 +95,49 @@
             <section class="forecast-hero">
                 <div class="forecast-hero-copy">
                     <p class="eyebrow">NetOracle world model</p>
-                    <h2>See the next move<br><em>before it lands.</em></h2>
-                    <p>Temporal analysis of recent network behavior, projected across the next five observation windows.</p>
-                    {% if model_available %}
-                    <span class="model-status"><i></i> Forecast engine active</span>
+                    <h2>Attack-risk forecasting<br><em>from network-flow windows.</em></h2>
+                    <p>The model reads the six most recent 10-second network-state windows (t-5 &hellip; t, 157 features each) and forecasts the next six windows (t+1 &hellip; t+6): one whole-horizon attack-risk score, a six-step MITRE-stage trajectory, six predicted future network states, and Gradient &times; Input feature attribution.</p>
+                    {% if authoritative_artifacts_ready %}
+                    <span class="model-status"><i></i> Authoritative model artifacts found</span>
                     {% else %}
-                    <span class="model-status model-status-muted"><i></i> Waiting for trained checkpoint</span>
+                    <span class="model-status model-status-muted"><i></i> Authoritative model artifacts missing &mdash; see the checklist below</span>
                     {% endif %}
                 </div>
                 <div class="forecast-hero-signal">
-                    {% if forecast %}
-                    <span class="signal-label">Peak projected risk</span>
-                    <strong>{{ forecast_peak_percent }}<small>%</small></strong>
-                    <div class="signal-ring" style="--risk: {{ forecast_peak_percent }}%;"><span>5 windows</span></div>
-                    {% else %}
-                    <span class="signal-label">Forecast readiness</span>
-                    <strong>{% if model_available %}20<small> steps</small>{% else %}--{% endif %}</strong>
-                    <span class="signal-note">{% if model_available %}Context needed{% else %}Model offline{% endif %}</span>
-                    {% endif %}
+                    <span class="signal-label">Forecast horizon</span>
+                    <strong>6<small> windows</small></strong>
+                    <span class="signal-note">t+1 &hellip; t+6, 10 s each &middot; input: 6 &times; 157</span>
                 </div>
             </section>
 
             <section class="forecast-panel forecast-panel-primary">
                 <div class="forecast-heading">
                     <div>
-                        <p class="eyebrow">Five-window rollout</p>
-                        <h2>Projected attack progression</h2>
+                        <p class="eyebrow">Authoritative output</p>
+                        <h2>What the model produces</h2>
                     </div>
-                    {% if model_available %}
-                    <span class="badge badge-success">Live model</span>
-                    {% else %}
-                    <span class="badge badge-warning">Checkpoint unavailable</span>
-                    {% endif %}
+                    <span class="badge badge-warning">Replay demo &mdash; not live detection</span>
                 </div>
-                {% if forecast %}
-                <div class="forecast-grid">
-                    <div class="forecast-risk">
-                        <span>Peak risk</span>
-                        <strong>{{ forecast.risk_score|floatformat:2 }}</strong>
-                        <small>Highest projected probability</small>
-                    </div>
-                    <div class="forecast-windows">
-                        {% for window in forecast_windows %}
-                        <div class="forecast-window">
-                            <span>T+{{ forloop.counter }}</span>
-                            <div class="risk-track"><i style="height: {{ window.percent }}%;"></i></div>
-                            <strong>{{ window.probability|floatformat:2 }}</strong>
-                            <small>MITRE {{ window.stage }}</small>
-                        </div>
+                <ul>
+                    <li><strong>Attack-risk score</strong> &mdash; one score for the whole horizon t+1 &hellip; t+6. It is not a six-element per-step series and it is not a calibrated probability.</li>
+                    <li><strong>MITRE-stage trajectory</strong> &mdash; a predicted stage for each of the six steps, from a six-class stage head (a reasoned label mapping, not MITRE ground truth).</li>
+                    <li><strong>Future-state rollout</strong> &mdash; six predicted 157-feature network states.</li>
+                    <li><strong>Explanation</strong> &mdash; post-hoc Gradient &times; Input feature attribution.</li>
+                </ul>
+                <p class="forecast-empty">The forecast page runs the model on a validated replay window taken from the held-out test split of the Phase 3.5 dataset. This dashboard does not perform live network detection. The first request loads the model and takes about 20 seconds.</p>
+                <table>
+                    <thead><tr><th>Artifact</th><th>Location</th><th>Status</th></tr></thead>
+                    <tbody>
+                        {% for item in authoritative_artifacts %}
+                        <tr>
+                            <td>{{ item.label }}</td>
+                            <td><code>{{ item.path }}</code></td>
+                            <td><span class="badge {% if item.present %}badge-success{% else %}badge-error{% endif %}">{% if item.present %}found{% else %}missing{% endif %}</span></td>
+                        </tr>
                         {% endfor %}
-                    </div>
-                </div>
-                {% elif model_available %}
-                <p class="forecast-empty">Collecting context. NetOracle needs 20 chronological feature windows before it can forecast.</p>
-                {% else %}
-                <p class="forecast-empty">Train NetOracle and place <code>best_world_model.pth</code> in the NetOracle models folder to enable forecasting.</p>
-                {% endif %}
+                    </tbody>
+                </table>
+                <p style="margin-top: 1rem;"><a class="btn" style="width: auto; display: inline-block;" href="{% url 'dashboard:authoritative_forecast' %}">Open the authoritative forecast</a></p>
             </section>
 
             <!-- Supporting telemetry -->

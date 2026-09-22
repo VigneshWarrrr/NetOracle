@@ -1,0 +1,20 @@
+{
+  "run_name": "run1_existing_scaling_improved_threshold",
+  "seed": 42,
+  "input_shape": [
+    6,
+    157
+  ],
+  "output_shape": [
+    6,
+    157
+  ],
+  "architecture": "VectorWorldModel (imported unmodified from phase6b_vector_world_model.py)",
+  "loss": "1.0 * MSE(Y_hat, Y) + 1.0 * BCEWithLogits(attack_logit, label)",
+  "pos_weight_source": "computed from TRAIN split labels only",
+  "batch_size": 128,
+  "learning_rate": 0.001,
+  "max_epochs": 60,
+  "patience": 10,
+  "mixed_precision": true
+}

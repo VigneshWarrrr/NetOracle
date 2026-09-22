@@ -1,0 +1,5 @@
+model,split,threshold_rule,tn,fp,fn,tp
+run1_existing_scaling_improved_threshold,validation,recall_at_fpr<=5pct,3424,179,1367,1225
+run1_existing_scaling_improved_threshold,test,recall_at_fpr<=5pct,4008,424,459,1304
+run1_existing_scaling_improved_threshold,validation,f1_max_reference_only,2343,1260,362,2230
+run1_existing_scaling_improved_threshold,test,f1_max_reference_only,2527,1905,322,1441

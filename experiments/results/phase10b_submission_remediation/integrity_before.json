@@ -1,0 +1,194 @@
+{
+  "label": "before",
+  "captured_unix": 1789932341.7808425,
+  "authoritative_artifacts": {
+    "checkpoint_best_stage_head.pt": "f9d16f1943aeeed4f355659b85e90cb6cf8cb94ae84d2fcbd473c59fa3342fe4",
+    "scaler.joblib": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881",
+    "run1_best_model.pt": "6374a9c47d722215e64a3cae1b1e24c425a89dad26407b147b153af03404fb79"
+  },
+  "window_csv_sha256": {
+    "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv": "581104eda595a3c9e577da33624481da2f291ac746f2b66b444fb7ebc819e1ed",
+    "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv": "32c93a7083082d2b7e5ae63b2b666f51ff6e7a53f6426e1413bd72cbcb64d046",
+    "Friday-23-02-2018_TrafficForML_CICFlowMeter.csv": "c40f1a8813e4e12ce9207c3f2ad9be4df8ebd7af177bd8861315e68911174364",
+    "Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv": "5e08acd61c2461d75e9fb578a136840bb2c28ab1c28d00f081c3b1bc4fe8d5fc",
+    "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv": "b692845ea56bbb4a15b0ae987721d52d4638abec0d0a951a3c18801c7fce94dd",
+    "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv": "6fa2913ec4300cfe7c9d5a389307caeb7e438cfde738ac1669898734a30333e9",
+    "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv": "2cdfc128d9ad0300a1481be5fe7a7fd7828142244de9caeafe595319fa774d40",
+    "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv": "83964b99e92d0c6db60c5046672755f9f2afda5a1879cc30367b4978ef874b69",
+    "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv": "698f262239eb940fbefd4e5347284e0c77cac7dee04bde3c4cacb7cc8bef5834",
+    "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv": "fc4360af549f75a26806090c80d22fca0f87b40f993ee80f68fdba6122b98998"
+  },
+  "frozen_source_sha256": {
+    "experiments/inference_engine.py": "c5802e4c3b02471e0d7d5d8019564ae2e6cda066f6dbe58e382a2f50a9014204",
+    "experiments/phase4_baseline.py": "a575f3338de758c8f2a073d630cc5b53c9107f187cdb1d00cbf7cb981487f972",
+    "experiments/phase6b_vector_world_model.py": "602484e6e814cd11ed799735c9154fcaf2805b2d9d878b37afd48f17a343e92c",
+    "experiments/phase7b_mitre_stage_head.py": "5bce54d0da9a82ff52a8da4988cb1549340f3829fd4c5f57e2ab959523a363e1",
+    "experiments/phase7b_stage_targets.py": "7032924babd56e873281e90d6706affc76008aa9d5a1a143563ebb4c66bc0813",
+    "experiments/phase7c_explainability.py": "14dd2b76fe491f04bdecaf6e206cf0c28f80150d81fc55990a2ce7aa08f43dc4",
+    "experiments/world_model_dataset.py": "e7e4979198ab31c4aed6e720d8de7c35fd47dd5566d06de4d5e59e32205e3041",
+    "explainability/shap_explainer.py": "7045f572bd9922c419b180742c9b4ecb2720968e02c7ded21d00a1db309ba36a",
+    "forecasting/mitre_mapping.py": "d7001061f947cdb2dff232f64c90e5582d566c171365af7d0d7a1e2b7dc9e56e",
+    "world_model/inference_service.py": "f0463aa279fe18fbcf2095a52360968a06e17e1a3ffc99c7669f16b77540b5a3"
+  },
+  "result_dir_tree_hashes": {
+    "phase10a_ai_core_final_audit": {
+      "files": 8,
+      "tree_sha256": "8bd7011f34ca73b5f60b61c7732a596f46f8fe964a208543e08925400f097395"
+    },
+    "phase4_3_class_weight_ablation": {
+      "files": 11,
+      "tree_sha256": "795cb3d8f59cebf0171091a098f4d5533ee8e41e9ab8f6e9077ce9c79c738f3a"
+    },
+    "phase4_baseline": {
+      "files": 17,
+      "tree_sha256": "f19b51596831916341ff5b0e87408367ddb422e6c45f7d6e115bb0dc750bc50c"
+    },
+    "phase5_temporal_transformer": {
+      "files": 11,
+      "tree_sha256": "66591009aca99b1e84cb6a502e58b5dac4de13aeb06d076d9819f00446825ba4"
+    },
+    "phase6b_vector_world_model": {
+      "files": 20,
+      "tree_sha256": "bfe52d879170d29daf10b5c2f790e4a6d4c7dac2ae62b317d16d6fa75c3f0c25"
+    },
+    "phase6b_vector_world_model_ablation": {
+      "files": 22,
+      "tree_sha256": "c5df1a3680010aaa9ea7fab45bd0138e144fc129f819315162bf367b11f65d16"
+    },
+    "phase7b_mitre_stage_head": {
+      "files": 9,
+      "tree_sha256": "7d7a18ba1be926c5affb3a819fe3a42739e236a1f7fa6855e3e9c000b54c9e3d"
+    },
+    "phase7c_explainability": {
+      "files": 6,
+      "tree_sha256": "4653554ae3d8e280f294424af64ff7f35715781fad680d7e20c155ca7a260b21"
+    },
+    "phase7d_trajectory": {
+      "files": 8,
+      "tree_sha256": "c0b4c15f07e88572ffa11c1ae8cf564f8cd2aad736cc50e0e01924a407f7deea"
+    },
+    "phase8_final_evaluation": {
+      "files": 5,
+      "tree_sha256": "f5c66ad2a55f0b186b28729a8764e7e65cd3d2f883d86d3d0253fb6ffe296fc4"
+    },
+    "phase8b_calibration": {
+      "files": 9,
+      "tree_sha256": "b886d37bd6e4131038195c771c252850a00698abd06b4dbb43d142206fac026b"
+    },
+    "phase9b_pcap_discovery": {
+      "files": 2,
+      "tree_sha256": "ce3efbf07068b8bef9d2c33742249e0c0b4885d4569a491a7dbbd75aa32ba401"
+    },
+    "phase9c_pcap_archive_inspection": {
+      "files": 2,
+      "tree_sha256": "f746b584c8313206ff8bb53f589824d51f9d03ff6b3a4522afdf810737734bed"
+    },
+    "phase9d_pcap_validation": {
+      "files": 2,
+      "tree_sha256": "bb1abc9069ac1ba08db1783716c79649c37e712da758dedb5e6a954c58c5a18b"
+    },
+    "phase9e_temporal_packet_graph": {
+      "files": 2,
+      "tree_sha256": "d44523808bd7d3f4932fc125da489c7aef66adeea34571fc8726cacf3885d728"
+    },
+    "phase9f_cross_host_graph": {
+      "files": 2,
+      "tree_sha256": "5ad0dbb70be13cb38d7d361892a3bda48b5070fe01ab2339fd362bbd76113b88"
+    },
+    "phase9g_event_representation": {
+      "files": 2,
+      "tree_sha256": "9127a7f5fc65ae6d526eace834c8cdc7b87b9a4ea310dd357cfe18b9cae6aa24"
+    },
+    "phase9h_multimodal_baseline": {
+      "files": 4,
+      "tree_sha256": "bee88554aa1fa78effbe22fb03fc6b2fddf4bdc556d393d4edee78fa24e9bc19"
+    },
+    "phase9i_pcap_flow_alignment": {
+      "files": 2,
+      "tree_sha256": "23e83d572f1b584e8b07f58879ae63c795ea30746c5c85ce38e1b20c6a6709d0"
+    },
+    "phase9j_sih_gap_audit": {
+      "files": 5,
+      "tree_sha256": "62eb1bbb03affd4aa97d73192e98c3d54701f2d080d9bb58a5531946ed76ca13"
+    },
+    "phase9k_integration": {
+      "files": 5,
+      "tree_sha256": "31e8d5278ff4dbae2f27de218297fd0cb82ff6cd7b32b28e1ed5d4541c682354"
+    },
+    "phase9l_django_integration": {
+      "files": 3,
+      "tree_sha256": "bf20a029e0df7f0284e004b0cc5478c5f7e7ef7f3006cb4fb7d110767d7d73f0"
+    },
+    "phase9m_unseen_attack_audit": {
+      "files": 16,
+      "tree_sha256": "1c888a5b3853fe2a108015869e9366cf87683bc919b0503487ddb3b6333fd8e2"
+    },
+    "phase9n_per_step_risk": {
+      "files": 8,
+      "tree_sha256": "5b4c123eca4bf781d1eddc75bcf8904801ce6edfd1135391de3fa383a70a1c1f"
+    }
+  },
+  "environment": {
+    "torch": "2.10.0+cu128",
+    "numpy": "2.3.5",
+    "sklearn": "1.8.0",
+    "cuda": true
+  },
+  "engine_outputs_all_test": {
+    "n": 6195,
+    "prob_digest_sha256": "76f0b362edf083871ced3e0999c73c79e75930e4ea0b107860f5f41507fe60dd",
+    "stage_digest_sha256": "e08476d663d21ec318fa917a1000f37575e7ae576af3e49eacbf4ffd24ea2915",
+    "confidence_digest_sha256": "31168f2c59278aeacdd28d2be3617122827f18f8efcfc7fe59b0998b7b7f7de5",
+    "max_abs_prob_diff_vs_frozen_phase7b_predictions": 0.0024012327196750727,
+    "stage_cells_mismatching_frozen_phase7b": 6
+  },
+  "explanations_50_strided": {
+    "n": 50,
+    "attribution_digest_sha256": "828c534246dcacd0246cdf32ff3a5c86a363f5e8dd7352047e338d00d186786d",
+    "methods": [
+      "Gradient \u00d7 Input"
+    ]
+  },
+  "sample_0": {
+    "source_file": "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+    "window_start": "2018-03-02 11:12:50",
+    "attack_risk_score": 0.9998519420623779,
+    "stages": [
+      "COMMAND_AND_CONTROL",
+      "COMMAND_AND_CONTROL",
+      "COMMAND_AND_CONTROL",
+      "COMMAND_AND_CONTROL",
+      "COMMAND_AND_CONTROL",
+      "COMMAND_AND_CONTROL"
+    ],
+    "top5_attack_features": [
+      [
+        "rst_flag_cnt__mean",
+        9.735952062328579e-07
+      ],
+      [
+        "fwd_pkt_len_std__mean",
+        8.769808346187347e-07
+      ],
+      [
+        "fwd_iat_tot__mean",
+        8.011505769900396e-07
+      ],
+      [
+        "bwd_seg_size_avg__mean",
+        7.354088893407607e-07
+      ],
+      [
+        "psh_flag_cnt__sum",
+        6.66128869397653e-07
+      ]
+    ],
+    "explanation_method": "Gradient \u00d7 Input"
+  },
+  "engine_provenance_hashes": {
+    "checkpoint_sha256": "f9d16f1943aeeed4f355659b85e90cb6cf8cb94ae84d2fcbd473c59fa3342fe4",
+    "scaler_sha256": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881",
+    "feature_schema_sha256": "f5117fda8518c9e373a4260ff65281800a4760d8af16bb97411ca8371b85bb73",
+    "feature_count": 157
+  }
+}

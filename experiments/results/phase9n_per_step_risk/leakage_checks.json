@@ -1,0 +1,73 @@
+{
+  "issues": [],
+  "status": "PASS",
+  "counts_per_split": {
+    "train": {
+      "n": 29315,
+      "positive_per_step": [
+        2904,
+        2902,
+        2900,
+        2899,
+        2898,
+        2897
+      ],
+      "negative_per_step": [
+        26411,
+        26413,
+        26415,
+        26416,
+        26417,
+        26418
+      ]
+    },
+    "validation": {
+      "n": 6195,
+      "positive_per_step": [
+        2054,
+        2059,
+        2064,
+        2070,
+        2075,
+        2080
+      ],
+      "negative_per_step": [
+        4141,
+        4136,
+        4131,
+        4125,
+        4120,
+        4115
+      ]
+    },
+    "test": {
+      "n": 6195,
+      "positive_per_step": [
+        1643,
+        1639,
+        1636,
+        1633,
+        1629,
+        1625
+      ],
+      "negative_per_step": [
+        4552,
+        4556,
+        4559,
+        4562,
+        4566,
+        4570
+      ]
+    }
+  },
+  "stress_checks": {
+    "train_current_vs_t1_identical_fraction": 0.9893910967081698,
+    "validation_current_vs_t1_identical_fraction": 0.9491525423728814,
+    "test_current_vs_t1_identical_fraction": 0.9843422114608555,
+    "terminal_windows_excluded_by_construction": true,
+    "scaler_path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\scaler.joblib",
+    "scaler_reused_unmodified_from_run1": true,
+    "scaler_sha256": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881",
+    "all_checks_pass": true
+  }
+}

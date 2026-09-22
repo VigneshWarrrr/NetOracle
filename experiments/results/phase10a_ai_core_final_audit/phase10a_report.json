@@ -1,0 +1,956 @@
+{
+  "phase": "10A",
+  "audit_date": "2026-09-20",
+  "AI_CORE_SUBMISSION_READY": "NO",
+  "counts": {
+    "GREEN": 11,
+    "YELLOW": 23,
+    "RED": 6
+  },
+  "claims_counts": {
+    "GREEN": 12,
+    "YELLOW": 13,
+    "RED": 7
+  },
+  "findings": [
+    {
+      "id": "A1",
+      "objective": "A",
+      "title": "Authoritative execution path is fully traceable input -> output",
+      "class": "GREEN",
+      "finding": "Django page/API -> world_model.inference_service.AuthoritativeForecastService (lazy class-level singleton) -> experiments.inference_engine.NetOracleInferenceEngine.predict() -> validate (6,157) finite -> frozen Run-1 StandardScaler -> VectorWorldModelWithStageHead forward (frozen Run-1 backbone + Phase 7B stage head) -> sigmoid/softmax -> inverse-scaled rollout -> Phase 7C explain_sample() -> JSON dict. Every hop is documented with file:line in authoritative_path.md.",
+      "evidence": [
+        "authoritative_path.md",
+        "experiments/inference_engine.py:157-305",
+        "world_model/inference_service.py:119-200"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "B1",
+      "objective": "B",
+      "title": "Exactly one Django-reachable path produces the authoritative outputs",
+      "class": "GREEN",
+      "finding": "Only experiments/inference_engine.py builds the model from best_stage_head.pt and the Run-1 scaler for the production surface. dashboard/views.py, api/views.py and the template call it only through AuthoritativeForecastService. No production module imports Track B (world_model/world_model.py) or Phase 9N (0 hits for per_step_risk/phase9n in engine, service, views, api, templates).",
+      "evidence": [
+        "path_inventory.phase9n_refs_in_authoritative_engine_or_django = 0 hits",
+        "AST import guards in tests/test_phase9k_integration.py and tests/test_phase9l_django_integration.py"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "C1",
+      "objective": "C",
+      "title": "README documents the LEGACY pipeline as the forecasting path",
+      "class": "RED",
+      "finding": "README.md states the system 'runs a persisted PyTorch forecaster' at models/attack_forecaster.pt (a file that does not exist; models/ contains only __init__.py), lists FlowFeatureEngine -> TemporalFeatureEngine -> 'Predicted attack type', attack-chain progression, next access step and precautions as dashboard outputs, and gives train.py / run_pipeline.py as the way to train and run. None of that is the authoritative model (Phase 6B Run-1 + 7B stage head + 9K engine). A reader following the README will run the heuristic fallback and see a different system from the one audited.",
+      "evidence": [
+        "README.md lines 25, 46, 132, 142, 189 (legacy_heuristic_refs = 26 hits)",
+        "models/ directory contains only __init__.py"
+      ],
+      "recommended_action": "Rewrite README around the authoritative path (inputs, checkpoint, scaler, data dependency, how to run, limitations); demote or delete the legacy instructions."
+    },
+    {
+      "id": "C2",
+      "objective": "C",
+      "title": "Post-login landing page still shows stale legacy status",
+      "class": "RED",
+      "finding": "The first page a logged-in staff user sees (/dashboard/) renders 'Waiting for trained checkpoint', 'Forecast readiness -- Model offline', 'Checkpoint unavailable', 'projected across the next five observation windows' and 'Five-window rollout / Projected attack progression'. The authoritative model is working and its horizon is SIX windows; the page tells a judge the model is offline. (The per-window probability block is a dead loop over a context variable that no view sets.)",
+      "evidence": [
+        "rendered_pages.landing_dashboard_index.text (evidence.json)",
+        "templates/dashboard/index.html lines 95-150"
+      ],
+      "recommended_action": "Point the landing page's forecast panel at the authoritative service or replace the stale hero/status copy; remove the five-window wording."
+    },
+    {
+      "id": "C3",
+      "objective": "C",
+      "title": "Legacy heuristic path is still reachable and partly mislabeled",
+      "class": "YELLOW",
+      "finding": "AttackForecastService (sigmoid-of-mean heuristic, model_source='heuristic_fallback') is still reachable at /dashboard/forecast/ when live-capture events exist and via run_pipeline.py / feature_engine.services. The page carries a NON-AUTHORITATIVE banner (added in 9L), but its chart badge still reads 'Live model output', and run_pipeline.forecast_timeline repeats one flat risk value across future points (the pattern Phase 9N/9L forbid). Not reachable in a demo without a running capture; acceptable only if left unused.",
+      "evidence": [
+        "world_model/inference_service.py:27-116",
+        "run_pipeline.py:107-143",
+        "templates/dashboard/forecast.html:60"
+      ],
+      "recommended_action": "Keep unused in the demo; ideally retire or hard-label the badge."
+    },
+    {
+      "id": "C4",
+      "objective": "C",
+      "title": "Track B shares the `world_model/` package with the authoritative service",
+      "class": "YELLOW",
+      "finding": "world_model/ contains BOTH the authoritative Django-facing service (inference_service.py) and Track B (world_model.py NetworkWorldModel, inference.py, build_project.py, streamlit dashboard, evaluation_results.json, zero_shot_results.json, 'Presentation SIH.pptx'). Verified never imported by the authoritative path, but a reviewer opening world_model/ will find an unaudited model with impressive-looking numbers (Phase 9J: ad-hoc split, validation/test metric inversion). Ownership is ambiguous even though behaviour is not.",
+      "evidence": [
+        "path_inventory.track_b_refs",
+        "Phase 9J findings"
+      ],
+      "recommended_action": "Add a top-level note or move Track B under a clearly named legacy folder before submission."
+    },
+    {
+      "id": "C5",
+      "objective": "C",
+      "title": "Dead heuristic 'infiltration probability' and placeholder chain logic remain in the tree",
+      "class": "YELLOW",
+      "finding": "forecasting/infiltration.py::InfiltrationForecaster (hand-set thresholds 0.65/0.80, exported from forecasting/__init__.py) is referenced nowhere else; AttackChainBuilder.predict_next_stage() is a +1 placeholder used only by the legacy pipeline/streamlit. Neither is the model; both could be mistaken for the PS's 'infiltration probability'.",
+      "evidence": [
+        "forecasting/infiltration.py",
+        "forecasting/attack_chain.py",
+        "grep: InfiltrationForecaster has no call sites"
+      ],
+      "recommended_action": "Delete or clearly mark as unused."
+    },
+    {
+      "id": "C6",
+      "objective": "C",
+      "title": "Several same-named checkpoints on disk",
+      "class": "YELLOW",
+      "finding": "best_model.pt exists for plain Phase 6B (sha 364276bd3f63...), Run-1 (sha 6374a9c47d72...), Run-2, Phase 4/5, plus the Phase 9N head. The engine hard-pins the Run-1 + Phase 7B paths, so the code cannot pick the wrong one; the risk is human (loading 'best_model.pt' from the wrong folder).",
+      "evidence": [
+        "artifact_integrity.run1_vs_plain_6b_checkpoints_identical = False",
+        "23 checkpoint/scaler files under experiments/results"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "D1",
+      "objective": "D",
+      "title": "Checkpoint and scaler are the frozen, mutually compatible artifacts",
+      "class": "GREEN",
+      "finding": "best_stage_head.pt sha256 f9d16f1943aeeed4..., Run-1 best_model.pt 6374a9c47d722215..., scaler b3a0cea7f9d2d0fc... all equal the Phase 9K manifest. The Phase 7B checkpoint's 39 backbone tensors are bit-identical (torch.equal) to Run-1; only the 4 stage_head tensors (8646 params) are new (total 356452 params). The scaler has n_features_in_=157, finite mean/scale, no zero-variance feature (min scale 0.0041), and its mean/scale equal a fresh train-only refit exactly (max rel. diff 0.0e+00) while differing hugely from a train+val+test fit (max rel. diff 80.5) -- i.e. it is train-only.",
+      "evidence": [
+        "artifact_integrity",
+        "schema_and_scaler"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "D2",
+      "objective": "D",
+      "title": "Scaler pickled under a newer scikit-learn than the runtime",
+      "class": "YELLOW",
+      "finding": "The scaler was pickled with scikit-learn 1.9.1; this environment runs 1.8.0, so every load emits InconsistentVersionWarning. Values are verified correct (exact match to a train-only refit), so the effect is cosmetic here, but requirements.txt is unpinned (scikit-learn>=1.3), so a different demo machine may warn or, on an older release, fail to unpickle.",
+      "evidence": [
+        "artifact_integrity.scaler",
+        "supplement.scaler_pickled_with_sklearn",
+        "environment.requirements_txt_pins_exact_versions = False"
+      ],
+      "recommended_action": "Pin scikit-learn (and torch/numpy) in requirements.txt to the tested versions; rehearse on the demo machine."
+    },
+    {
+      "id": "E1",
+      "objective": "E",
+      "title": "Feature dimensionality and ordering are correct and enforced",
+      "class": "GREEN",
+      "finding": "157 unique features, none from META_COLUMNS, identical order to the Phase 4 config's feature_columns list; schema hash f5117fda8518c9e3... equals the engine's provenance hash. X shape (6,157) float32 in all splits (29315/6195/6195); engine.validate_feature_vector rejects wrong type/shape/non-finite input (tests in 9K/9L).",
+      "evidence": [
+        "schema_and_scaler"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "E2",
+      "objective": "E",
+      "title": "Feature schema is not stored with the checkpoint",
+      "class": "YELLOW",
+      "finding": "The engine derives feature names/order at start-up by re-reading all ten Phase 3.5 CSVs (data/windows, ~70.9 MB) via read_world_model_samples; the checkpoint and scaler carry no feature names. Ordering is correct today (verified against the Phase 4 config) but is coupled to that external dataset directory.",
+      "evidence": [
+        "environment.windows_dir_used_by_engine",
+        "experiments/inference_engine.py:165-175"
+      ],
+      "recommended_action": "Persist the 157-name list (and its hash) beside the checkpoint."
+    },
+    {
+      "id": "F1",
+      "objective": "F",
+      "title": "Engine output corresponds exactly to the frozen checkpoint under the frozen numerical protocol",
+      "class": "GREEN",
+      "finding": "Running the loaded engine model with the same mixed-precision protocol Phase 7B used reproduces all 6195 frozen test predictions to max |dp| = 5.0e-13 with 0/37170 stage cells different. The engine is therefore the frozen model, not an approximation of it.",
+      "evidence": [
+        "supplement.amp_True",
+        "full_test_reproduction"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "F2",
+      "objective": "F",
+      "title": "The shipped fp32 engine path differs from the frozen predictions at the 1e-3 level",
+      "class": "YELLOW",
+      "finding": "The engine itself runs fp32 (no autocast). Against the frozen Phase 7B predictions_test.csv over the FULL test split: max |dp| = 2.40e-03 (mean 3.6e-05), stage-step exact match 99.984% (37164/37170); 6 samples have one argmax flip at a decision boundary. Phase 9K quoted a 1e-3 tolerance validated on 5 samples; on the full split the maximum is above it. Cause proven by the AMP re-run above (fp16 vs fp32 arithmetic), not by a checkpoint or preprocessing difference.",
+      "evidence": [
+        "full_test_reproduction",
+        "supplement.amp_False"
+      ],
+      "recommended_action": "State the tolerance as 'fp16-vs-fp32 numerical, <= 2.5e-3' in submission text; no code change needed."
+    },
+    {
+      "id": "G1",
+      "objective": "G",
+      "title": "Inference is deterministic",
+      "class": "GREEN",
+      "finding": "300 samples: repeated calls and a freshly constructed engine are bit-identical (max prob diff 0.0); CPU vs GPU max |dp| = 2.2e-04 with 100% identical stage trajectories; explanations are bit-identical on repeat and top-10 features identical CPU vs GPU. Concurrency: 4 threads x 3 rounds x 16 calls -> 0 exceptions, 0 result mismatches vs sequential.",
+      "evidence": [
+        "determinism",
+        "thread_safety"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "G2",
+      "objective": "G",
+      "title": "Singleton has no lock (first-request race)",
+      "class": "YELLOW",
+      "finding": "AuthoritativeForecastService.get_engine() checks `_engine is None` without a lock; two simultaneous first requests on the threaded dev server would each construct an engine (~20 s, double GPU memory). Not observed to corrupt results (concurrency test above ran on an already-loaded engine).",
+      "evidence": [
+        "thread_safety.singleton_has_no_lock",
+        "world_model/inference_service.py:145-156"
+      ],
+      "recommended_action": "Warm the engine at start-up or add a lock."
+    },
+    {
+      "id": "H1",
+      "objective": "H",
+      "title": "The MITRE trajectory is produced by the authoritative stage head",
+      "class": "GREEN",
+      "finding": "For a test sample the engine's six stage names equal argmax(model.stage_head(z_future)) computed independently. Perturbing ONLY stage_head weights changes 510/600 stage cells across a 100-sample batch while the whole-horizon attack logit is bit-identical (attack head independent of stage head). Class space is the 6 covered MitreStage values; no rule-based or heuristic stage is substituted in the engine.",
+      "evidence": [
+        "stage_head"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "H2",
+      "objective": "H",
+      "title": "Stage-trajectory quality is limited and must be presented as such",
+      "class": "YELLOW",
+      "finding": "Phase 7B test: accuracy 0.839, macro-F1 0.609, stage-confidence ECE 0.103. INITIAL_ACCESS has ZERO test support, yet the engine predicts it in 2530/37170 (6.8%) of test step-cells -- by construction every one of those is unverifiable/incorrect on this split. Labels come from a reasoned CIC-label->MITRE mapping (Infiltration -> LATERAL_MOVEMENT is 'heuristic_uncertain'); the PS's five stages (Reconnaissance, Initial Access, Lateral Movement, C2, Exfiltration) are only partly covered (no Reconnaissance/Exfiltration in the data; Credential Access and Impact are extra). The dashboard already prints these caveats.",
+      "evidence": [
+        "full_test_reproduction.predicted_stage_step_counts_over_test",
+        "phase7b metrics.json",
+        "docs/MITRE_MAPPING_AUDIT.md"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "I1",
+      "objective": "I",
+      "title": "The reported attribution method is the one actually executed, and is not SHAP",
+      "class": "GREEN",
+      "finding": "Across 300 sampled test windows both the attack-risk and stage explanations report method ['Gradient \u00d7 Input'] (Gradient x Input). The dashboard heading says 'Gradient-based feature attribution' and its HTML contains no 'SHAP'. The engine reports the method per call rather than assuming it.",
+      "evidence": [
+        "explainability"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "I2",
+      "objective": "I",
+      "title": "SHAP is claimed in the SIH deck but never executes",
+      "class": "RED",
+      "finding": "The shap package is installed (v0.50.0), but explain_attack_risk(method='auto') tries SHAP first and its GradientExplainer path raises `No module named 'tensorflow'`; the broad `except Exception` swallows it and the code silently falls back to Gradient x Input (forcing method='shap' raises). Yet 'Presentation SIH.pptx' slide 3 promises 'Explainability: SHAP values + feature importance'. The implemented method is Gradient x Input; the deck (and any derivative pitch text) is inaccurate. (No 'SHAP' claim appears in the UI or API; the API's faithful_claims_only note says 'gradient-based or SHAP attribution'.)",
+      "evidence": [
+        "explainability.explicit_shap_call",
+        "claims_scan.presentation_hits.shap: slide 3 ('SHAP values + feature importance', tech stack 'SHAP'), slide 4 ('SHAP-based explainability'), slide 5 ('Explainability: SHAP')",
+        "explainability/shap_explainer.py:110-165"
+      ],
+      "recommended_action": "Correct the deck wording to 'gradient x input feature attribution' (or make real SHAP work and re-validate 7C); do not ship the current claim."
+    },
+    {
+      "id": "I3",
+      "objective": "I",
+      "title": "Attributions saturate: the featured demo sample's explanation panel shows ten 0.0000 values",
+      "class": "RED",
+      "finding": "The explainer back-propagates the sigmoid PROBABILITY (explainability/shap_explainer.py:_convert_to_probability -> target.backward()), whose gradient vanishes when the model is confident. For the demo sample (index 0, p=0.9999) the largest top-10 importance is ~1e-6, so the template's floatformat:4 renders all ten as 0.0000 (verified in the rendered page). Over 300 sampled windows the top-1 importance displays as 0.0000 in 30% of cases and in 44% of confident-attack (>0.99) cases; median top-1 importance is 1.2e-04 for those. The ranking is still deterministic and identical CPU vs GPU, but it is computed from noise-level magnitudes and the demo shows no usable numbers -- the panel looks broken exactly on the attack case a judge will see. The frozen Phase 7C records show the same ~1e-6 magnitudes for all five of its samples, so this is a property of the audited method, not of the Django integration.",
+      "evidence": [
+        "explainability",
+        "rendered_pages.authoritative_forecast.text (EXPLANATION block)",
+        "phase7c records/sample_0001..0005.json: top attack-risk importances 9.7e-07, 1.3e-06, 2.4e-06, 2.4e-06, 2.4e-06 (verified)"
+      ],
+      "recommended_action": "Attribute the pre-sigmoid logit (or normalise/scale importances) and re-validate against Phase 7C; at minimum display relative importance instead of absolute 4-decimal values."
+    },
+    {
+      "id": "I4",
+      "objective": "I",
+      "title": "Method selection is silent and environment-dependent; UI text overstates where the library is disclosed",
+      "class": "YELLOW",
+      "finding": "Because of the swallowed exception the method depends on what is installed (a machine with tensorflow + shap could silently switch to 'SHAP GradientExplainer' and change every attribution; not tested here). The authoritative page also says the 'exact underlying attribution library ... is available verbatim in explanations.faithful_claims_only' -- that note only says 'gradient-based or SHAP'; the exact method is in explanation_method.",
+      "evidence": [
+        "explainability.faithful_claims_note",
+        "templates/dashboard/authoritative_forecast.html (EXPLANATION panel)"
+      ],
+      "recommended_action": "Report explanation_method on the page; remove the silent fallback or log it."
+    },
+    {
+      "id": "J1",
+      "objective": "J",
+      "title": "Whole-horizon score is clearly distinguished from per-step risk",
+      "class": "GREEN",
+      "finding": "The API exposes exactly one risk field, whole_horizon_attack_probability {value, semantics}, whose semantics string says 'a single scalar, NOT a per-step P(t+1)...'. The six-step outputs are (a) predicted STATE vectors and (b) MITRE STAGE labels with a stage-class softmax 'confidence' -- neither is labeled as risk. The page's limitations panel repeats 'No native per-step attack probability'.",
+      "evidence": [
+        "rendered_pages.api_keys",
+        "rendered_pages.api_top_level_key_names_containing_risk_or_prob"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "J2",
+      "objective": "J",
+      "title": "Per-step stage 'confidence' sits next to t+k labels",
+      "class": "YELLOW",
+      "finding": "The MITRE table prints t+1..t+6 with a number (0.997...0.999). It is labeled confidence in the template but is the softmax of the stage class (uncalibrated, ECE 0.103) and could be misread as a per-step attack probability.",
+      "evidence": [
+        "rendered_pages.authoritative_forecast.text"
+      ],
+      "recommended_action": "Add 'stage-class confidence, not attack risk' beside the column."
+    },
+    {
+      "id": "K1",
+      "objective": "K",
+      "title": "Phase 9N per-step risk is excluded from the authoritative path",
+      "class": "GREEN",
+      "finding": "0 references to per_step_risk / PerStepAttackRisk / phase9n / best_per_step in engine, service, views, api or templates; the 9N head exists only under experiments/results/phase9n_per_step_risk/ and is never loaded. 9N's own verdict is RED (mean PR-AUC 0.840 vs persistence 0.925 vs whole-horizon broadcast 0.836).",
+      "evidence": [
+        "path_inventory.phase9n_refs_in_production_code = 0"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "K2",
+      "objective": "K",
+      "title": "9N's persistence baseline is an oracle comparison",
+      "class": "YELLOW",
+      "finding": "The 9N 'current-window persistence' baseline uses the ground-truth current_attack label, which does not exist at inference (it is not among the 157 features). It is a valid GATE for 9N's RED verdict but should not be quoted as 'a trivial baseline the deployed system could run'.",
+      "evidence": [
+        "forecast_vs_detection.oracle_persistence_uses_ground_truth_current_label_unavailable_at_inference"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "L1",
+      "objective": "L",
+      "title": "9M unseen-family result is represented honestly where it appears",
+      "class": "GREEN",
+      "finding": "The authoritative page states 'No unseen-attack-generalization claim'; no template, README or doc claims zero-day/unseen/novel detection (claims scan: only that disclaimer matched).",
+      "evidence": [
+        "claims_scan.unseen_or_zero_day"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "L2",
+      "objective": "L",
+      "title": "Unseen-attack generalization is not demonstrated for the authoritative model",
+      "class": "YELLOW",
+      "finding": "Phase 9M verdict YELLOW: Bot ROC-AUC unseen 0.678 vs seen 0.771 (CLAIM B, partial); Infiltration 0.475 vs 0.879 (CLAIM C, none). Those were Transformer/LogReg models on 2 of 6 families, and every family is confounded with capture day. The authoritative World Model itself was never leave-one-family-out evaluated. The PS phrase 'generalize to unseen attack patterns' is therefore unmet/unproven and must be presented as a limitation.",
+      "evidence": [
+        "phase9m_unseen_attack_audit.json"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "M1",
+      "objective": "M",
+      "title": "Scores are labeled 'probability' although calibration is poor",
+      "class": "YELLOW",
+      "finding": "Phase 8B: World Model Run-1 raw test ECE 0.1121 (validation 0.217), raw test Brier 0.1143; the selected Platt calibrator made test calibration WORSE (ECE 0.1697, Brier 0.1365). The page shows 'Whole-horizon attack probability 0.9999' and the API key is whole_horizon_attack_probability; the page's limitations panel says 'No calibrated probabilities' and the README calls it 'probability-like'. Nothing claims calibration, but the headline label contradicts the disclaimer.",
+      "evidence": [
+        "phase8b_calibration/validation_report.md",
+        "rendered_pages.authoritative_forecast.text"
+      ],
+      "recommended_action": "Relabel as 'attack-risk score (uncalibrated, 0-1)' in UI/API docs."
+    },
+    {
+      "id": "N1",
+      "objective": "N",
+      "title": "World Model is not the best whole-horizon detector",
+      "class": "YELLOW",
+      "finding": "Phase 8A (shared controlled-FPR comparison): World Model Run-1 PR-AUC 0.8487 / test F1 0.7471 / test FPR 0.0957 vs Temporal Transformer 0.8638 / 0.8279 / 0.0255. The claim 'World Model provides better early-warning forecasting than conventional baselines' is NOT SUPPORTED (recorded by 8A). The authoritative model is justified by what it adds (six-step state rollout, stage trajectory, attribution), not by beating the Transformer; no submission text may claim superiority.",
+      "evidence": [
+        "phase8_final_evaluation/FINAL_EVALUATION_TABLE.md"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "N2",
+      "objective": "N",
+      "title": "Headline metrics mostly measure ongoing-attack detection; onset forecasting is thin",
+      "class": "YELLOW",
+      "finding": "On the test split 1641/1763 (93.1%) of positives are windows whose CURRENT window is already an attack; only 122 are true onsets (attack begins within 60 s of a benign window), coming from 3 of 7 test days. On the currently-benign subset the World Model scores ROC-AUC 0.834 / PR-AUC 0.332 (prevalence 0.027); at the frozen Phase 8A threshold onset recall is 43.4% with 9.6% FPR. The Transformer is better on the same subset (PR-AUC 0.427). No lead-time analysis exists. 'Early warning' (used in the SIH deck) is at most weakly supported; 'near-term attack-risk forecasting over 6x10 s' is the defensible wording.",
+      "evidence": [
+        "forecast_vs_detection"
+      ],
+      "recommended_action": "Reword 'early warning' claims; report the onset-subset numbers as the honest forecasting evidence."
+    },
+    {
+      "id": "N3",
+      "objective": "N",
+      "title": "Demo shows one canned test-split sample; no live/uploaded input, no PCAP/Zeek",
+      "class": "YELLOW",
+      "finding": "The authoritative page always runs predict_demo_sample(index=0) (Friday-02-03 Bot window, p=0.9999, all six stages COMMAND_AND_CONTROL); a benign case is reachable only via the API ?index= parameter. The engine's input contract is the 157-feature CICFlowMeter-window schema, which the live-capture pipeline does not produce; PCAP alignment was RED in 9H/9I. The page says so explicitly.",
+      "evidence": [
+        "rendered_pages.authoritative_forecast.text",
+        "Phase 9H/9I/9L"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "N4",
+      "objective": "N",
+      "title": "Output is generic attack-risk, 6 x 10 s horizon, not infiltration-specific",
+      "class": "YELLOW",
+      "finding": "The PS asks for 'infiltration probability over the next K windows'. Delivered: one generic whole-horizon score (K fixed at 6, i.e. 60 s) plus per-step MITRE stage labels; no infiltration-specific probability and no per-step risk (9N RED). Also: validation/test prevalence shift 41.8% vs 28.5% means fixed thresholds do not transfer (8A).",
+      "evidence": [
+        "Phase 9J/9N",
+        "phase8_final_evaluation"
+      ],
+      "recommended_action": null
+    },
+    {
+      "id": "O1",
+      "objective": "O",
+      "title": "Django cannot start in this environment (reportlab declared but not installed)",
+      "class": "RED",
+      "finding": "`python manage.py check` exits 1: ModuleNotFoundError: No module named 'reportlab'. server/views.py imports reportlab at URL-load time, so runserver, every page and the API fail. reportlab>=4.0 is in requirements.txt but not installed here; plotly, streamlit and PyPDF2 are also absent (not needed at start-up). Phase 9L's Django smoke tests pass only when the package is present or shimmed. Test run as-is today (9K+9L+9N): 116 tests -> FAILED (failures=3, errors=1).",
+      "evidence": [
+        "django_startup",
+        "environment",
+        "_test_run_as_is.log"
+      ],
+      "recommended_action": "pip install -r requirements.txt on the demo machine and re-run manage.py check (no code change)."
+    },
+    {
+      "id": "O2",
+      "objective": "O",
+      "title": "The authoritative AI core is not in version control and the checkpoints are gitignored",
+      "class": "RED",
+      "finding": "git HEAD 4e54c7533f ('final') contains NONE of: experiments/inference_engine.py, phase6b/7b/7c code, world_model_dataset.py, phase4_baseline.py, templates/dashboard/authoritative_forecast.html; 50 working-tree entries are uncommitted. .gitignore excludes *.pt, so best_stage_head.pt and Run-1 best_model.pt are ignored (scaler.joblib is merely untracked). The engine also reads data/windows from OUTSIDE the repo (../data/windows, 70.9 MB, not tracked). A clone/zip of the repository would have no engine, no checkpoint, no data. The provenance field code_commit_hash (4e54c7533fc3) shown on the page points to a commit that does not contain the audited code.",
+      "evidence": [
+        "environment.authoritative_files_tracked_in_git",
+        "environment.authoritative_artifacts_gitignored",
+        "environment.windows_dir_inside_repo = False"
+      ],
+      "recommended_action": "Commit the core; ship checkpoint + scaler (un-ignore or release artifact) and a data/feature-schema bundle; re-tag so provenance points at the committed state."
+    },
+    {
+      "id": "O3",
+      "objective": "O",
+      "title": "First request pays a ~19 s model load inside the HTTP request",
+      "class": "YELLOW",
+      "finding": "Fresh process: engine load 19.1 s (reads all 10 CSVs + checkpoint), first prediction with explanations 0.25 s, warm 34 ms. The first browser request after runserver (and after each autoreload) will hang ~20 s.",
+      "evidence": [
+        "cold_start"
+      ],
+      "recommended_action": "Warm the engine at start-up and rehearse."
+    },
+    {
+      "id": "O4",
+      "objective": "O",
+      "title": "Fresh setup needs migrate + a staff account; page is staff-only",
+      "class": "YELLOW",
+      "finding": "db.sqlite3 is absent (gitignored). The authoritative page requires is_staff (non-staff -> redirect 302, anonymous -> 302); the API accepts any authenticated user (anonymous 403, out-of-range/bad index 400/400).",
+      "evidence": [
+        "environment.db_sqlite3_present",
+        "rendered_pages"
+      ],
+      "recommended_action": "Create the demo superuser during rehearsal."
+    },
+    {
+      "id": "O5",
+      "objective": "O",
+      "title": "Judge-facing page contains build-phase jargon and a local absolute path",
+      "class": "YELLOW",
+      "finding": "The page text includes 'established in Phase 9K', 'explicitly out of scope for this phase', 'Phase 9K/9L' and shows the checkpoint path as C:\\AKSHAY\\Akshay\\...\\best_stage_head.pt.",
+      "evidence": [
+        "rendered_pages.authoritative_forecast.text"
+      ],
+      "recommended_action": "Polish copy; show the relative checkpoint path."
+    },
+    {
+      "id": "O6",
+      "objective": "O",
+      "title": "Landing-page/deck framing overpromises relative to evidence",
+      "class": "YELLOW",
+      "finding": "Hero copy 'See the next move before it lands' and deck slides ('Early warning before an attack reaches critical stages', 'SOC Early Warning Dashboard', 'Multi-Step Attack Forecasting', inputs 'PCAP / Zeek / CTI', baselines 'RF', 'Docker' deployment (no Dockerfile exists), 'Temporal GNN' as inspiration) describe intended scope, not what the audited core delivers (see N2/N3/N4). The deck is dated 2026-09-10 and is an idea-stage document.",
+      "evidence": [
+        "claims_scan.presentation_hits"
+      ],
+      "recommended_action": "Align wording with claims_evidence_matrix.csv before submission."
+    },
+    {
+      "id": "P1",
+      "objective": "P",
+      "title": "Test-suite state and pre-existing failures",
+      "class": "YELLOW",
+      "finding": "Earlier phases record experiments/tests.py at 149/150 with one pre-existing, unrelated failure (Phase9FCrossHostGraphTests.test_build_comparison_table_ratios, a signature mismatch in frozen Phase 9F test code). It is unrelated to the AI core and was deliberately not modified.",
+      "evidence": [
+        "Phase 9L/9M/9N reports"
+      ],
+      "recommended_action": null
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "C01",
+      "source": "Dashboard/API",
+      "claim": "Whole-horizon output is P(attack somewhere in t+1..t+6), a single scalar",
+      "evidence": "engine result dict; API keys; semantics string",
+      "verdict": "GREEN",
+      "note": "Correctly scoped; explicitly not per-step"
+    },
+    {
+      "claim_id": "C02",
+      "source": "Dashboard",
+      "claim": "'Whole-horizon attack probability 0.9999'",
+      "evidence": "Phase 8B: raw test ECE 0.112, Platt worse (0.170)",
+      "verdict": "YELLOW",
+      "note": "Value is real; 'probability' label overstates calibration; disclaimer exists in Limitations panel"
+    },
+    {
+      "claim_id": "C03",
+      "source": "Dashboard/API",
+      "claim": "Six-step future state rollout (157-dim per step)",
+      "evidence": "engine future_state_rollout; Phase 6B per-horizon state error",
+      "verdict": "GREEN",
+      "note": "Produced by frozen checkpoint; no accuracy claim made on page"
+    },
+    {
+      "claim_id": "C04",
+      "source": "Dashboard/API",
+      "claim": "Predicted attack-stage trajectory t+1..t+6 from the Phase 7B stage head",
+      "evidence": "stage-head perturbation test; 7B test acc 0.839 / macro-F1 0.609",
+      "verdict": "GREEN",
+      "note": "Provenance verified; quality is YELLOW (H2)"
+    },
+    {
+      "claim_id": "C05",
+      "source": "Dashboard",
+      "claim": "Stage labels are a reasoned mapping, not MITRE ground truth or kill-chain inference",
+      "evidence": "docs/MITRE_MAPPING_AUDIT.md; 7B README",
+      "verdict": "GREEN",
+      "note": "Honest caveat present"
+    },
+    {
+      "claim_id": "C06",
+      "source": "Dashboard",
+      "claim": "INITIAL_ACCESS zero validation/test examples",
+      "evidence": "7B metrics.json",
+      "verdict": "GREEN",
+      "note": "Disclosed; but predicted in 6.8% of test step-cells (YELLOW H2)"
+    },
+    {
+      "claim_id": "C07",
+      "source": "Dashboard",
+      "claim": "Top features driving the whole-horizon attack probability (gradient-based feature attribution)",
+      "evidence": "engine explanations; saturation study",
+      "verdict": "RED",
+      "note": "Method label true; demo sample values all render 0.0000 (I3)"
+    },
+    {
+      "claim_id": "C08",
+      "source": "Dashboard/API",
+      "claim": "Attribution method is Gradient x Input (never SHAP)",
+      "evidence": "explanation_method in 300/300 calls",
+      "verdict": "GREEN",
+      "note": "Matches Phase 7C artifacts"
+    },
+    {
+      "claim_id": "C09",
+      "source": "SIH deck slide 3",
+      "claim": "Explainability: SHAP values + feature importance",
+      "evidence": "SHAP path raises ModuleNotFoundError(tensorflow), swallowed; fallback Gradient x Input",
+      "verdict": "RED",
+      "note": "Inaccurate; fix wording"
+    },
+    {
+      "claim_id": "C10",
+      "source": "Dashboard",
+      "claim": "Provenance: model id, checkpoint/scaler/feature-schema hashes verified",
+      "evidence": "hash re-verification",
+      "verdict": "GREEN",
+      "note": "All match Phase 9K manifest"
+    },
+    {
+      "claim_id": "C11",
+      "source": "Dashboard",
+      "claim": "Provenance: code commit 4e54c7533fc3",
+      "evidence": "git ls-files",
+      "verdict": "RED",
+      "note": "Commit does not contain the engine or template"
+    },
+    {
+      "claim_id": "C12",
+      "source": "Dashboard",
+      "claim": "No calibrated probabilities / no unseen-attack generalization / no per-step probability / no PCAP / no uncertainty",
+      "evidence": "Phase 8B, 9M, 9N, 9H/9I",
+      "verdict": "GREEN",
+      "note": "Limitations panel is accurate"
+    },
+    {
+      "claim_id": "C13",
+      "source": "Dashboard /dashboard/",
+      "claim": "'Waiting for trained checkpoint' / 'Model offline' / 'Checkpoint unavailable'",
+      "evidence": "authoritative engine loads and predicts",
+      "verdict": "RED",
+      "note": "False about the authoritative model"
+    },
+    {
+      "claim_id": "C14",
+      "source": "Dashboard /dashboard/",
+      "claim": "'Projected across the next five observation windows' / 'Five-window rollout'",
+      "evidence": "horizon is 6 windows; no per-window probability exists",
+      "verdict": "RED",
+      "note": "Stale legacy copy"
+    },
+    {
+      "claim_id": "C15",
+      "source": "Dashboard /dashboard/",
+      "claim": "'See the next move before it lands.'",
+      "evidence": "N2: 122 true onsets, onset ROC-AUC 0.834, recall 43%",
+      "verdict": "YELLOW",
+      "note": "Marketing framing exceeds evidence"
+    },
+    {
+      "claim_id": "C16",
+      "source": "Legacy page",
+      "claim": "'Live model output' badge, risk timeline",
+      "evidence": "AttackForecastService heuristic fallback",
+      "verdict": "YELLOW",
+      "note": "Non-authoritative banner present but badge mislabels"
+    },
+    {
+      "claim_id": "C17",
+      "source": "README",
+      "claim": "Runs a persisted PyTorch forecaster at models/attack_forecaster.pt",
+      "evidence": "file absent; heuristic fallback",
+      "verdict": "RED",
+      "note": "Describes legacy path"
+    },
+    {
+      "claim_id": "C18",
+      "source": "README",
+      "claim": "Dashboard provides predicted attack type, attack chain, next access step, precautions",
+      "evidence": "AttackChainBuilder +1 placeholder; heuristic",
+      "verdict": "RED",
+      "note": "Not outputs of the audited model"
+    },
+    {
+      "claim_id": "C19",
+      "source": "README",
+      "claim": "Risk is a model probability-like score",
+      "evidence": "8B",
+      "verdict": "YELLOW",
+      "note": "Appropriately hedged"
+    },
+    {
+      "claim_id": "C20",
+      "source": "SIH deck slides 2/5/6",
+      "claim": "Early warning before an attack reaches critical stages / SOC Early Warning Dashboard",
+      "evidence": "N2; Phase 8A claim NOT SUPPORTED",
+      "verdict": "YELLOW",
+      "note": "Only weakly supported; no lead-time evaluation"
+    },
+    {
+      "claim_id": "C21",
+      "source": "SIH deck slide 5",
+      "claim": "Multi-step attack forecasting: what may happen next?",
+      "evidence": "state rollout + stage labels exist; per-step risk absent (9N RED)",
+      "verdict": "YELLOW",
+      "note": "Multi-step STATE/STAGE yes; multi-step RISK no"
+    },
+    {
+      "claim_id": "C22",
+      "source": "SIH deck slide 3",
+      "claim": "Input data: PCAP / Zeek / public CTI",
+      "evidence": "Only CIC-IDS2018 flow windows; PCAP alignment RED (9H/9I)",
+      "verdict": "YELLOW",
+      "note": "Aspirational scope"
+    },
+    {
+      "claim_id": "C23",
+      "source": "SIH deck slide 3",
+      "claim": "Baseline: RF / LogReg; Temporal: LSTM, Transformer",
+      "evidence": "Phase 4: LogReg + LSTM; Phase 5 Transformer; no RF",
+      "verdict": "YELLOW",
+      "note": "Minor mismatch (RF)"
+    },
+    {
+      "claim_id": "C32",
+      "source": "SIH deck slides 4-5",
+      "claim": "Deployment reproducibility: Docker containerisation",
+      "evidence": "no Dockerfile or compose file anywhere under the project root",
+      "verdict": "YELLOW",
+      "note": "Not implemented; reproducibility currently depends on manual setup (O1/O2)"
+    },
+    {
+      "claim_id": "C24",
+      "source": "Phase 8A",
+      "claim": "World Model better than conventional baselines at controlled FPR",
+      "evidence": "8A verdict NOT SUPPORTED",
+      "verdict": "GREEN",
+      "note": "Correctly recorded as not supported; must never be claimed"
+    },
+    {
+      "claim_id": "C25",
+      "source": "Phase 9K",
+      "claim": "Engine matches frozen outputs within 1e-3",
+      "evidence": "full test: max 2.4e-3 (fp32); 5e-13 under AMP protocol",
+      "verdict": "YELLOW",
+      "note": "Tolerance holds for 5 samples, not the full split"
+    },
+    {
+      "claim_id": "C26",
+      "source": "Phase 9K/9L",
+      "claim": "Deterministic inference",
+      "evidence": "bit-exact repeats/fresh instances; CPU-GPU 2.2e-4",
+      "verdict": "GREEN",
+      "note": ""
+    },
+    {
+      "claim_id": "C27",
+      "source": "Phase 9M",
+      "claim": "Bot partial (CLAIM B), Infiltration none (CLAIM C), verdict YELLOW",
+      "evidence": "9M report",
+      "verdict": "GREEN",
+      "note": "Honestly scoped; not about the World Model itself"
+    },
+    {
+      "claim_id": "C28",
+      "source": "PS SIH26153",
+      "claim": "Generalize to unseen attack patterns",
+      "evidence": "9M",
+      "verdict": "YELLOW",
+      "note": "Unproven for the authoritative model"
+    },
+    {
+      "claim_id": "C29",
+      "source": "PS SIH26153",
+      "claim": "Infiltration probability over the next K windows",
+      "evidence": "9J/9N",
+      "verdict": "YELLOW",
+      "note": "Generic whole-horizon risk only; K=6 fixed; no infiltration-specific / per-step risk"
+    },
+    {
+      "claim_id": "C30",
+      "source": "PS SIH26153",
+      "claim": "MITRE stages: Recon, Initial Access, Lateral Movement, C2, Exfiltration",
+      "evidence": "7B: 6 covered classes",
+      "verdict": "YELLOW",
+      "note": "Recon/Exfiltration absent from data"
+    },
+    {
+      "claim_id": "C31",
+      "source": "Phase 9N",
+      "claim": "Native per-step attack risk",
+      "evidence": "9N RED; persistence beats model at all 6 steps",
+      "verdict": "GREEN",
+      "note": "Correctly EXCLUDED from authoritative path (not a capability)"
+    }
+  ],
+  "demo_failure_risks": [
+    {
+      "id": "D01",
+      "class": "RED",
+      "risk": "`manage.py runserver`/`check` fails: `ModuleNotFoundError: reportlab` (server app imports it at URL-load time)",
+      "likelihood": "Certain on this machine as configured",
+      "impact": "Whole site down",
+      "mitigation": "`pip install -r requirements.txt`; re-run `manage.py check`",
+      "finding": "O1"
+    },
+    {
+      "id": "D02",
+      "class": "RED",
+      "risk": "Clean clone/zip has no engine code, no `.pt` checkpoints (gitignored), no `data/windows` (outside repo) -> engine cannot start",
+      "likelihood": "Certain if submitted via git/zip",
+      "impact": "Authoritative page/API return 503/error",
+      "mitigation": "Commit core, ship checkpoint+scaler+schema/data bundle",
+      "finding": "O2"
+    },
+    {
+      "id": "D03",
+      "class": "RED",
+      "risk": "Explanation panel for the default demo sample shows ten `0.0000` importances",
+      "likelihood": "Certain (default sample)",
+      "impact": "Looks broken on the headline attack case",
+      "mitigation": "Fix attribution target/format (needs code change)",
+      "finding": "I3"
+    },
+    {
+      "id": "D04",
+      "class": "RED",
+      "risk": "Landing page after login says 'Model offline / Waiting for trained checkpoint / five observation windows'",
+      "likelihood": "Certain",
+      "impact": "Judge concludes model is not running",
+      "mitigation": "Fix landing copy/wiring",
+      "finding": "C2"
+    },
+    {
+      "id": "D05",
+      "class": "RED",
+      "risk": "Deck/pitch says 'SHAP values'; implemented method is Gradient x Input; SHAP path silently fails",
+      "likelihood": "Certain if deck reused",
+      "impact": "Direct factual contradiction if asked",
+      "mitigation": "Correct wording",
+      "finding": "I2"
+    },
+    {
+      "id": "D06",
+      "class": "YELLOW",
+      "risk": "First request after start-up blocks ~19 s while the engine loads (and after every autoreload)",
+      "likelihood": "Certain on first hit",
+      "impact": "Looks hung / browser timeout",
+      "mitigation": "Warm engine before demo; use `--noreload`",
+      "finding": "O3"
+    },
+    {
+      "id": "D07",
+      "class": "YELLOW",
+      "risk": "No `db.sqlite3` (gitignored): need `migrate` + `createsuperuser`; page is staff-only",
+      "likelihood": "Certain on fresh setup",
+      "impact": "Login fails",
+      "mitigation": "Prepare demo account",
+      "finding": "O4"
+    },
+    {
+      "id": "D08",
+      "class": "YELLOW",
+      "risk": "Different scikit-learn/torch on the demo machine (unpinned requirements): scaler unpickle warning (pickled with 1.9.1) or failure on older releases",
+      "likelihood": "Possible",
+      "impact": "Warnings / rare load error",
+      "mitigation": "Pin versions; rehearse on target",
+      "finding": "D2"
+    },
+    {
+      "id": "D09",
+      "class": "YELLOW",
+      "risk": "If tensorflow+shap are present on the demo machine the attribution method may silently become SHAP GradientExplainer (untested)",
+      "likelihood": "Possible",
+      "impact": "Different attributions than the audited ones",
+      "mitigation": "Keep environment identical or remove silent fallback",
+      "finding": "I4"
+    },
+    {
+      "id": "D10",
+      "class": "YELLOW",
+      "risk": "Default sample is always the Bot attack window (p=0.9999, six x COMMAND_AND_CONTROL); benign/other cases only via API `?index=`",
+      "likelihood": "Certain",
+      "impact": "Judge sees a single canned case; questions about live data",
+      "mitigation": "Prepare 2-3 API indices (e.g. 1000 benign, 100 attack) and state the input contract",
+      "finding": "N3"
+    },
+    {
+      "id": "D11",
+      "class": "YELLOW",
+      "risk": "Page shows 'Phase 9K/9L' jargon and `C:\\AKSHAY\\...` checkpoint path",
+      "likelihood": "Certain",
+      "impact": "Unpolished / leaks local path",
+      "mitigation": "Copy edit",
+      "finding": "O5"
+    },
+    {
+      "id": "D12",
+      "class": "YELLOW",
+      "risk": "Two simultaneous first requests on the threaded dev server load two engines (no lock)",
+      "likelihood": "Unlikely with one presenter",
+      "impact": "~40 s stall, 2x GPU memory",
+      "mitigation": "Warm start-up",
+      "finding": "G2"
+    },
+    {
+      "id": "D13",
+      "class": "YELLOW",
+      "risk": "Landing-page/deck questions about early warning, per-step risk, unseen attacks, infiltration probability",
+      "likelihood": "Likely from judges",
+      "impact": "Claims exceed evidence",
+      "mitigation": "Use claims_evidence_matrix.csv wording",
+      "finding": "N2/N4/L2"
+    },
+    {
+      "id": "D14",
+      "class": "YELLOW",
+      "risk": "No GPU on demo machine: works (CPU verified equal within 2.2e-4, same stages); CPU latency not measured",
+      "likelihood": "Possible",
+      "impact": "Slower explanations",
+      "mitigation": "Time it on target",
+      "finding": "G1"
+    },
+    {
+      "id": "D15",
+      "class": "YELLOW",
+      "risk": "Legacy /dashboard/forecast/ or capture_traffic started by mistake -> heuristic 'forecast' with 'Live model output' badge",
+      "likelihood": "Unlikely",
+      "impact": "Non-authoritative numbers shown",
+      "mitigation": "Do not run capture during demo",
+      "finding": "C3"
+    }
+  ],
+  "test_run_as_is": {
+    "suites": [
+      "tests.test_phase9k_integration",
+      "tests.test_phase9l_django_integration",
+      "tests.test_phase9n_per_step_risk"
+    ],
+    "ran": 116,
+    "seconds": 1435.365,
+    "result": "FAILED (failures=3, errors=1)",
+    "error_lines": [
+      "ERROR: test_no_forbidden_claims_rendered (tests.test_phase9l_django_integration.Step9DjangoSmokeTestCase.test_no_forbidden_claims_rendered)",
+      "FAIL: test_all_smoke_steps_ok (tests.test_phase9l_django_integration.Step9DjangoSmokeTestCase.test_all_smoke_steps_ok)",
+      "FAIL: test_api_view_responds (tests.test_phase9l_django_integration.Step9DjangoSmokeTestCase.test_api_view_responds)",
+      "FAIL: test_dashboard_view_resolves_and_renders (tests.test_phase9l_django_integration.Step9DjangoSmokeTestCase.test_dashboard_view_resolves_and_renders)"
+    ],
+    "root_cause_lines": [
+      "{'step': 'django_system_check', 'ok': False, 'detail': \"No module named 'reportlab'\"}"
+    ],
+    "all_failures_in_step9_django_smoke": true,
+    "passed": 112
+  },
+  "integrity": {
+    "checkpoint_scaler_hashes_equal_phase9k_manifest": {
+      "phase7b_stage_head_checkpoint": true,
+      "phase6b_run1_checkpoint": true,
+      "phase6b_run1_scaler": true
+    },
+    "rehash_now": {
+      "best_stage_head.pt": "f9d16f1943aeeed4f355659b85e90cb6cf8cb94ae84d2fcbd473c59fa3342fe4",
+      "run1 best_model.pt": "6374a9c47d722215e64a3cae1b1e24c425a89dad26407b147b153af03404fb79",
+      "run1 scaler.joblib": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881"
+    },
+    "rehash_equals_recorded": true,
+    "files_modified_or_created_since_audit_start": [
+      "experiments/phase10a_ai_core_audit.py",
+      "experiments/phase10a_write_report.py",
+      "experiments/results/phase10a_ai_core_final_audit/_test_run_as_is.log",
+      "experiments/results/phase10a_ai_core_final_audit/authoritative_path.md",
+      "experiments/results/phase10a_ai_core_final_audit/claims_evidence_matrix.csv",
+      "experiments/results/phase10a_ai_core_final_audit/demo_failure_risks.md",
+      "experiments/results/phase10a_ai_core_final_audit/evidence.json",
+      "experiments/results/phase10a_ai_core_final_audit/final_ai_core_checklist.json",
+      "experiments/results/phase10a_ai_core_final_audit/phase10a_report.json",
+      "experiments/results/phase10a_ai_core_final_audit/phase10a_report.md",
+      "server.log"
+    ],
+    "runtime_side_effects_of_audit_probes": {
+      "server.log": "gitignored Django request log (settings.LOGGING -> BASE_DIR/server.log); the audit's rendered-page probe made three deliberate negative-path API requests (bad index, out-of-range index, anonymous) which Django logged as WARNING lines. Not a source, model, dataset or frozen artifact; left in place, not edited."
+    },
+    "only_phase10a_files_touched": true,
+    "modified_tracked_files_git_status": [
+      "M api/urls.py",
+      " M api/views.py",
+      " M dashboard/urls.py",
+      " M dashboard/views.py",
+      " M experiments/tests.py",
+      " M forecasting/mitre_mapping.py",
+      " M forecasting/tests.py",
+      " M templates/dashboard/forecast.html",
+      " M templates/dashboard/index.html",
+      " M world_model/inference_service.py"
+    ],
+    "note_on_modified_tracked_files": "the 10 tracked files shown as modified are the pre-existing Phase 9L/earlier edits; none has an mtime on/after the audit start",
+    "training_performed": false,
+    "model_code_modified": false,
+    "django_or_frontend_modified": false
+  },
+  "evidence_file": "evidence.json",
+  "audit_only": true
+}

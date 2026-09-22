@@ -1,0 +1,5 @@
+variant,status,parameter_count,feature_dimensionality,n_train,n_validation,n_test,best_epoch,training_duration_seconds,selected_threshold,validation_pr_auc,validation_roc_auc,validation_precision,validation_recall,validation_f1,validation_fpr,test_pr_auc,test_roc_auc,test_precision,test_recall,test_f1,test_fpr,test_brier,test_ece
+A_flow_only,TRAINED,347806,157,29315,6195,6195,1,25.103,0.7100254893302917,0.7566347827482176,0.7756313433078745,0.8611111111111112,0.4185956790123457,0.563343717549325,0.048570635581459895,0.8681700414271173,0.8775065219483527,0.9502840909090909,0.7589336358479863,0.8438978240302744,0.0157942238267148,0.12980153959355278,0.16220416472480603
+B_flow_plus_event,NOT_CONSTRUCTED,,,,,,,,,,,,,,,,,,,,,,
+C_flow_plus_graph,NOT_CONSTRUCTED,,,,,,,,,,,,,,,,,,,,,,
+D_flow_plus_event_plus_graph,NOT_CONSTRUCTED,,,,,,,,,,,,,,,,,,,,,,
