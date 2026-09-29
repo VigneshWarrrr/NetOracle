@@ -1,0 +1,223 @@
+{
+  "bucket": "cse-cic-ids2018",
+  "region": "ca-central-1",
+  "access_method": "unauthenticated HTTPS GET to the public ListObjectsV2 REST endpoint (no AWS CLI, no boto3, no credentials)",
+  "bucket_accessible": true,
+  "top_level_listing": {
+    "http_status": 200,
+    "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/?list-type=2&delimiter=/",
+    "prefix_queried": "",
+    "common_prefixes": [
+      "Original Network Traffic and Log data/",
+      "Processed Traffic Data for ML Algorithms/"
+    ],
+    "contents": [],
+    "is_truncated": false,
+    "key_count": 2
+  },
+  "top_level_prefixes": [
+    "Original Network Traffic and Log data/",
+    "Processed Traffic Data for ML Algorithms/"
+  ],
+  "raw_traffic_prefix_listing": {
+    "http_status": 200,
+    "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/?list-type=2&delimiter=/&prefix=Original%20Network%20Traffic%20and%20Log%20data/",
+    "prefix_queried": "Original Network Traffic and Log data/",
+    "common_prefixes": [
+      "Original Network Traffic and Log data/Friday-02-03-2018/",
+      "Original Network Traffic and Log data/Friday-16-02-2018/",
+      "Original Network Traffic and Log data/Friday-23-02-2018/",
+      "Original Network Traffic and Log data/Thursday-01-03-2018/",
+      "Original Network Traffic and Log data/Thursday-15-02-2018/",
+      "Original Network Traffic and Log data/Thursday-22-02-2018/",
+      "Original Network Traffic and Log data/Tuesday-20-02-2018/",
+      "Original Network Traffic and Log data/Wednesday-14-02-2018/",
+      "Original Network Traffic and Log data/Wednesday-21-02-2018/",
+      "Original Network Traffic and Log data/Wednesday-28-02-2018/"
+    ],
+    "contents": [
+      {
+        "key": "Original Network Traffic and Log data/",
+        "size_bytes": 0,
+        "last_modified": "2018-10-10T11:52:09.000Z",
+        "etag": "d41d8cd98f00b204e9800998ecf8427e",
+        "storage_class": "STANDARD"
+      }
+    ],
+    "is_truncated": false,
+    "key_count": 11
+  },
+  "raw_traffic_day_folders": [
+    "Original Network Traffic and Log data/Friday-02-03-2018/",
+    "Original Network Traffic and Log data/Friday-16-02-2018/",
+    "Original Network Traffic and Log data/Friday-23-02-2018/",
+    "Original Network Traffic and Log data/Thursday-01-03-2018/",
+    "Original Network Traffic and Log data/Thursday-15-02-2018/",
+    "Original Network Traffic and Log data/Thursday-22-02-2018/",
+    "Original Network Traffic and Log data/Tuesday-20-02-2018/",
+    "Original Network Traffic and Log data/Wednesday-14-02-2018/",
+    "Original Network Traffic and Log data/Wednesday-21-02-2018/",
+    "Original Network Traffic and Log data/Wednesday-28-02-2018/"
+  ],
+  "processed_csv_prefix_listing": {
+    "http_status": 200,
+    "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/?list-type=2&delimiter=/&prefix=Processed%20Traffic%20Data%20for%20ML%20Algorithms/",
+    "prefix_queried": "Processed Traffic Data for ML Algorithms/",
+    "common_prefixes": [],
+    "contents": [
+      {
+        "key": "Processed Traffic Data for ML Algorithms/",
+        "size_bytes": 0,
+        "last_modified": "2018-10-11T16:02:25.000Z",
+        "etag": "d41d8cd98f00b204e9800998ecf8427e",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 352368373,
+        "last_modified": "2018-10-11T16:02:49.000Z",
+        "etag": "2cef2d9c87fc74df84d7424f6949f1b3-22",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 333723605,
+        "last_modified": "2018-10-11T16:03:10.000Z",
+        "etag": "e68ef27c09c98ba91fe3c6b1108a18b9-20",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Friday-23-02-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 382840456,
+        "last_modified": "2018-10-11T16:03:33.000Z",
+        "etag": "472d63fb3c1285ce2f1e25617ba8cba5-23",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 4054925350,
+        "last_modified": "2018-10-11T16:03:59.000Z",
+        "etag": "49075d3ee07bcd47e1aae3f059953799-242",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 107842858,
+        "last_modified": "2018-10-11T16:08:38.000Z",
+        "etag": "5889e4b7e0a421070747a2441a2772d7-7",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 375945899,
+        "last_modified": "2018-10-11T16:08:48.000Z",
+        "etag": "eb1dc2ec76efe09c8995f28bfa4c8656-23",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 382636202,
+        "last_modified": "2018-10-11T16:09:20.000Z",
+        "etag": "2bfbfdc038eb59f60bb725d9f3ede5d7-23",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 358223333,
+        "last_modified": "2018-10-11T16:09:44.000Z",
+        "etag": "46c0f45f8e6fe1edf1f08487448c102f-22",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 328893673,
+        "last_modified": "2018-10-11T16:10:12.000Z",
+        "etag": "3a1d6b804ba9f6a3085973c2fa425883-20",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Processed Traffic Data for ML Algorithms/Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv",
+        "size_bytes": 209249758,
+        "last_modified": "2018-10-11T16:10:33.000Z",
+        "etag": "af10d2362a17be6331cfc6d1ce2474f2-13",
+        "storage_class": "STANDARD"
+      }
+    ],
+    "is_truncated": false,
+    "key_count": 11
+  },
+  "processed_csv_filenames_for_corroboration": [
+    "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+    "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Friday-23-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+    "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv",
+    "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+  ],
+  "target_day_prefix": "Original Network Traffic and Log data/Wednesday-14-02-2018/",
+  "target_day_listing": {
+    "http_status": 200,
+    "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/?list-type=2&delimiter=/&prefix=Original%20Network%20Traffic%20and%20Log%20data/Wednesday-14-02-2018/",
+    "prefix_queried": "Original Network Traffic and Log data/Wednesday-14-02-2018/",
+    "common_prefixes": [],
+    "contents": [
+      {
+        "key": "Original Network Traffic and Log data/Wednesday-14-02-2018/",
+        "size_bytes": 0,
+        "last_modified": "2018-10-10T11:53:14.000Z",
+        "etag": "d41d8cd98f00b204e9800998ecf8427e",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Original Network Traffic and Log data/Wednesday-14-02-2018/logs.zip",
+        "size_bytes": 140178796,
+        "last_modified": "2018-10-10T16:44:20.000Z",
+        "etag": "c9f6140104a25505cfaf3c5e335937f9-9",
+        "storage_class": "STANDARD"
+      },
+      {
+        "key": "Original Network Traffic and Log data/Wednesday-14-02-2018/pcap.zip",
+        "size_bytes": 39913353098,
+        "last_modified": "2018-10-11T12:22:03.000Z",
+        "etag": "845cbc33e555f5906ea5c9bc520113ab-2380",
+        "storage_class": "STANDARD"
+      }
+    ],
+    "is_truncated": false,
+    "key_count": 3
+  },
+  "candidate_objects": [
+    {
+      "key": "Original Network Traffic and Log data/Wednesday-14-02-2018/logs.zip",
+      "size_bytes": 140178796,
+      "last_modified": "2018-10-10T16:44:20.000Z",
+      "etag": "c9f6140104a25505cfaf3c5e335937f9-9",
+      "storage_class": "STANDARD",
+      "classification": "log_archive",
+      "size_human": "133.68 MB",
+      "under_tiny_download_threshold": false
+    },
+    {
+      "key": "Original Network Traffic and Log data/Wednesday-14-02-2018/pcap.zip",
+      "size_bytes": 39913353098,
+      "last_modified": "2018-10-11T12:22:03.000Z",
+      "etag": "845cbc33e555f5906ea5c9bc520113ab-2380",
+      "storage_class": "STANDARD",
+      "classification": "raw_pcap_archive",
+      "size_human": "37.17 GB",
+      "under_tiny_download_threshold": false
+    }
+  ],
+  "correspondence_to_wednesday_14_02_2018": {
+    "confidence": "HIGH, by naming convention only",
+    "basis": "The raw-traffic prefix contains a folder named exactly 'Wednesday-14-02-2018/', matching the day-of-week and date of our existing 'Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv', under the same S3 bucket/organization (CIC) that produced the processed CSVs.",
+    "verified_by_content_inspection": false,
+    "caveat": "No packet or log byte has been read. This is folder-name correspondence only, not a verified flow-level or timestamp-level match."
+  },
+  "download_performed": false,
+  "download_reason": "All candidate objects at this prefix meet or exceed the 100 MB tiny-download threshold; per instructions, this script stops after metadata discovery and does not fetch any object body."
+}

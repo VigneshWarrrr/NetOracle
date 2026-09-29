@@ -1,0 +1,82 @@
+{
+  "definition": "y_k = 1 if per_step_stage_name[:,k] != 'BENIGN' else 0, for k=0..5 (future windows t+1..t+6)",
+  "source": "phase7b_stage_targets.read_stage_targets (frozen, read-only, unmodified) -- per_step_stage_name derived from each future row's own current_attack_types via forecasting.mitre_mapping.MitreMapper.from_label_set",
+  "is_infiltration_specific": false,
+  "is_generic_any_covered_attack": true,
+  "target_config_hash": "7817062f163afbec79f0388f124e75ded535532250e15e9fd490a50bcb64ff11",
+  "counts_per_split": {
+    "train": {
+      "n": 29315,
+      "positive_per_step": [
+        2904,
+        2902,
+        2900,
+        2899,
+        2898,
+        2897
+      ],
+      "negative_per_step": [
+        26411,
+        26413,
+        26415,
+        26416,
+        26417,
+        26418
+      ]
+    },
+    "validation": {
+      "n": 6195,
+      "positive_per_step": [
+        2054,
+        2059,
+        2064,
+        2070,
+        2075,
+        2080
+      ],
+      "negative_per_step": [
+        4141,
+        4136,
+        4131,
+        4125,
+        4120,
+        4115
+      ]
+    },
+    "test": {
+      "n": 6195,
+      "positive_per_step": [
+        1643,
+        1639,
+        1636,
+        1633,
+        1629,
+        1625
+      ],
+      "negative_per_step": [
+        4552,
+        4556,
+        4559,
+        4562,
+        4566,
+        4570
+      ]
+    }
+  },
+  "per_step_infiltration_prevalence_test": [
+    0.05036319612590799,
+    0.05020177562550444,
+    0.05004035512510089,
+    0.049878934624697335,
+    0.04971751412429379,
+    0.049556093623890234
+  ],
+  "per_step_generic_attack_prevalence_test": [
+    0.2652138821630347,
+    0.2645682001614205,
+    0.26408393866020985,
+    0.2635996771589992,
+    0.262953995157385,
+    0.2623083131557708
+  ]
+}

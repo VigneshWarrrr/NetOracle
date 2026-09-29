@@ -1,0 +1,615 @@
+{
+  "success": true,
+  "verdict": "GREEN",
+  "executive_summary": "Two already-validated PCAP captures (phase9d_UCAP172.31.69.22, phase9f_capWIN-J6GMIG1DQE5-172.31.64.89) were re-parsed with the identical Phase 9E parsing pipeline (no network access). Representation B2 (micro-batch events, 1s buckets) reconciles EXACTLY against the raw packet stream on every checked quantity (packet count, byte count, protocol counts, port sets) in both captures: True. B2 reduces [7316, 46295] raw packets to [5547, 19927] events respectively, while the graph-snapshot representation (A) stayed only ['30.9%', '80.5%'] non-empty (matching Phase 9F's finding). NOTABLY, fewer events does NOT mean smaller storage: B2 is smaller than B1 in serialized bytes in 0/2 captures -- see the per-capture storage notes in Section 5 for why (median burst size near 1 in both captures leaves little for per-event aggregate fields to compress).",
+  "micro_batch_seconds": 1,
+  "window_seconds": 10,
+  "captures": [
+    {
+      "label": "phase9d_UCAP172.31.69.22",
+      "pcap_path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\data\\phase9d\\UCAP172.31.69.22.pcap",
+      "capture_summary": {
+        "total_packets_in_capture": 10417,
+        "total_ip_packets": 7316,
+        "capture_duration_seconds": 32220.89963197708,
+        "unique_hosts": 551,
+        "anonymization_bijective": true
+      },
+      "representation_a": {
+        "window_seconds": 10,
+        "total_windows": 3223,
+        "non_empty_windows": 997,
+        "total_window_edges": 3052,
+        "unique_edges": 1094,
+        "total_nodes_observed": 551,
+        "per_window_distributions": {
+          "node_count": {
+            "windows_with_defined_value": 3223,
+            "min": 0.0,
+            "median": 0.0,
+            "mean": 0.7942910331988831,
+            "p95": 3.0,
+            "max": 5.0
+          },
+          "edge_count": {
+            "windows_with_defined_value": 3223,
+            "min": 0.0,
+            "median": 0.0,
+            "mean": 0.9469438411417933,
+            "p95": 4.0,
+            "max": 8.0
+          },
+          "packet_count": {
+            "windows_with_defined_value": 3223,
+            "min": 0.0,
+            "median": 0.0,
+            "mean": 2.269934843313683,
+            "p95": 11.0,
+            "max": 218.0
+          },
+          "byte_count": {
+            "windows_with_defined_value": 3223,
+            "min": 0.0,
+            "median": 0.0,
+            "mean": 298.93018926466027,
+            "p95": 1029.0,
+            "max": 217503.0
+          },
+          "density": {
+            "windows_with_defined_value": 997,
+            "min": 0.35,
+            "median": 1.0,
+            "mean": 0.8132062855232364,
+            "p95": 1.0,
+            "max": 1.0
+          },
+          "average_degree": {
+            "windows_with_defined_value": 997,
+            "min": 1.0,
+            "median": 2.0,
+            "mean": 2.278468739551989,
+            "p95": 3.0,
+            "max": 3.2
+          },
+          "mean_in_degree": {
+            "windows_with_defined_value": 997,
+            "min": 0.5,
+            "median": 1.0,
+            "mean": 1.1392343697759946,
+            "p95": 1.5,
+            "max": 1.6
+          },
+          "mean_out_degree": {
+            "windows_with_defined_value": 997,
+            "min": 0.5,
+            "median": 1.0,
+            "mean": 1.1392343697759946,
+            "p95": 1.5,
+            "max": 1.6
+          },
+          "max_in_degree": {
+            "windows_with_defined_value": 997,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.530591775325978,
+            "p95": 3.0,
+            "max": 4.0
+          },
+          "max_out_degree": {
+            "windows_with_defined_value": 997,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.5576730190571715,
+            "p95": 3.0,
+            "max": 4.0
+          },
+          "max_degree": {
+            "windows_with_defined_value": 997,
+            "min": 1.0,
+            "median": 2.0,
+            "mean": 3.061183550651956,
+            "p95": 6.0,
+            "max": 8.0
+          },
+          "isolated_node_count": {
+            "windows_with_defined_value": 3223,
+            "min": 0.0,
+            "median": 0.0,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "weakly_connected_component_count": {
+            "windows_with_defined_value": 3223,
+            "min": 0.0,
+            "median": 0.0,
+            "mean": 0.30933912503878375,
+            "p95": 1.0,
+            "max": 1.0
+          }
+        },
+        "temporal_transitions_represented": 3222,
+        "serialized_size_bytes": 3122718,
+        "packet_accounting_check": {
+          "sum_of_edge_window_packet_counts": 7316,
+          "total_ip_packets_parsed": 7316,
+          "matches": true
+        }
+      },
+      "representation_b1": {
+        "event_count": 7316,
+        "event_fields": [
+          "timestamp",
+          "src",
+          "dst",
+          "protocol",
+          "src_port",
+          "dst_port",
+          "packet_length",
+          "payload_length",
+          "tcp_flags"
+        ],
+        "estimated_bytes_per_event": 214.384,
+        "estimated_serialized_size_bytes": 1568433,
+        "size_estimation_method": "Measured exact JSON size of the first 500 events, then scaled linearly by total event_count (packet events are structurally uniform, so per-event size does not vary meaningfully across the capture)."
+      },
+      "representation_b2": {
+        "micro_batch_seconds": 1,
+        "event_count": 5547,
+        "compression_ratio_packets_per_event": 1.3189111231296196,
+        "compression_ratio_definition": "packets_per_event = total IP packets / B2 event count -- e.g. 3.0 means each B2 event represents 3 raw packets on average.",
+        "events_per_second": 0.17215534213374273,
+        "maximum_burst_size": 107,
+        "temporal_resolution_seconds": 1,
+        "structure_stats": {
+          "total_events": 5547,
+          "events_per_second": 0.17215534213374273,
+          "median_inter_event_time": 7.700920104980469e-05,
+          "p95_inter_event_time": 38.302341401576996,
+          "maximum_inter_event_gap": 206.75334787368774,
+          "median_burst_size": 1.0,
+          "p95_burst_size": 2.0,
+          "maximum_burst_size": 107,
+          "unique_communicating_pairs": 1094,
+          "unique_hosts": 551,
+          "pct_events_previously_unseen_pair": 19.72237245357851,
+          "pct_events_previously_unseen_destination": 9.82513070127997,
+          "pct_events_previously_unseen_source": 9.933297277807824
+        },
+        "serialized_size_bytes": 2665585,
+        "reconciliation": {
+          "total_packets_via_events": 7316,
+          "total_packets_via_raw_parse": 7316,
+          "packets_reconcile_exactly": true,
+          "total_bytes_via_events": 963452
+        }
+      },
+      "b2_vs_b1_storage_note": "OBSERVED: B2 (5,547 events, 2,665,585 bytes) is LARGER than B1 (7,316 events, 1,568,433 bytes) in serialized bytes, despite having fewer events. Reducing EVENT COUNT does not automatically reduce STORAGE SIZE: each B2 event carries more fields than a B1 event (aggregate mean/std/count fields vs. B1's raw per-packet fields), and this capture's median burst size is 1.0 packets/event -- when most events represent only 1 packet, the extra aggregate fields are pure overhead with no compression benefit to offset them.",
+      "information_preservation": {
+        "total_packets": {
+          "raw": 7316,
+          "via_events": 7316,
+          "matches": true
+        },
+        "total_bytes": {
+          "raw": 963452,
+          "via_events": 963452,
+          "matches": true
+        },
+        "first_timestamp": 1518611531.157735,
+        "last_timestamp": 1518643752.057367,
+        "unique_hosts": {
+          "raw": 551,
+          "via_events": 551,
+          "matches": true
+        },
+        "unique_directed_pairs": {
+          "raw": 1094,
+          "via_events": 1094,
+          "matches": true
+        },
+        "protocol_counts": {
+          "raw": {
+            "TCP": 4280,
+            "UDP": 2714,
+            "ICMP": 322
+          },
+          "via_events": {
+            "TCP": 4280,
+            "UDP": 2714,
+            "ICMP": 322
+          },
+          "matches": true
+        },
+        "port_diversity": {
+          "raw_source_ports": 2302,
+          "via_events_source_ports": 2302,
+          "source_matches": true,
+          "raw_destination_ports": 2260,
+          "via_events_destination_ports": 2260,
+          "destination_matches": true
+        },
+        "information_lost_by_b2": [
+          "Exact arrival order and individual timestamps of packets WITHIN one micro-batch bucket (1s) are not retained -- only packet_count, mean_packet_length/std, and mean_IAT/std survive per bucket.",
+          "TTL, IP fragmentation flags, and TCP window size (present on every raw packet, per Phase 9E's feature-availability table) are not carried into B2 event features in this phase -- they were not in the Step 4 required feature list and were not fabricated here."
+        ]
+      },
+      "representation_c_hybrid": {
+        "definition": "C = the full B2 micro-batch event stream, PLUS one compact per-10s-window state summary (active_hosts, active_edges, packet/byte volume, protocol distribution, max burst size), PLUS a window_index per event so any consumer can slice the event stream by window without re-deriving window boundaries. No topology detail (which specific hosts/edges) is duplicated in the window summary -- that detail lives only in the event stream, avoided as redundant storage.",
+        "window_state_summary_count": 997,
+        "window_state_summary_bytes": 197626,
+        "event_to_window_index_overhead_bytes": 31294,
+        "naive_combined_bytes_A_plus_B2": 5788303,
+        "lean_hybrid_bytes_B2_plus_window_summary_plus_index": 2894505,
+        "size_saving_vs_naive_pct": 49.99389285598905
+      },
+      "source_phase": "Phase 9D (already retrieved/validated; reused read-only)"
+    },
+    {
+      "label": "phase9f_capWIN-J6GMIG1DQE5-172.31.64.89",
+      "pcap_path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\data\\phase9f\\capWIN-J6GMIG1DQE5-172.31.64.89.pcap",
+      "capture_summary": {
+        "total_packets_in_capture": 49250,
+        "total_ip_packets": 46295,
+        "capture_duration_seconds": 32536.081380844116,
+        "unique_hosts": 597,
+        "anonymization_bijective": true
+      },
+      "representation_a": {
+        "window_seconds": 10,
+        "total_windows": 3254,
+        "non_empty_windows": 2620,
+        "total_window_edges": 10101,
+        "unique_edges": 828,
+        "total_nodes_observed": 597,
+        "per_window_distributions": {
+          "node_count": {
+            "windows_with_defined_value": 3254,
+            "min": 0.0,
+            "median": 2.0,
+            "mean": 2.504302397049785,
+            "p95": 5.0,
+            "max": 9.0
+          },
+          "edge_count": {
+            "windows_with_defined_value": 3254,
+            "min": 0.0,
+            "median": 2.0,
+            "mean": 3.104179471419791,
+            "p95": 8.0,
+            "max": 16.0
+          },
+          "packet_count": {
+            "windows_with_defined_value": 3254,
+            "min": 0.0,
+            "median": 10.0,
+            "mean": 14.227105101413645,
+            "p95": 44.0,
+            "max": 984.0
+          },
+          "byte_count": {
+            "windows_with_defined_value": 3254,
+            "min": 0.0,
+            "median": 1038.0,
+            "mean": 3041.399815611555,
+            "p95": 7451.75,
+            "max": 2237873.0
+          },
+          "density": {
+            "windows_with_defined_value": 2620,
+            "min": 0.16666666666666666,
+            "median": 0.6666666666666666,
+            "mean": 0.6726984126984127,
+            "p95": 1.0,
+            "max": 1.0
+          },
+          "average_degree": {
+            "windows_with_defined_value": 2620,
+            "min": 1.0,
+            "median": 2.0,
+            "mean": 2.3121567914697687,
+            "p95": 3.2,
+            "max": 3.5555555555555554
+          },
+          "mean_in_degree": {
+            "windows_with_defined_value": 2620,
+            "min": 0.5,
+            "median": 1.0,
+            "mean": 1.1560783957348844,
+            "p95": 1.6,
+            "max": 1.7777777777777777
+          },
+          "mean_out_degree": {
+            "windows_with_defined_value": 2620,
+            "min": 0.5,
+            "median": 1.0,
+            "mean": 1.1560783957348844,
+            "p95": 1.6,
+            "max": 1.7777777777777777
+          },
+          "max_in_degree": {
+            "windows_with_defined_value": 2620,
+            "min": 1.0,
+            "median": 2.0,
+            "mean": 2.0595419847328245,
+            "p95": 5.0,
+            "max": 8.0
+          },
+          "max_out_degree": {
+            "windows_with_defined_value": 2620,
+            "min": 1.0,
+            "median": 1.0,
+            "mean": 1.869083969465649,
+            "p95": 4.0,
+            "max": 8.0
+          },
+          "max_degree": {
+            "windows_with_defined_value": 2620,
+            "min": 1.0,
+            "median": 3.0,
+            "mean": 3.8553435114503816,
+            "p95": 9.0,
+            "max": 16.0
+          },
+          "isolated_node_count": {
+            "windows_with_defined_value": 3254,
+            "min": 0.0,
+            "median": 0.0,
+            "mean": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "weakly_connected_component_count": {
+            "windows_with_defined_value": 3254,
+            "min": 0.0,
+            "median": 1.0,
+            "mean": 0.8051628764597418,
+            "p95": 1.0,
+            "max": 1.0
+          }
+        },
+        "temporal_transitions_represented": 3253,
+        "serialized_size_bytes": 10340510,
+        "packet_accounting_check": {
+          "sum_of_edge_window_packet_counts": 46295,
+          "total_ip_packets_parsed": 46295,
+          "matches": true
+        }
+      },
+      "representation_b1": {
+        "event_count": 46295,
+        "event_fields": [
+          "timestamp",
+          "src",
+          "dst",
+          "protocol",
+          "src_port",
+          "dst_port",
+          "packet_length",
+          "payload_length",
+          "tcp_flags"
+        ],
+        "estimated_bytes_per_event": 214.548,
+        "estimated_serialized_size_bytes": 9932499,
+        "size_estimation_method": "Measured exact JSON size of the first 500 events, then scaled linearly by total event_count (packet events are structurally uniform, so per-event size does not vary meaningfully across the capture)."
+      },
+      "representation_b2": {
+        "micro_batch_seconds": 1,
+        "event_count": 19927,
+        "compression_ratio_packets_per_event": 2.3232297887288604,
+        "compression_ratio_definition": "packets_per_event = total IP packets / B2 event count -- e.g. 3.0 means each B2 event represents 3 raw packets on average.",
+        "events_per_second": 0.6124585123435358,
+        "maximum_burst_size": 652,
+        "temporal_resolution_seconds": 1,
+        "structure_stats": {
+          "total_events": 19927,
+          "events_per_second": 0.6124585123435358,
+          "median_inter_event_time": 0.11444103717803955,
+          "p95_inter_event_time": 8.837884843349457,
+          "maximum_inter_event_gap": 48.99052977561951,
+          "median_burst_size": 1.0,
+          "p95_burst_size": 5.0,
+          "maximum_burst_size": 652,
+          "unique_communicating_pairs": 828,
+          "unique_hosts": 597,
+          "pct_events_previously_unseen_pair": 4.155166357203794,
+          "pct_events_previously_unseen_destination": 1.189341094996738,
+          "pct_events_previously_unseen_source": 2.9758618959201084
+        },
+        "serialized_size_bytes": 10033597,
+        "reconciliation": {
+          "total_packets_via_events": 46295,
+          "total_packets_via_raw_parse": 46295,
+          "packets_reconcile_exactly": true,
+          "total_bytes_via_events": 9896715
+        }
+      },
+      "b2_vs_b1_storage_note": "OBSERVED: B2 (19,927 events, 10,033,597 bytes) is LARGER than B1 (46,295 events, 9,932,499 bytes) in serialized bytes, despite having fewer events. Reducing EVENT COUNT does not automatically reduce STORAGE SIZE: each B2 event carries more fields than a B1 event (aggregate mean/std/count fields vs. B1's raw per-packet fields), and this capture's median burst size is 1.0 packets/event -- when most events represent only 1 packet, the extra aggregate fields are pure overhead with no compression benefit to offset them.",
+      "information_preservation": {
+        "total_packets": {
+          "raw": 46295,
+          "via_events": 46295,
+          "matches": true
+        },
+        "total_bytes": {
+          "raw": 9896715,
+          "via_events": 9896715,
+          "matches": true
+        },
+        "first_timestamp": 1518611305.239787,
+        "last_timestamp": 1518643841.321168,
+        "unique_hosts": {
+          "raw": 597,
+          "via_events": 597,
+          "matches": true
+        },
+        "unique_directed_pairs": {
+          "raw": 828,
+          "via_events": 828,
+          "matches": true
+        },
+        "protocol_counts": {
+          "raw": {
+            "TCP": 44557,
+            "UDP": 800,
+            "OTHER": 98,
+            "ICMP": 840
+          },
+          "via_events": {
+            "TCP": 44557,
+            "UDP": 800,
+            "OTHER": 98,
+            "ICMP": 840
+          },
+          "matches": true
+        },
+        "port_diversity": {
+          "raw_source_ports": 3730,
+          "via_events_source_ports": 3730,
+          "source_matches": true,
+          "raw_destination_ports": 3816,
+          "via_events_destination_ports": 3816,
+          "destination_matches": true
+        },
+        "information_lost_by_b2": [
+          "Exact arrival order and individual timestamps of packets WITHIN one micro-batch bucket (1s) are not retained -- only packet_count, mean_packet_length/std, and mean_IAT/std survive per bucket.",
+          "TTL, IP fragmentation flags, and TCP window size (present on every raw packet, per Phase 9E's feature-availability table) are not carried into B2 event features in this phase -- they were not in the Step 4 required feature list and were not fabricated here."
+        ]
+      },
+      "representation_c_hybrid": {
+        "definition": "C = the full B2 micro-batch event stream, PLUS one compact per-10s-window state summary (active_hosts, active_edges, packet/byte volume, protocol distribution, max burst size), PLUS a window_index per event so any consumer can slice the event stream by window without re-deriving window boundaries. No topology detail (which specific hosts/edges) is duplicated in the window summary -- that detail lives only in the event stream, avoided as redundant storage.",
+        "window_state_summary_count": 2620,
+        "window_state_summary_bytes": 523439,
+        "event_to_window_index_overhead_bytes": 112589,
+        "naive_combined_bytes_A_plus_B2": 20374107,
+        "lean_hybrid_bytes_B2_plus_window_summary_plus_index": 10669625,
+        "size_saving_vs_naive_pct": 47.631447110786254
+      },
+      "source_phase": "Phase 9F (already retrieved/validated; reused read-only)"
+    }
+  ],
+  "comparison_table": [
+    {
+      "property": "temporal resolution",
+      "graph_snapshot": "10s (fixed window)",
+      "packet_events": "per-packet (microsecond, as captured)",
+      "micro_batch_events": "1s bucket + exact intra-bucket mean/std IAT",
+      "hybrid": "1s events + 10s summary"
+    },
+    {
+      "property": "variable topology handling",
+      "graph_snapshot": "OBSERVED (Phase 9F): windows with different node/edge counts require padding/masking for fixed-size batching",
+      "packet_events": "Naturally variable-length; no padding concept needed",
+      "micro_batch_events": "Naturally variable-length; no padding concept needed",
+      "hybrid": "Event stream variable-length; window summary is fixed-dim per window"
+    },
+    {
+      "property": "sparsity handling",
+      "graph_snapshot": "OBSERVED (Phase 9F): 55.8% windows non-empty across both captures combined -- empty windows still occupy a sequence slot",
+      "packet_events": "No empty slots by construction (a packet either happened or it did not appear)",
+      "micro_batch_events": "No empty slots by construction",
+      "hybrid": "Event stream has no empty slots; window summary still has empty-window slots"
+    },
+    {
+      "property": "sequence length (this run)",
+      "graph_snapshot": "[3223, 3254] windows",
+      "packet_events": "[7316, 46295] events",
+      "micro_batch_events": "[5547, 19927] events",
+      "hybrid": "[5547, 19927] events + [3223, 3254] window summaries"
+    },
+    {
+      "property": "measured storage (serialized JSON, this run)",
+      "graph_snapshot": "[3122718, 10340510] bytes",
+      "packet_events": "[1568433, 9932499] bytes (estimated)",
+      "micro_batch_events": "[2665585, 10033597] bytes",
+      "hybrid": "[2894505, 10669625] bytes (lean form)"
+    },
+    {
+      "property": "packet information preservation",
+      "graph_snapshot": "DERIVED: aggregated per-window only; individual packet timing lost",
+      "packet_events": "CONFIRMED: complete, by construction (one event per packet)",
+      "micro_batch_events": "OBSERVED (Step 6): totals/protocol/port-set reconcile exactly; intra-bucket ordering lost",
+      "hybrid": "Same as micro-batch events (hybrid does not change the event layer)"
+    },
+    {
+      "property": "topology information",
+      "graph_snapshot": "CONFIRMED: explicit node/edge structure per window",
+      "packet_events": "DERIVED: topology recoverable by replaying events, but not explicit",
+      "micro_batch_events": "DERIVED: topology recoverable by replaying events, but not explicit",
+      "hybrid": "CONFIRMED: window summary carries active_hosts/active_edges counts explicitly; specific edge identities remain in the event layer only"
+    },
+    {
+      "property": "burst information",
+      "graph_snapshot": "DERIVED: only via edge packet_count aggregated over the full 10s window",
+      "packet_events": "Implicit only (would need to re-derive bursts from timestamps)",
+      "micro_batch_events": "CONFIRMED: burst size is a first-class per-event field (max/median/p95 reported directly, 1s resolution)",
+      "hybrid": "Same as micro-batch events, plus a window-level max_burst_in_window summary field"
+    },
+    {
+      "property": "port behavior",
+      "graph_snapshot": "OBSERVED: unique_destination_ports/unique_source_ports tracked per node per window (aggregated across all edges of that node)",
+      "packet_events": "CONFIRMED: exact port pair retained per event",
+      "micro_batch_events": "OBSERVED: port pair is part of the grouping key, so source/destination-port diversity per event is trivially 1 by construction -- port behavior is visible at the SEQUENCE level (which ports appear, how often), not as an internal per-event diversity statistic",
+      "hybrid": "Same as micro-batch events"
+    },
+    {
+      "property": "implementation complexity",
+      "graph_snapshot": "Reused as-is from Phase 9E (no new code needed)",
+      "packet_events": "Trivial (no aggregation logic)",
+      "micro_batch_events": "Moderate (bucketing + aggregate feature computation, this phase's main new code)",
+      "hybrid": "Moderate-plus (micro-batch logic + a thin per-window summary + an index) -- no fusion mechanism implemented"
+    },
+    {
+      "property": "suitability for future world-model input",
+      "graph_snapshot": "HYPOTHESIZED: matches representation B in the project's architecture diagram (graph encoder branch)",
+      "packet_events": "HYPOTHESIZED: too fine-grained/long as a direct model input without further batching",
+      "micro_batch_events": "HYPOTHESIZED: plausible direct sequence-model input given its bounded compression ratio and explicit burst/IAT fields",
+      "hybrid": "HYPOTHESIZED: matches the project's intended 'FLOW STATE + PACKET GRAPH -> MULTIMODAL NETWORK STATE' pattern most closely, at the representation-definition level only -- NOT VERIFIED as better for prediction, since no model was trained"
+    }
+  ],
+  "future_world_model_implications": {
+    "candidate_A_event_encoder_only": {
+      "assessment": "HYPOTHESIZED",
+      "note": "Supported by B2's exact reconciliation with the raw packet stream (Step 6) and its bounded compression ratio -- an event encoder would see nearly all packet-level information. Not chosen outright because it discards the explicit, cheap-to-compute window-level topology summary that Representation A already provides for free."
+    },
+    "candidate_B_graph_encoder_only": {
+      "assessment": "HYPOTHESIZED",
+      "note": "Phase 9F already showed graph richness is host-dependent (30.9%-80.5% non-empty windows) and windows stay small (max 16 edges) -- a graph-only encoder would be working with a highly variable, often-empty input, which Phase 9F itself flagged as a limitation."
+    },
+    "candidate_C_event_plus_window_fused": {
+      "assessment": "HYPOTHESIZED -- most consistent with measured evidence so far",
+      "note": "This phase's Representation C (Step 8) is a concrete, measured instance of this candidate's INPUT side (not the fusion mechanism, which is out of scope here). It is the only candidate that keeps both the exact reconciling event information (Step 6) AND an explicit per-window topology summary, at a measured storage cost shown in Section 8 of the report."
+    },
+    "candidate_D_hierarchical_event_window_network": {
+      "assessment": "HYPOTHESIZED",
+      "note": "A plausible extension of C with an additional network-wide aggregation level above the window level; this phase did not construct or measure a network-wide layer, so this candidate is less grounded in this phase's actual measurements than C."
+    },
+    "disclaimer": "None of these candidates were built or evaluated as models. This section reports which candidate's INPUT-side data requirements are best supported by the measurements in Sections 3-9 of the report -- not which candidate would predict better."
+  },
+  "novelty_analysis": {
+    "existing_technique": [
+      "Representing network traffic as a sequence of communication events (flow records, connection logs, NetFlow/IPFIX-style records) is long-established practice in network intrusion detection -- this is not a novel idea on its own.",
+      "Micro-batching/aggregating packets sharing a 5-tuple within a small time bucket is structurally similar to how flow exporters already aggregate packets into flow records (e.g. this project's own FlowFeatureEngine, which segments by a timeout rather than a fixed bucket) -- the aggregation CONCEPT is not new.",
+      "Fixed-window graph snapshots of host communication are also well-established in network graph analysis literature."
+    ],
+    "our_potential_system_differentiator": [
+      "NOT the event representation itself, but the specific combination targeted at this project's stated architecture: FLOW STATE + PACKET GRAPH -> MULTIMODAL NETWORK STATE -> WORLD MODEL -> FUTURE TRAJECTORY, with the packet-derived branch specifically designed (Representation C) to carry both exact reconciling event detail AND cheap topology summaries at a measured, bounded storage cost.",
+      "The deterministic, per-phase-consistent anonymization scheme (same SHA-256-based mapping reused unmodified since Phase 9E) means events, graph snapshots, and any future hybrid representation all reference the SAME anonymized host identity across representations -- a coherence property a naive combination of off-the-shelf flow exporter output and a separately-built graph tool would not automatically have."
+    ],
+    "not_yet_verified": [
+      "Whether any of these representations improve multi-step attack trajectory forecasting over the existing flow-level World Model (Phase 6B) -- no model was trained here.",
+      "Whether uncertainty quantification or counterfactual intervention are supportable by these representations -- not evaluated.",
+      "Whether the observed host-dependent variability (Phase 9F) and the trivial per-event port diversity (Step 7 caveat) cause any specific practical difficulty for a real encoder -- only representation-level structure was measured, not encoder behavior.",
+      "Generalization beyond these two single-host, single-day captures."
+    ]
+  },
+  "limitations": [
+    "Only the same two single-host, single-day captures already used in Phases 9D-9F were examined; no new PCAP was downloaded per hard constraint #10, so generalization beyond these two hosts is NOT VERIFIED.",
+    "No model of any kind was trained or evaluated; all 'suitability for future world-model input' and Step 10 candidate assessments are HYPOTHESIZED, not measured predictive results.",
+    "Source/destination-port diversity is trivially 1 for every B2 event by construction (ports are part of the grouping key) -- this is reported explicitly rather than silently included as if informative at the per-event level.",
+    "The hybrid representation (C) is defined and size-measured only; no fusion mechanism (neural or otherwise) was implemented, per hard constraint #6.",
+    "TTL, IP fragmentation, and TCP window size are not carried into B2 event features (not in the required Step 4 feature list); this is a scoping choice, not evidence they are unavailable -- Phase 9E already classified them DIRECT and available.",
+    "B2's per-event compression ratio (packets-per-event) was modest in both captures ([1.32, 2.32]x) because median burst size is 1.0 packet/event in both -- most 1-second buckets never accumulate more than one packet for a given (src, dst, protocol, port pair) 5-tuple. As a direct consequence, B2's serialized size is LARGER than B1's raw per-packet events in 2/2 captures -- reducing event count does not automatically reduce storage when per-event overhead exceeds the compression gained."
+  ],
+  "recommended_next_experiment": "If pursued further (not started here): implement candidate C's fusion mechanism as a small, non-neural baseline first (e.g. concatenating a window's event-derived statistics with its window-summary vector) and compare information content against the flow-level World Model's existing state representation on a held-out capture, before committing to any neural encoder architecture."
+}

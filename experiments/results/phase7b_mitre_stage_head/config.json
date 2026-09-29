@@ -1,0 +1,124 @@
+{
+  "experiment": "phase7b_mitre_stage_head",
+  "seed": 42,
+  "run1_checkpoint": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\best_model.pt",
+  "run1_scaler": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\scaler.joblib",
+  "backbone_frozen": true,
+  "trainable_parameters": "stage_head only",
+  "parameter_count_total": 356452,
+  "parameter_count_trainable": 8646,
+  "num_stage_classes": 6,
+  "covered_stages": [
+    "BENIGN",
+    "INITIAL_ACCESS",
+    "CREDENTIAL_ACCESS",
+    "LATERAL_MOVEMENT",
+    "COMMAND_AND_CONTROL",
+    "IMPACT"
+  ],
+  "absent_stages_not_represented_in_dataset": [
+    "RECONNAISSANCE",
+    "EXECUTION",
+    "PERSISTENCE",
+    "PRIVILEGE_ESCALATION",
+    "DEFENSE_EVASION",
+    "DISCOVERY",
+    "COLLECTION",
+    "EXFILTRATION"
+  ],
+  "loss": {
+    "state_loss_weight": 1.0,
+    "attack_loss_weight": 1.0,
+    "stage_loss_weight": 1.0,
+    "note": "state_loss and attack_loss are computed and logged each step for monitoring only; since the backbone is frozen (requires_grad=False), their outputs (y_hat, attack_logit) have requires_grad=False and contribute exactly zero gradient. Only stage_loss is passed to .backward(), and the optimizer is scoped to model.stage_head.parameters() only.",
+    "stage_class_weights_train_only": {
+      "BENIGN": 0.1849643439054489,
+      "INITIAL_ACCESS": 28.323671340942383,
+      "CREDENTIAL_ACCESS": 8.932053565979004,
+      "LATERAL_MOVEMENT": 5.253584384918213,
+      "COMMAND_AND_CONTROL": 4.704702377319336,
+      "IMPACT": 23.046382904052734
+    }
+  },
+  "training": {
+    "max_epochs": 30,
+    "patience": 8,
+    "best_epoch": 2,
+    "epochs_run": 10,
+    "duration_seconds": 26.21981969999615,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "mixed_precision": true,
+    "device": "cuda"
+  },
+  "preflight_reproduction": {
+    "status": "PASS",
+    "threshold": 0.33524200320243835,
+    "threshold_selection": {
+      "threshold": 0.33524200320243835,
+      "achieved_validation_fpr": 0.04968082153760755,
+      "achieved_validation_recall": 0.47260802469135804
+    },
+    "reproduced_test_metrics": {
+      "pr_auc": 0.8487219256228604,
+      "roc_auc": 0.8719958211409417,
+      "f1": 0.7470638785448296,
+      "false_positive_rate": 0.09566787003610108
+    },
+    "expected_test_metrics": {
+      "pr_auc": 0.849,
+      "roc_auc": 0.872,
+      "f1": 0.747,
+      "false_positive_rate": 0.096
+    },
+    "mismatches": {},
+    "full_test_metrics": {
+      "precision": 0.7546296296296297,
+      "recall": 0.7396483267158253,
+      "f1": 0.7470638785448296,
+      "pr_auc": 0.8487219256228604,
+      "roc_auc": 0.8719958211409417,
+      "false_positive_rate": 0.09566787003610108,
+      "confusion_matrix": {
+        "tn": 4008,
+        "fp": 424,
+        "fn": 459,
+        "tp": 1304
+      },
+      "false_positives": 424,
+      "false_negatives": 459,
+      "threshold": 0.33524200320243835
+    }
+  },
+  "post_training_attack_reproduction": {
+    "attack_metrics_identical_to_preflight": true,
+    "comparison": {
+      "precision": {
+        "preflight": 0.7546296296296297,
+        "post_training": 0.7546296296296297
+      },
+      "recall": {
+        "preflight": 0.7396483267158253,
+        "post_training": 0.7396483267158253
+      },
+      "f1": {
+        "preflight": 0.7470638785448296,
+        "post_training": 0.7470638785448296
+      },
+      "pr_auc": {
+        "preflight": 0.8487219256228604,
+        "post_training": 0.8487219256228604
+      },
+      "roc_auc": {
+        "preflight": 0.8719958211409417,
+        "post_training": 0.8719958211409417
+      },
+      "false_positive_rate": {
+        "preflight": 0.09566787003610108,
+        "post_training": 0.09566787003610108
+      }
+    }
+  },
+  "backbone_unchanged_after_training": true,
+  "backbone_unchanged_after_checkpoint_load": true
+}

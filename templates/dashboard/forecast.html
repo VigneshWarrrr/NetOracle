@@ -14,7 +14,8 @@
         <div class="sidebar-logo"><span class="brand-mark">NO</span><span class="fancy-logo">NetOracle</span></div>
         <nav>
             <a href="{% url 'dashboard:index' %}" class="nav-item"><span class="nav-mark">⌂</span>Dashboard</a>
-            <a href="{% url 'dashboard:forecast' %}" class="nav-item active"><span class="nav-mark">R</span>Risk Forecast</a>
+            <a href="{% url 'dashboard:forecast' %}" class="nav-item active"><span class="nav-mark">R</span>Risk Forecast (legacy)</a>
+            <a href="{% url 'dashboard:authoritative_forecast' %}" class="nav-item"><span class="nav-mark">A</span>Authoritative Forecast</a>
             <a href="{% url 'logs:dashboard' %}" class="nav-item"><span class="nav-mark">▤</span>Logs</a>
             <a href="{% url 'alerts:dashboard' %}" class="nav-item"><span class="nav-mark">♧</span>Alerts</a>
             {% if user.is_staff or user.is_superuser %}
@@ -36,6 +37,17 @@
             <div><p class="eyebrow">NetOracle world model</p><h1>Risk forecast</h1></div>
             <span class="model-status {% if not live_stream %}model-status-muted{% endif %}"><i></i>{% if live_stream %}Local capture · {{ forecast.live_events }} events{% else %}Waiting for local capture{% endif %}</span>
         </header>
+        <section class="forecast-panel" style="margin-bottom: 1.5rem;">
+            <p>
+                <strong>This page is the legacy, NON-AUTHORITATIVE live-capture path</strong>
+                (<code>world_model.inference_service.AttackForecastService</code>): it runs on an
+                incompatible feature schema with no trained checkpoint, so it always falls back to a
+                simple heuristic (sigmoid-of-mean) when it shows a forecast at all -- it is not a
+                NetOracle world-model prediction. For the real, checkpoint-backed model established in
+                Phase 9K, see the <a href="{% url 'dashboard:authoritative_forecast' %}">Authoritative
+                Forecast</a> page.
+            </p>
+        </section>
         {% if forecast %}
         <section class="forecast-metric-grid">
             <article class="forecast-metric"><span>Current risk score</span><strong>{{ forecast.current_risk|floatformat:2 }}</strong><small>Latest engineered state</small></article>
@@ -45,7 +57,7 @@
         </section>
         <section class="forecast-dashboard-grid">
             <article class="forecast-panel forecast-panel-wide">
-                <div class="forecast-heading"><div><p class="eyebrow">Temporal rollout</p><h2>Risk forecast timeline</h2></div><span class="badge badge-success">Live model output</span></div>
+                <div class="forecast-heading"><div><p class="eyebrow">Temporal rollout</p><h2>Risk forecast timeline</h2></div><span class="badge badge-warning">Legacy heuristic output &mdash; non-authoritative</span></div>
                 <div id="risk-timeline" class="forecast-chart"></div>
             </article>
             <article class="forecast-panel attack-summary">

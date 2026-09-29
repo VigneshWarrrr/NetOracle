@@ -1,0 +1,28 @@
+{
+  "primary_family": "Bot",
+  "secondary_families": [
+    "Infiltration"
+  ],
+  "marginal_families_not_run": [
+    "Brute Force",
+    "DDoS"
+  ],
+  "unsuitable_families_not_run": [
+    "DoS",
+    "Web Attack"
+  ],
+  "model_set": {
+    "primary": "TemporalTransformer (Phase 5 architecture, reused)",
+    "control": "LogisticRegression (Phase 4 convention, reused)"
+  },
+  "excluded_by_design": [
+    "LSTM variants",
+    "World Model",
+    "GNN",
+    "any new architecture"
+  ],
+  "train_exclusion_rule": "whole held-out-family source-day file(s) removed from train+validation (both attack and benign rows); test split never filtered",
+  "preprocessing": "new StandardScaler fit per-experiment on the reduced train set only",
+  "threshold_selection": "chosen on the reduced validation set only (excludes held-out family), never on test",
+  "seed": 42
+}

@@ -1,0 +1,242 @@
+{
+  "n_samples_explained": 5,
+  "duration_seconds": 0.41023010000935756,
+  "device": "cuda",
+  "checkpoint_path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase7b_mitre_stage_head\\model\\best_stage_head.pt",
+  "scaler_path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\scaler.joblib",
+  "feature_count": 157,
+  "checkpoint_state_unchanged_during_run": true,
+  "tracked_frozen_files_unchanged": true,
+  "tracked_frozen_files": [
+    "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\best_model.pt",
+    "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\scaler.joblib",
+    "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase7b_mitre_stage_head\\model\\best_stage_head.pt",
+    "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\phase6b_vector_world_model.py",
+    "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\phase7b_mitre_stage_head.py",
+    "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\forecasting\\mitre_mapping.py",
+    "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\explainability\\shap_explainer.py"
+  ],
+  "all_samples_passed_cross_check": true,
+  "samples": [
+    {
+      "order": 1,
+      "source_file": "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+      "window_start": "2018-03-02 11:12:50",
+      "true_label": 1,
+      "recomputed_attack_probability": 0.9998519420623779,
+      "persisted_attack_probability": 0.99985229969,
+      "probability_diff": 3.5762762207181e-07,
+      "probability_match": true,
+      "recomputed_per_step_stage": [
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL"
+      ],
+      "persisted_per_step_stage": [
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL"
+      ],
+      "per_step_stage_match": true,
+      "recomputed_overall_stage": "COMMAND_AND_CONTROL",
+      "persisted_overall_stage": "COMMAND_AND_CONTROL",
+      "overall_stage_match": true,
+      "status": "PASS",
+      "attack_attribution_shape": [
+        6,
+        157
+      ],
+      "stage_attribution_shape": [
+        6,
+        157
+      ],
+      "attack_attribution_all_finite": true,
+      "stage_attribution_all_finite": true,
+      "attack_explanation_method": "Gradient \u00d7 Input",
+      "stage_explanation_method": "Gradient \u00d7 Input",
+      "record_file": "sample_0001.json"
+    },
+    {
+      "order": 2,
+      "source_file": "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+      "window_start": "2018-03-02 11:13:00",
+      "true_label": 1,
+      "recomputed_attack_probability": 0.9998503923416138,
+      "persisted_attack_probability": 0.999849915504,
+      "probability_diff": 4.76837613727632e-07,
+      "probability_match": true,
+      "recomputed_per_step_stage": [
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL"
+      ],
+      "persisted_per_step_stage": [
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL",
+        "COMMAND_AND_CONTROL"
+      ],
+      "per_step_stage_match": true,
+      "recomputed_overall_stage": "COMMAND_AND_CONTROL",
+      "persisted_overall_stage": "COMMAND_AND_CONTROL",
+      "overall_stage_match": true,
+      "status": "PASS",
+      "attack_attribution_shape": [
+        6,
+        157
+      ],
+      "stage_attribution_shape": [
+        6,
+        157
+      ],
+      "attack_attribution_all_finite": true,
+      "stage_attribution_all_finite": true,
+      "attack_explanation_method": "Gradient \u00d7 Input",
+      "stage_explanation_method": "Gradient \u00d7 Input",
+      "record_file": "sample_0002.json"
+    },
+    {
+      "order": 3,
+      "source_file": "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "window_start": "2018-02-16 11:11:40",
+      "true_label": 0,
+      "recomputed_attack_probability": 0.0003107746015302837,
+      "persisted_attack_probability": 0.00031015597051,
+      "probability_diff": 6.186310202836872e-07,
+      "probability_match": true,
+      "recomputed_per_step_stage": [
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN"
+      ],
+      "persisted_per_step_stage": [
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN"
+      ],
+      "per_step_stage_match": true,
+      "recomputed_overall_stage": "BENIGN",
+      "persisted_overall_stage": "BENIGN",
+      "overall_stage_match": true,
+      "status": "PASS",
+      "attack_attribution_shape": [
+        6,
+        157
+      ],
+      "stage_attribution_shape": [
+        6,
+        157
+      ],
+      "attack_attribution_all_finite": true,
+      "stage_attribution_all_finite": true,
+      "attack_explanation_method": "Gradient \u00d7 Input",
+      "stage_explanation_method": "Gradient \u00d7 Input",
+      "record_file": "sample_0003.json"
+    },
+    {
+      "order": 4,
+      "source_file": "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "window_start": "2018-02-16 11:11:50",
+      "true_label": 0,
+      "recomputed_attack_probability": 0.0003107746015302837,
+      "persisted_attack_probability": 0.00031015597051,
+      "probability_diff": 6.186310202836872e-07,
+      "probability_match": true,
+      "recomputed_per_step_stage": [
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN"
+      ],
+      "persisted_per_step_stage": [
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN"
+      ],
+      "per_step_stage_match": true,
+      "recomputed_overall_stage": "BENIGN",
+      "persisted_overall_stage": "BENIGN",
+      "overall_stage_match": true,
+      "status": "PASS",
+      "attack_attribution_shape": [
+        6,
+        157
+      ],
+      "stage_attribution_shape": [
+        6,
+        157
+      ],
+      "attack_attribution_all_finite": true,
+      "stage_attribution_all_finite": true,
+      "attack_explanation_method": "Gradient \u00d7 Input",
+      "stage_explanation_method": "Gradient \u00d7 Input",
+      "record_file": "sample_0004.json"
+    },
+    {
+      "order": 5,
+      "source_file": "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "window_start": "2018-02-16 11:12:00",
+      "true_label": 0,
+      "recomputed_attack_probability": 0.0003107746015302837,
+      "persisted_attack_probability": 0.00031015597051,
+      "probability_diff": 6.186310202836872e-07,
+      "probability_match": true,
+      "recomputed_per_step_stage": [
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN"
+      ],
+      "persisted_per_step_stage": [
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN",
+        "BENIGN"
+      ],
+      "per_step_stage_match": true,
+      "recomputed_overall_stage": "BENIGN",
+      "persisted_overall_stage": "BENIGN",
+      "overall_stage_match": true,
+      "status": "PASS",
+      "attack_attribution_shape": [
+        6,
+        157
+      ],
+      "stage_attribution_shape": [
+        6,
+        157
+      ],
+      "attack_attribution_all_finite": true,
+      "stage_attribution_all_finite": true,
+      "attack_explanation_method": "Gradient \u00d7 Input",
+      "stage_explanation_method": "Gradient \u00d7 Input",
+      "record_file": "sample_0005.json"
+    }
+  ]
+}

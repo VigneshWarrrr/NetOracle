@@ -1,0 +1,199 @@
+{
+  "phase": "9L",
+  "success": true,
+  "status": "GREEN",
+  "executive_summary": "Phase 9L replaced the Django dashboard's fallback-only forecasting path with a new, additive integration of the Phase 9K authoritative inference engine. A new thin service class (AuthoritativeForecastService) wraps NetOracleInferenceEngine as a process-level singleton; a new view, template, and DRF API endpoint expose current state, whole-horizon attack probability, 6-step future rollout, 6-step MITRE stage trajectory, gradient-based feature attribution, and full provenance -- with no fabricated per-step probabilities and no SHAP claim. The pre-existing heuristic path was left unchanged and is now clearly marked non-authoritative in the UI (Option B). Django-vs-direct-engine predictions matched exactly on all checked samples; the Django smoke test (system check, URL/view resolution, template rendering, no forbidden UI claims) passed; performance overhead from the Django service layer is negligible relative to model inference.",
+  "safety_manifest": {
+    "phase": "9L",
+    "commit_hash": "",
+    "git_status_short": "",
+    "git_status_note": "Non-empty status reflects pre-existing modified/untracked files from earlier phases in this session, not unexpected changes.",
+    "prior_result_directory_file_counts": {
+      "phase4_3_class_weight_ablation": 11,
+      "phase4_baseline": 17,
+      "phase5_temporal_transformer": 11,
+      "phase6b_vector_world_model": 20,
+      "phase6b_vector_world_model_ablation": 22,
+      "phase7b_mitre_stage_head": 9,
+      "phase7c_explainability": 6,
+      "phase7d_trajectory": 8,
+      "phase8_final_evaluation": 5,
+      "phase8b_calibration": 9,
+      "phase9b_pcap_discovery": 2,
+      "phase9c_pcap_archive_inspection": 2,
+      "phase9d_pcap_validation": 2,
+      "phase9e_temporal_packet_graph": 2,
+      "phase9f_cross_host_graph": 2,
+      "phase9g_event_representation": 2,
+      "phase9h_multimodal_baseline": 4,
+      "phase9i_pcap_flow_alignment": 2,
+      "phase9j_sih_gap_audit": 5,
+      "phase9k_integration": 5
+    },
+    "checksums": {
+      "phase7b_stage_head_checkpoint": {
+        "path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase7b_mitre_stage_head\\model\\best_stage_head.pt",
+        "sha256": "f9d16f1943aeeed4f355659b85e90cb6cf8cb94ae84d2fcbd473c59fa3342fe4"
+      },
+      "run1_scaler": {
+        "path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\scaler.joblib",
+        "sha256": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881"
+      }
+    }
+  },
+  "step8_equivalence": {
+    "num_samples_checked": 5,
+    "attack_probability_tolerance": 0.001,
+    "per_sample_checks": [
+      {
+        "index": 0,
+        "source_file": "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+        "window_start": "2018-03-02 11:12:50",
+        "direct_attack_probability": 0.9998519420623779,
+        "django_attack_probability": 0.9998519420623779,
+        "probability_diff": 0.0,
+        "within_tolerance": true,
+        "stage_trajectory_exact_match": true,
+        "future_rollout_close_match": true,
+        "attribution_close_match": true,
+        "django_result_json_serializable": true
+      },
+      {
+        "index": 1,
+        "source_file": "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+        "window_start": "2018-03-02 11:13:00",
+        "direct_attack_probability": 0.9998503923416138,
+        "django_attack_probability": 0.9998503923416138,
+        "probability_diff": 0.0,
+        "within_tolerance": true,
+        "stage_trajectory_exact_match": true,
+        "future_rollout_close_match": true,
+        "attribution_close_match": true,
+        "django_result_json_serializable": true
+      },
+      {
+        "index": 2,
+        "source_file": "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+        "window_start": "2018-03-02 11:13:10",
+        "direct_attack_probability": 0.9998466968536377,
+        "django_attack_probability": 0.9998466968536377,
+        "probability_diff": 0.0,
+        "within_tolerance": true,
+        "stage_trajectory_exact_match": true,
+        "future_rollout_close_match": true,
+        "attribution_close_match": true,
+        "django_result_json_serializable": true
+      },
+      {
+        "index": 3,
+        "source_file": "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+        "window_start": "2018-03-02 11:13:20",
+        "direct_attack_probability": 0.9998694658279419,
+        "django_attack_probability": 0.9998694658279419,
+        "probability_diff": 0.0,
+        "within_tolerance": true,
+        "stage_trajectory_exact_match": true,
+        "future_rollout_close_match": true,
+        "attribution_close_match": true,
+        "django_result_json_serializable": true
+      },
+      {
+        "index": 4,
+        "source_file": "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+        "window_start": "2018-03-02 11:13:30",
+        "direct_attack_probability": 0.9998698234558105,
+        "django_attack_probability": 0.9998698234558105,
+        "probability_diff": 0.0,
+        "within_tolerance": true,
+        "stage_trajectory_exact_match": true,
+        "future_rollout_close_match": true,
+        "attribution_close_match": true,
+        "django_result_json_serializable": true
+      }
+    ],
+    "django_service_uses_same_underlying_engine_class": true,
+    "all_within_tolerance": true,
+    "all_stage_trajectories_exact_match": true,
+    "all_future_rollouts_close_match": true,
+    "all_attributions_close_match": true,
+    "all_django_results_json_serializable": true,
+    "overall_pass": true
+  },
+  "step9_smoke_test": {
+    "steps": [
+      {
+        "step": "django_system_check",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "step": "url_resolution",
+        "ok": true,
+        "detail": "{'dashboard': '/dashboard/forecast/authoritative/', 'api': '/api/authoritative-predict/'}"
+      },
+      {
+        "step": "dashboard_view_renders",
+        "ok": true,
+        "detail": "{'status_code': 200, 'template_names': ['dashboard/authoritative_forecast.html']}"
+      },
+      {
+        "step": "dashboard_view_no_forbidden_claims",
+        "ok": true,
+        "detail": "{'offenders': []}"
+      },
+      {
+        "step": "api_view_responds_200",
+        "ok": true,
+        "detail": "{'status_code': 200}"
+      },
+      {
+        "step": "api_view_json_serializable",
+        "ok": true,
+        "detail": ""
+      },
+      {
+        "step": "index_view_renders",
+        "ok": true,
+        "detail": "{'status_code': 200}"
+      },
+      {
+        "step": "legacy_forecast_view_renders",
+        "ok": true,
+        "detail": "{'status_code': 200}"
+      }
+    ],
+    "all_steps_ok": true
+  },
+  "step10_performance": {
+    "device": "cuda:0",
+    "batch_size": 1,
+    "direct_engine_inference_latency_seconds": 0.0030524250003509225,
+    "django_service_latency_seconds": 0.0030573600000934676,
+    "django_service_overhead_seconds": 4.934999742545101e-06,
+    "full_http_request_latency_seconds_dashboard_page": 0.04786436000140384,
+    "full_http_request_latency_seconds_api_endpoint": 0.05250413999892771,
+    "note": "Singleton engine warmed up before timing; cold-start (first request in a process) is dominated by checkpoint/scaler/windows-dir loading (~15-20s observed) and happens once per process, not per request."
+  },
+  "explicitly_unsupported": [
+    "SHAP (actual method is gradient-based feature attribution with SHAP-compatible infrastructure)",
+    "Native per-step attack probability (only whole-horizon P(attack in t+1..t+6))",
+    "Calibrated probabilities (Phase 8B finding stands unchanged)",
+    "Causal attacker kill-chain inference (MITRE stages are a reasoned label mapping, Phase 7B limitations preserved)",
+    "Unseen-attack generalization claims",
+    "PCAP-derived model input (Phase 9H/9I RED verdicts stand unchanged)",
+    "Uncertainty quantification of any kind",
+    "Counterfactual simulation of any kind"
+  ],
+  "remaining_limitations": [
+    "The dashboard demonstrates the authoritative engine on a fixed, already-validated Phase 3.5 TEST-split sample, not live-captured network data -- the live-capture pipeline's feature schema remains incompatible with the model (unresolved since Phase 9H/9I; reconciling it is a separate, non-trivial future phase, not attempted here).",
+    "The legacy heuristic path (AttackForecastService / run_pipeline.py) is unchanged and still reachable at /dashboard/forecast/ -- it is now clearly labeled non-authoritative in the UI but was not removed or migrated (Option B, explicitly permitted).",
+    "Track B (world_model/world_model.py) remains on disk, unmodified, unused -- full retirement is still out of scope.",
+    "Cold-start latency (~19s, checkpoint+scaler+windows-dir load) occurs on first use per Django process; not addressed here since Step 10 explicitly asked for measurement, not optimization."
+  ],
+  "recommended_next_phase": "A future phase could reconcile the live-capture feature schema with the authoritative model's 157-feature CICFlowMeter-window schema (a non-trivial feature-engineering project, not integration work), or retire Track B / the legacy heuristic path entirely once a human maintainer confirms no other dependency exists. Neither is in scope for Phase 9L.",
+  "tests_summary": "See the final response for exact pass counts across tests/test_phase9l_django_integration.py and the required prior-phase regressions.",
+  "integrity_audit": {
+    "unchanged": true,
+    "mismatches": {}
+  }
+}

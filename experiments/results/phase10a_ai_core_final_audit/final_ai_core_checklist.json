@@ -1,0 +1,348 @@
+{
+  "AI_CORE_SUBMISSION_READY": "NO",
+  "reason": "NO -- 6 RED items remain (C1, C2, I2, I3, O1, O2)",
+  "counts": {
+    "GREEN": 11,
+    "YELLOW": 23,
+    "RED": 6
+  },
+  "checklist": [
+    {
+      "id": "A1",
+      "objective": "A",
+      "item": "Authoritative execution path is fully traceable input -> output",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "B1",
+      "objective": "B",
+      "item": "Exactly one Django-reachable path produces the authoritative outputs",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "C1",
+      "objective": "C",
+      "item": "README documents the LEGACY pipeline as the forecasting path",
+      "status": "RED",
+      "must_fix_before_submission": true
+    },
+    {
+      "id": "C2",
+      "objective": "C",
+      "item": "Post-login landing page still shows stale legacy status",
+      "status": "RED",
+      "must_fix_before_submission": true
+    },
+    {
+      "id": "C3",
+      "objective": "C",
+      "item": "Legacy heuristic path is still reachable and partly mislabeled",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "C4",
+      "objective": "C",
+      "item": "Track B shares the `world_model/` package with the authoritative service",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "C5",
+      "objective": "C",
+      "item": "Dead heuristic 'infiltration probability' and placeholder chain logic remain in the tree",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "C6",
+      "objective": "C",
+      "item": "Several same-named checkpoints on disk",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "D1",
+      "objective": "D",
+      "item": "Checkpoint and scaler are the frozen, mutually compatible artifacts",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "D2",
+      "objective": "D",
+      "item": "Scaler pickled under a newer scikit-learn than the runtime",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "E1",
+      "objective": "E",
+      "item": "Feature dimensionality and ordering are correct and enforced",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "E2",
+      "objective": "E",
+      "item": "Feature schema is not stored with the checkpoint",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "F1",
+      "objective": "F",
+      "item": "Engine output corresponds exactly to the frozen checkpoint under the frozen numerical protocol",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "F2",
+      "objective": "F",
+      "item": "The shipped fp32 engine path differs from the frozen predictions at the 1e-3 level",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "G1",
+      "objective": "G",
+      "item": "Inference is deterministic",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "G2",
+      "objective": "G",
+      "item": "Singleton has no lock (first-request race)",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "H1",
+      "objective": "H",
+      "item": "The MITRE trajectory is produced by the authoritative stage head",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "H2",
+      "objective": "H",
+      "item": "Stage-trajectory quality is limited and must be presented as such",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "I1",
+      "objective": "I",
+      "item": "The reported attribution method is the one actually executed, and is not SHAP",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "I2",
+      "objective": "I",
+      "item": "SHAP is claimed in the SIH deck but never executes",
+      "status": "RED",
+      "must_fix_before_submission": true
+    },
+    {
+      "id": "I3",
+      "objective": "I",
+      "item": "Attributions saturate: the featured demo sample's explanation panel shows ten 0.0000 values",
+      "status": "RED",
+      "must_fix_before_submission": true
+    },
+    {
+      "id": "I4",
+      "objective": "I",
+      "item": "Method selection is silent and environment-dependent; UI text overstates where the library is disclosed",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "J1",
+      "objective": "J",
+      "item": "Whole-horizon score is clearly distinguished from per-step risk",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "J2",
+      "objective": "J",
+      "item": "Per-step stage 'confidence' sits next to t+k labels",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "K1",
+      "objective": "K",
+      "item": "Phase 9N per-step risk is excluded from the authoritative path",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "K2",
+      "objective": "K",
+      "item": "9N's persistence baseline is an oracle comparison",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "L1",
+      "objective": "L",
+      "item": "9M unseen-family result is represented honestly where it appears",
+      "status": "GREEN",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "L2",
+      "objective": "L",
+      "item": "Unseen-attack generalization is not demonstrated for the authoritative model",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "M1",
+      "objective": "M",
+      "item": "Scores are labeled 'probability' although calibration is poor",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "N1",
+      "objective": "N",
+      "item": "World Model is not the best whole-horizon detector",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "N2",
+      "objective": "N",
+      "item": "Headline metrics mostly measure ongoing-attack detection; onset forecasting is thin",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "N3",
+      "objective": "N",
+      "item": "Demo shows one canned test-split sample; no live/uploaded input, no PCAP/Zeek",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "N4",
+      "objective": "N",
+      "item": "Output is generic attack-risk, 6 x 10 s horizon, not infiltration-specific",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "O1",
+      "objective": "O",
+      "item": "Django cannot start in this environment (reportlab declared but not installed)",
+      "status": "RED",
+      "must_fix_before_submission": true
+    },
+    {
+      "id": "O2",
+      "objective": "O",
+      "item": "The authoritative AI core is not in version control and the checkpoints are gitignored",
+      "status": "RED",
+      "must_fix_before_submission": true
+    },
+    {
+      "id": "O3",
+      "objective": "O",
+      "item": "First request pays a ~19 s model load inside the HTTP request",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "O4",
+      "objective": "O",
+      "item": "Fresh setup needs migrate + a staff account; page is staff-only",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "O5",
+      "objective": "O",
+      "item": "Judge-facing page contains build-phase jargon and a local absolute path",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "O6",
+      "objective": "O",
+      "item": "Landing-page/deck framing overpromises relative to evidence",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    },
+    {
+      "id": "P1",
+      "objective": "P",
+      "item": "Test-suite state and pre-existing failures",
+      "status": "YELLOW",
+      "must_fix_before_submission": false
+    }
+  ],
+  "verified_facts": {
+    "authoritative_checkpoint": "experiments/results/phase7b_mitre_stage_head/model/best_stage_head.pt",
+    "checkpoint_sha256": "f9d16f1943aeeed4f355659b85e90cb6cf8cb94ae84d2fcbd473c59fa3342fe4",
+    "scaler_sha256": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881",
+    "feature_schema_sha256": "f5117fda8518c9e373a4260ff65281800a4760d8af16bb97411ca8371b85bb73",
+    "feature_count": 157,
+    "backbone_bit_identical_to_run1": true,
+    "engine_reproduces_frozen_predictions_under_frozen_protocol_max_abs_diff": 4.99711383383783e-13,
+    "engine_fp32_max_abs_diff_vs_frozen": 0.0024012327196750727,
+    "deterministic_bit_exact": true,
+    "explanation_method_reported": [
+      "Gradient \u00d7 Input"
+    ],
+    "phase9n_referenced_by_authoritative_path": false,
+    "track_b_imported_by_authoritative_path": false
+  },
+  "must_fix_before_submission": [
+    {
+      "id": "C1",
+      "title": "README documents the LEGACY pipeline as the forecasting path",
+      "action": "Rewrite README around the authoritative path (inputs, checkpoint, scaler, data dependency, how to run, limitations); demote or delete the legacy instructions."
+    },
+    {
+      "id": "C2",
+      "title": "Post-login landing page still shows stale legacy status",
+      "action": "Point the landing page's forecast panel at the authoritative service or replace the stale hero/status copy; remove the five-window wording."
+    },
+    {
+      "id": "I2",
+      "title": "SHAP is claimed in the SIH deck but never executes",
+      "action": "Correct the deck wording to 'gradient x input feature attribution' (or make real SHAP work and re-validate 7C); do not ship the current claim."
+    },
+    {
+      "id": "I3",
+      "title": "Attributions saturate: the featured demo sample's explanation panel shows ten 0.0000 values",
+      "action": "Attribute the pre-sigmoid logit (or normalise/scale importances) and re-validate against Phase 7C; at minimum display relative importance instead of absolute 4-decimal values."
+    },
+    {
+      "id": "O1",
+      "title": "Django cannot start in this environment (reportlab declared but not installed)",
+      "action": "pip install -r requirements.txt on the demo machine and re-run manage.py check (no code change)."
+    },
+    {
+      "id": "O2",
+      "title": "The authoritative AI core is not in version control and the checkpoints are gitignored",
+      "action": "Commit the core; ship checkpoint + scaler (un-ignore or release artifact) and a data/feature-schema bundle; re-tag so provenance points at the committed state."
+    }
+  ],
+  "explicitly_not_done": [
+    "training",
+    "model code change",
+    "checkpoint change",
+    "dataset construction change",
+    "Django change",
+    "frontend change",
+    "new ML capability"
+  ]
+}

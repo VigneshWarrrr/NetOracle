@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "batch_size": 8,
+  "input_shape": [
+    8,
+    6,
+    157
+  ],
+  "y_hat_shape": [
+    8,
+    6,
+    157
+  ],
+  "attack_logit_shape": [
+    8
+  ],
+  "smoke_state_loss": 1.524566888809204,
+  "smoke_attack_loss": 0.7278228402137756,
+  "parameters_with_gradient": 39
+}

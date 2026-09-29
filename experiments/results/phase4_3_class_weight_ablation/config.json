@@ -1,0 +1,44 @@
+{
+  "experiment": "phase4.3_class_weight_ablation",
+  "only_changed_variable": "pos_weight",
+  "pos_weight": 1.0,
+  "input_shape": [
+    6,
+    157
+  ],
+  "feature_count": 157,
+  "target": "future_attack_within_horizon",
+  "counts": {
+    "train": {
+      "samples": 29315,
+      "positive": 3571,
+      "negative": 25744
+    },
+    "validation": {
+      "samples": 6195,
+      "positive": 2592,
+      "negative": 3603
+    },
+    "test": {
+      "samples": 6195,
+      "positive": 1763,
+      "negative": 4432
+    }
+  },
+  "hidden_size": 128,
+  "num_layers": 2,
+  "dropout": 0.2,
+  "batch_size": 128,
+  "learning_rate": 0.001,
+  "max_epochs": 25,
+  "patience": 5,
+  "parameter_count": 279169,
+  "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "cuda_runtime": "12.8",
+  "torch_version": "2.10.0+cu128",
+  "model_device": "cuda:0",
+  "first_batch_device": "cuda:0",
+  "training_duration_seconds": 18.699699700002384,
+  "best_epoch": 9,
+  "selected_validation_threshold": 0.0005553505034185946
+}

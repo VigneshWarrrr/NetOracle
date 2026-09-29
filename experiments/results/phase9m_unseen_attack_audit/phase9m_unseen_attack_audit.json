@@ -1,0 +1,1150 @@
+{
+  "phase": "9M",
+  "status": "YELLOW",
+  "status_reason": "The audit and leave-one-family-out experiments are methodologically defensible (verified walk-forward split, whole-day held-out-family exclusion, independently-fit scaler, validation-only threshold selection, zero train/validation leakage -- see leakage_checks.json per family), and produced honest, non-overclaimed, family-dependent evidence (Bot: CLAIM B partial generalization; Infiltration: CLAIM C no generalization). YELLOW rather than GREEN because CSE-CIC-IDS2018 confines each attack family to specific capture day(s), so every unseen-family result here is structurally confounded with an unseen-day/background-traffic shift that this dataset cannot separate out, and only 2 of 6 real attack families were even SUITABLE to test.",
+  "audit": {
+    "step1": {
+      "raw_labels_observed": [
+        "Bot",
+        "Brute Force -Web",
+        "Brute Force -XSS",
+        "DDoS attack-HOIC",
+        "DDoS attack-LOIC-UDP",
+        "DDoS attacks-LOIC-HTTP",
+        "DoS attacks-GoldenEye",
+        "DoS attacks-Hulk",
+        "DoS attacks-SlowHTTPTest",
+        "DoS attacks-Slowloris",
+        "FTP-BruteForce",
+        "Infiltration",
+        "SQL Injection",
+        "SSH-Bruteforce"
+      ],
+      "unmapped_raw_labels": [],
+      "family_map_used": {
+        "FTP-BruteForce": "Brute Force",
+        "SSH-Bruteforce": "Brute Force",
+        "DoS attacks-GoldenEye": "DoS",
+        "DoS attacks-Slowloris": "DoS",
+        "DoS attacks-SlowHTTPTest": "DoS",
+        "DoS attacks-Hulk": "DoS",
+        "DDoS attacks-LOIC-HTTP": "DDoS",
+        "DDoS attack-LOIC-UDP": "DDoS",
+        "DDoS attack-HOIC": "DDoS",
+        "Brute Force -Web": "Web Attack",
+        "Brute Force -XSS": "Web Attack",
+        "SQL Injection": "Web Attack",
+        "Infiltration": "Infiltration",
+        "Bot": "Bot"
+      },
+      "files_with_multiple_families": {},
+      "one_family_per_day_invariant_holds": true,
+      "family_to_source_day_files": {
+        "Bot": [
+          "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"
+        ],
+        "DoS": [
+          "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+          "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv"
+        ],
+        "Web Attack": [
+          "Friday-23-02-2018_TrafficForML_CICFlowMeter.csv",
+          "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv"
+        ],
+        "DDoS": [
+          "Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv",
+          "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv"
+        ],
+        "Infiltration": [
+          "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+          "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+        ],
+        "Brute Force": [
+          "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv"
+        ]
+      },
+      "raw_label_table": [
+        {
+          "raw_label": "Bot",
+          "family": "Bot",
+          "train": 1042,
+          "validation": 346,
+          "test": 635,
+          "total": 2023
+        },
+        {
+          "raw_label": "Brute Force -Web",
+          "family": "Web Attack",
+          "train": 1,
+          "validation": 229,
+          "test": 15,
+          "total": 245
+        },
+        {
+          "raw_label": "Brute Force -XSS",
+          "family": "Web Attack",
+          "train": 125,
+          "validation": 0,
+          "test": 0,
+          "total": 125
+        },
+        {
+          "raw_label": "DDoS attack-HOIC",
+          "family": "DDoS",
+          "train": 135,
+          "validation": 0,
+          "test": 0,
+          "total": 135
+        },
+        {
+          "raw_label": "DDoS attack-LOIC-UDP",
+          "family": "DDoS",
+          "train": 0,
+          "validation": 0,
+          "test": 136,
+          "total": 136
+        },
+        {
+          "raw_label": "DDoS attacks-LOIC-HTTP",
+          "family": "DDoS",
+          "train": 56,
+          "validation": 343,
+          "test": 24,
+          "total": 423
+        },
+        {
+          "raw_label": "DoS attacks-GoldenEye",
+          "family": "DoS",
+          "train": 0,
+          "validation": 89,
+          "test": 0,
+          "total": 89
+        },
+        {
+          "raw_label": "DoS attacks-Hulk",
+          "family": "DoS",
+          "train": 21,
+          "validation": 0,
+          "test": 0,
+          "total": 21
+        },
+        {
+          "raw_label": "DoS attacks-SlowHTTPTest",
+          "family": "DoS",
+          "train": 0,
+          "validation": 276,
+          "test": 0,
+          "total": 276
+        },
+        {
+          "raw_label": "DoS attacks-Slowloris",
+          "family": "DoS",
+          "train": 0,
+          "validation": 65,
+          "test": 176,
+          "total": 241
+        },
+        {
+          "raw_label": "FTP-BruteForce",
+          "family": "Brute Force",
+          "train": 0,
+          "validation": 226,
+          "test": 347,
+          "total": 573
+        },
+        {
+          "raw_label": "Infiltration",
+          "family": "Infiltration",
+          "train": 930,
+          "validation": 474,
+          "test": 313,
+          "total": 1717
+        },
+        {
+          "raw_label": "SQL Injection",
+          "family": "Web Attack",
+          "train": 51,
+          "validation": 4,
+          "test": 0,
+          "total": 55
+        },
+        {
+          "raw_label": "SSH-Bruteforce",
+          "family": "Brute Force",
+          "train": 546,
+          "validation": 0,
+          "test": 0,
+          "total": 546
+        }
+      ],
+      "family_table": [
+        {
+          "family": "Bot",
+          "raw_labels": [
+            "Bot"
+          ],
+          "source_day_files": [
+            "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train": 1042,
+          "validation": 346,
+          "test": 635,
+          "total": 2023
+        },
+        {
+          "family": "Brute Force",
+          "raw_labels": [
+            "FTP-BruteForce",
+            "SSH-Bruteforce"
+          ],
+          "source_day_files": [
+            "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train": 546,
+          "validation": 226,
+          "test": 347,
+          "total": 1119
+        },
+        {
+          "family": "DDoS",
+          "raw_labels": [
+            "DDoS attack-HOIC",
+            "DDoS attack-LOIC-UDP",
+            "DDoS attacks-LOIC-HTTP"
+          ],
+          "source_day_files": [
+            "Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv",
+            "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train": 191,
+          "validation": 343,
+          "test": 160,
+          "total": 694
+        },
+        {
+          "family": "DoS",
+          "raw_labels": [
+            "DoS attacks-GoldenEye",
+            "DoS attacks-Hulk",
+            "DoS attacks-SlowHTTPTest",
+            "DoS attacks-Slowloris"
+          ],
+          "source_day_files": [
+            "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+            "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train": 21,
+          "validation": 430,
+          "test": 176,
+          "total": 627
+        },
+        {
+          "family": "Infiltration",
+          "raw_labels": [
+            "Infiltration"
+          ],
+          "source_day_files": [
+            "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+            "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train": 930,
+          "validation": 474,
+          "test": 313,
+          "total": 1717
+        },
+        {
+          "family": "Web Attack",
+          "raw_labels": [
+            "Brute Force -Web",
+            "Brute Force -XSS",
+            "SQL Injection"
+          ],
+          "source_day_files": [
+            "Friday-23-02-2018_TrafficForML_CICFlowMeter.csv",
+            "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train": 177,
+          "validation": 233,
+          "test": 15,
+          "total": 425
+        }
+      ],
+      "structurally_flagged_families": [
+        {
+          "family": "DDoS",
+          "reasons": [
+            "spans multiple source days (['Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv', 'Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv']) -- holdout removes >1 day"
+          ]
+        },
+        {
+          "family": "DoS",
+          "reasons": [
+            "spans multiple source days (['Friday-16-02-2018_TrafficForML_CICFlowMeter.csv', 'Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv']) -- holdout removes >1 day"
+          ]
+        },
+        {
+          "family": "Infiltration",
+          "reasons": [
+            "spans multiple source days (['Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv', 'Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv']) -- holdout removes >1 day"
+          ]
+        },
+        {
+          "family": "Web Attack",
+          "reasons": [
+            "spans multiple source days (['Friday-23-02-2018_TrafficForML_CICFlowMeter.csv', 'Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv']) -- holdout removes >1 day"
+          ]
+        }
+      ],
+      "total_eligible_rows": 41705
+    },
+    "step2": {
+      "per_file_split_time_ranges": {
+        "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-03-02T01:00:00",
+            "max": "2018-03-02T09:23:50",
+            "count": 3024
+          },
+          "validation": {
+            "min": "2018-03-02T09:24:00",
+            "max": "2018-03-02T11:11:50",
+            "count": 648
+          },
+          "test": {
+            "min": "2018-03-02T11:12:00",
+            "max": "2018-03-02T12:59:50",
+            "count": 648
+          }
+        },
+        "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-02-16T01:00:30",
+            "max": "2018-02-16T09:23:00",
+            "count": 3016
+          },
+          "validation": {
+            "min": "2018-02-16T09:23:10",
+            "max": "2018-02-16T11:10:40",
+            "count": 646
+          },
+          "test": {
+            "min": "2018-02-16T11:10:50",
+            "max": "2018-02-16T12:58:20",
+            "count": 646
+          }
+        },
+        "Friday-23-02-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-02-23T01:00:00",
+            "max": "2018-02-23T09:23:50",
+            "count": 3024
+          },
+          "validation": {
+            "min": "2018-02-23T09:24:00",
+            "max": "2018-02-23T11:11:50",
+            "count": 648
+          },
+          "test": {
+            "min": "2018-02-23T11:12:00",
+            "max": "2018-02-23T12:59:50",
+            "count": 648
+          }
+        },
+        "Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-02-20T01:00:00",
+            "max": "2018-02-20T09:23:50",
+            "count": 3024
+          },
+          "validation": {
+            "min": "2018-02-20T09:24:00",
+            "max": "2018-02-20T11:11:50",
+            "count": 648
+          },
+          "test": {
+            "min": "2018-02-20T11:12:00",
+            "max": "2018-02-20T12:59:50",
+            "count": 648
+          }
+        },
+        "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-03-01T01:00:00",
+            "max": "2018-03-01T09:23:50",
+            "count": 3024
+          },
+          "validation": {
+            "min": "2018-03-01T09:24:00",
+            "max": "2018-03-01T11:11:50",
+            "count": 648
+          },
+          "test": {
+            "min": "2018-03-01T11:12:00",
+            "max": "2018-03-01T12:59:50",
+            "count": 648
+          }
+        },
+        "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-02-15T01:00:00",
+            "max": "2018-02-15T09:23:50",
+            "count": 3024
+          },
+          "validation": {
+            "min": "2018-02-15T09:24:00",
+            "max": "2018-02-15T11:11:50",
+            "count": 648
+          },
+          "test": {
+            "min": "2018-02-15T11:12:00",
+            "max": "2018-02-15T12:59:50",
+            "count": 648
+          }
+        },
+        "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-02-22T01:00:00",
+            "max": "2018-02-22T09:23:50",
+            "count": 3024
+          },
+          "validation": {
+            "min": "2018-02-22T09:24:00",
+            "max": "2018-02-22T11:11:50",
+            "count": 648
+          },
+          "test": {
+            "min": "2018-02-22T11:12:00",
+            "max": "2018-02-22T12:59:50",
+            "count": 648
+          }
+        },
+        "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-02-14T01:00:00",
+            "max": "2018-02-14T09:23:50",
+            "count": 3024
+          },
+          "validation": {
+            "min": "2018-02-14T09:24:00",
+            "max": "2018-02-14T11:11:50",
+            "count": 648
+          },
+          "test": {
+            "min": "2018-02-14T11:12:00",
+            "max": "2018-02-14T12:59:50",
+            "count": 648
+          }
+        },
+        "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-02-21T01:55:40",
+            "max": "2018-02-21T08:05:00",
+            "count": 2217
+          },
+          "validation": {
+            "min": "2018-02-21T08:05:10",
+            "max": "2018-02-21T09:24:10",
+            "count": 475
+          },
+          "test": {
+            "min": "2018-02-21T09:24:20",
+            "max": "2018-02-21T10:43:20",
+            "count": 475
+          }
+        },
+        "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv": {
+          "train": {
+            "min": "2018-02-28T01:00:00",
+            "max": "2018-02-28T09:23:50",
+            "count": 3024
+          },
+          "validation": {
+            "min": "2018-02-28T09:24:00",
+            "max": "2018-02-28T11:11:50",
+            "count": 648
+          },
+          "test": {
+            "min": "2018-02-28T11:12:00",
+            "max": "2018-02-28T12:59:50",
+            "count": 648
+          }
+        }
+      },
+      "walk_forward_ordering_issues": [],
+      "walk_forward_ordering_holds": true,
+      "duplicate_X_sequences_present_in_frozen_split": true,
+      "cross_split_leakage_pairs_in_frozen_split": 0,
+      "target_is_binary_future_attack_within_horizon_not_multiclass": true,
+      "feature_columns_exclude_all_meta_and_label_columns": true,
+      "existing_phase4_5_scaler_path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase4_baseline\\lstm\\scaler.joblib",
+      "existing_scaler_would_leak_holdout_family_if_reused": true,
+      "conclusion": "The frozen split is a per-source-day WALK-FORWARD split (train block strictly precedes validation block strictly precedes test block, by window_start, within each day's file); it is reusable for leave-one-family-out evaluation by filtering on the existing split+source_file columns, provided (a) a NEW scaler is fit on the reduced train set only and (b) the held-out family's day(s) contribute ONLY their existing test-split rows and never their train/validation rows."
+    },
+    "step3": {
+      "candidate_table": [
+        {
+          "family": "Bot",
+          "raw_labels": [
+            "Bot"
+          ],
+          "source_day_files": [
+            "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train_removal_impact_rows": 1042,
+          "train_removal_impact_pct_of_total_train": 3.554,
+          "test_rows_available": 635,
+          "semantic_distinctness": "high (botnet C2/zombie behavior, distinct network signature)",
+          "leakage_risk": "low -- single day, cleanly removable",
+          "suitability": "SUITABLE",
+          "reasons": [
+            "single raw label, single source day, adequate train removal and test size"
+          ]
+        },
+        {
+          "family": "Brute Force",
+          "raw_labels": [
+            "FTP-BruteForce",
+            "SSH-Bruteforce"
+          ],
+          "source_day_files": [
+            "Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train_removal_impact_rows": 546,
+          "train_removal_impact_pct_of_total_train": 1.863,
+          "test_rows_available": 347,
+          "semantic_distinctness": "high (credential brute-forcing, distinct from volumetric/flood attacks)",
+          "leakage_risk": "low -- single day, cleanly removable",
+          "suitability": "MARGINAL",
+          "reasons": [
+            "family groups 2 distinct raw labels (different tools) under one family name"
+          ]
+        },
+        {
+          "family": "DDoS",
+          "raw_labels": [
+            "DDoS attack-HOIC",
+            "DDoS attack-LOIC-UDP",
+            "DDoS attacks-LOIC-HTTP"
+          ],
+          "source_day_files": [
+            "Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv",
+            "Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train_removal_impact_rows": 191,
+          "train_removal_impact_pct_of_total_train": 0.652,
+          "test_rows_available": 160,
+          "semantic_distinctness": "medium (grouped tools: HOIC/LOIC-UDP/LOIC-HTTP have different volumetric signatures)",
+          "leakage_risk": "low-medium -- 2 days removable as a block, but multi-day removal shifts more of the benign-traffic distribution at once",
+          "suitability": "MARGINAL",
+          "reasons": [
+            "family groups 3 distinct raw labels across 2 different source days -- removing it changes multiple days' benign-traffic context at once, not just one attack signature"
+          ]
+        },
+        {
+          "family": "DoS",
+          "raw_labels": [
+            "DoS attacks-GoldenEye",
+            "DoS attacks-Hulk",
+            "DoS attacks-SlowHTTPTest",
+            "DoS attacks-Slowloris"
+          ],
+          "source_day_files": [
+            "Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+            "Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train_removal_impact_rows": 21,
+          "train_removal_impact_pct_of_total_train": 0.072,
+          "test_rows_available": 176,
+          "semantic_distinctness": "medium (grouped tools: Slow* are low-and-slow, Hulk/GoldenEye are higher-rate)",
+          "leakage_risk": "low-medium -- 2 days removable as a block, but multi-day removal shifts more of the benign-traffic distribution at once",
+          "suitability": "UNSUITABLE",
+          "reasons": [
+            "train removal impact negligible (21 eligible rows < 50)"
+          ]
+        },
+        {
+          "family": "Infiltration",
+          "raw_labels": [
+            "Infiltration"
+          ],
+          "source_day_files": [
+            "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+            "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train_removal_impact_rows": 930,
+          "train_removal_impact_pct_of_total_train": 3.172,
+          "test_rows_available": 313,
+          "semantic_distinctness": "high (stealthy, low-and-slow; often near-benign-looking by design)",
+          "leakage_risk": "low-medium -- 2 days removable as a block, but multi-day removal shifts more of the benign-traffic distribution at once",
+          "suitability": "SUITABLE",
+          "reasons": [
+            "single raw label, single source day, adequate train removal and test size"
+          ]
+        },
+        {
+          "family": "Web Attack",
+          "raw_labels": [
+            "Brute Force -Web",
+            "Brute Force -XSS",
+            "SQL Injection"
+          ],
+          "source_day_files": [
+            "Friday-23-02-2018_TrafficForML_CICFlowMeter.csv",
+            "Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv"
+          ],
+          "train_removal_impact_rows": 177,
+          "train_removal_impact_pct_of_total_train": 0.604,
+          "test_rows_available": 15,
+          "semantic_distinctness": "low-medium (grouped: brute-force, XSS injection, SQLi are mechanistically different)",
+          "leakage_risk": "low-medium -- 2 days removable as a block, but multi-day removal shifts more of the benign-traffic distribution at once",
+          "suitability": "UNSUITABLE",
+          "reasons": [
+            "too few test-split rows (15 < 30) for a defensible evaluation"
+          ]
+        }
+      ],
+      "suitable_families": [
+        "Bot",
+        "Infiltration"
+      ],
+      "marginal_families": [
+        "Brute Force",
+        "DDoS"
+      ],
+      "unsuitable_families": [
+        "DoS",
+        "Web Attack"
+      ],
+      "external_context_note": "world_model/world_model.py's world_model/zero_shot_results.json (Track B, NON-AUTHORITATIVE, already flagged by Phase 9J for an undocumented/suspicious evaluation methodology) reports a preliminary leave-Infiltration-out result (test ROC-AUC ~0.37-0.43, recall <1.5%) using an ad-hoc, unaudited day split. This is cited here ONLY as external context motivating extra scrutiny of Infiltration, NOT as evidence -- Phase 9M does not reuse Track B code, data splits, or results.",
+      "any_candidate_defensible": true
+    }
+  },
+  "protocol": {
+    "primary_family": "Bot",
+    "secondary_families": [
+      "Infiltration"
+    ],
+    "marginal_families_not_run": [
+      "Brute Force",
+      "DDoS"
+    ],
+    "unsuitable_families_not_run": [
+      "DoS",
+      "Web Attack"
+    ],
+    "model_set": {
+      "primary": "TemporalTransformer (Phase 5 architecture, reused)",
+      "control": "LogisticRegression (Phase 4 convention, reused)"
+    },
+    "excluded_by_design": [
+      "LSTM variants",
+      "World Model",
+      "GNN",
+      "any new architecture"
+    ],
+    "train_exclusion_rule": "whole held-out-family source-day file(s) removed from train+validation (both attack and benign rows); test split never filtered",
+    "preprocessing": "new StandardScaler fit per-experiment on the reduced train set only",
+    "threshold_selection": "chosen on the reduced validation set only (excludes held-out family), never on test",
+    "seed": 42
+  },
+  "experiments": {
+    "Bot": {
+      "family": "Bot",
+      "holdout_files": [
+        "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"
+      ],
+      "config": {
+        "holdout_family": "Bot",
+        "holdout_files": [
+          "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"
+        ],
+        "seed": 42,
+        "device": "cuda:0",
+        "feature_count": 157,
+        "input_shape": [
+          6,
+          157
+        ],
+        "target": "future_attack_within_horizon",
+        "target_definition": "any current_attack in t+1..t+6 (current t excluded) -- UNCHANGED binary target, NOT converted to multiclass",
+        "counts": {
+          "train": {
+            "n": 26302,
+            "positive": 2527,
+            "negative": 23775
+          },
+          "validation": {
+            "n": 5558,
+            "positive": 2240,
+            "negative": 3318
+          },
+          "test_full_unmodified": {
+            "n": 6195,
+            "positive": 1763,
+            "negative": 4432
+          }
+        },
+        "preprocessing": {
+          "scaler": "NEW StandardScaler, fit ONLY on the reduced (family-held-out) train set -- never the original Phase 4/5 scaler",
+          "scaler_sha256": "cbea24ef67138bfa9419504046789452a3a01978cf7a9a055a72beab9b72d729"
+        }
+      },
+      "leakage_checks": {
+        "held_out_family_rows_in_train_or_validation": 0,
+        "held_out_family_eligible_rows_that_WOULD_have_been_in_train_val": 3650,
+        "held_out_family_exclusion_verified": true,
+        "reduced_train_scaler_differs_from_original_full_train_scaler": true,
+        "scaler_fit_on_held_out_family_verified_absent": true,
+        "duplicate_sequences_between_reduced_train_and_test_total": 320,
+        "duplicate_sequences_all_zero_idle_windows": 320,
+        "duplicate_sequences_nonzero_genuine_concern": 0,
+        "validation_set_excludes_held_out_family_by_construction": true,
+        "validation_row_count": 5558,
+        "train_all_finite": true,
+        "validation_all_finite": true,
+        "test_all_finite": true,
+        "feature_count_is_157": true,
+        "all_checks_pass": true
+      },
+      "transformer": {
+        "best_epoch": 5,
+        "best_validation_pr_auc": 0.7194826825911107,
+        "training_duration_seconds": 18.822487899975386,
+        "parameter_count": 286081,
+        "device": "cuda:0",
+        "selected_validation_threshold": 0.0006687989225611091,
+        "evaluation": {
+          "threshold": 0.0006687989225611091,
+          "unseen_family_test": {
+            "precision": 0.1622364802933089,
+            "recall": 0.8335949764521193,
+            "f1": 0.27161125319693097,
+            "pr_auc": 0.17582525780675423,
+            "roc_auc": 0.6783610278324048,
+            "false_positive_rate": 0.6186823104693141,
+            "confusion_matrix": {
+              "tn": 1690,
+              "fp": 2742,
+              "fn": 106,
+              "tp": 531
+            },
+            "false_positives": 2742,
+            "false_negatives": 106,
+            "threshold": 0.0006687989225611091,
+            "n": 5069,
+            "positive": 637,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "seen_family_test": {
+            "precision": 0.24608193566125927,
+            "recall": 0.7948490230905861,
+            "f1": 0.37581356288053747,
+            "pr_auc": 0.6661357227274207,
+            "roc_auc": 0.7710619040596085,
+            "false_positive_rate": 0.6186823104693141,
+            "confusion_matrix": {
+              "tn": 1690,
+              "fp": 2742,
+              "fn": 231,
+              "tp": 895
+            },
+            "false_positives": 2742,
+            "false_negatives": 231,
+            "threshold": 0.0006687989225611091,
+            "n": 5558,
+            "positive": 1126,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "full_test_for_reference": {
+            "precision": 0.34213051823416507,
+            "recall": 0.8088485536018151,
+            "f1": 0.4808632608329118,
+            "pr_auc": 0.6214602315808896,
+            "roc_auc": 0.7375675999434833,
+            "false_positive_rate": 0.6186823104693141,
+            "confusion_matrix": {
+              "tn": 1690,
+              "fp": 2742,
+              "fn": 337,
+              "tp": 1426
+            },
+            "false_positives": 2742,
+            "false_negatives": 337,
+            "threshold": 0.0006687989225611091,
+            "n": 6195,
+            "positive": 1763,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "unseen_family_recall_bootstrap_95ci": {
+            "mean": 0.8341538461538461,
+            "ci_lower_2.5pct": 0.8053375196232339,
+            "ci_upper_97.5pct": 0.8618524332810047,
+            "n_boot_valid": 1000
+          },
+          "seen_family_pr_auc_bootstrap_95ci": {
+            "mean": 0.6665113080537528,
+            "ci_lower_2.5pct": 0.6363197190295933,
+            "ci_upper_97.5pct": 0.694961336607966,
+            "n_boot_valid": 1000
+          },
+          "unseen_family_positive_count": 637,
+          "unseen_family_test_files": [
+            "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"
+          ]
+        }
+      },
+      "logistic_regression_control": {
+        "selected_validation_threshold": 0.5288763965585223,
+        "evaluation": {
+          "threshold": 0.5288763965585223,
+          "unseen_family_test": {
+            "precision": 0.17232202262142382,
+            "recall": 0.4065934065934066,
+            "f1": 0.24205607476635513,
+            "pr_auc": 0.15450222737097358,
+            "roc_auc": 0.6468767179184921,
+            "false_positive_rate": 0.2806859205776173,
+            "confusion_matrix": {
+              "tn": 3188,
+              "fp": 1244,
+              "fn": 378,
+              "tp": 259
+            },
+            "false_positives": 1244,
+            "false_negatives": 378,
+            "threshold": 0.5288763965585223,
+            "n": 5069,
+            "positive": 637,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "seen_family_test": {
+            "precision": 0.39405747686312714,
+            "recall": 0.7184724689165186,
+            "f1": 0.508965083359547,
+            "pr_auc": 0.7420257240768896,
+            "roc_auc": 0.7714973373046662,
+            "false_positive_rate": 0.2806859205776173,
+            "confusion_matrix": {
+              "tn": 3188,
+              "fp": 1244,
+              "fn": 317,
+              "tp": 809
+            },
+            "false_positives": 1244,
+            "false_negatives": 317,
+            "threshold": 0.5288763965585223,
+            "n": 5558,
+            "positive": 1126,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "full_test_for_reference": {
+            "precision": 0.4619377162629758,
+            "recall": 0.6057855927396484,
+            "f1": 0.5241717791411042,
+            "pr_auc": 0.6545370552411732,
+            "roc_auc": 0.7264699212246928,
+            "false_positive_rate": 0.2806859205776173,
+            "confusion_matrix": {
+              "tn": 3188,
+              "fp": 1244,
+              "fn": 695,
+              "tp": 1068
+            },
+            "false_positives": 1244,
+            "false_negatives": 695,
+            "threshold": 0.5288763965585223,
+            "n": 6195,
+            "positive": 1763,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "unseen_family_recall_bootstrap_95ci": {
+            "mean": 0.4064160125588697,
+            "ci_lower_2.5pct": 0.36891679748822603,
+            "ci_upper_97.5pct": 0.44583987441130296,
+            "n_boot_valid": 1000
+          },
+          "seen_family_pr_auc_bootstrap_95ci": {
+            "mean": 0.7420515701378977,
+            "ci_lower_2.5pct": 0.7190509485311315,
+            "ci_upper_97.5pct": 0.7638413836316619,
+            "n_boot_valid": 1000
+          },
+          "unseen_family_positive_count": 637,
+          "unseen_family_test_files": [
+            "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"
+          ]
+        }
+      },
+      "interpretation": {
+        "claim": "CLAIM B",
+        "rationale": "Unseen-family ROC-AUC is 0.678 -- meaningfully above chance (0.5), showing the model's ranking carries real, non-random signal for this held-out family. But PR-AUC (0.176) is far below the seen-family PR-AUC (0.666), and at the validation-selected operating point recall is 0.834 with FPR 0.619 (a high FPR at this threshold, so the raw recall number alone overstates usefulness). This is limited/partial generalization, not reliable detection.",
+        "unseen_roc_auc": 0.6783610278324048,
+        "unseen_pr_auc": 0.17582525780675423,
+        "unseen_recall_at_selected_threshold": 0.8335949764521193,
+        "unseen_fpr_at_selected_threshold": 0.6186823104693141,
+        "seen_family_roc_auc_for_reference": 0.7710619040596085,
+        "control_model_unseen_roc_auc_for_reference": 0.6468767179184921,
+        "unseen_family_class_prevalence": 0.12566581179719866
+      }
+    },
+    "Infiltration": {
+      "family": "Infiltration",
+      "holdout_files": [
+        "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+        "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+      ],
+      "config": {
+        "holdout_family": "Infiltration",
+        "holdout_files": [
+          "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+          "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+        ],
+        "seed": 42,
+        "device": "cuda:0",
+        "feature_count": 157,
+        "input_shape": [
+          6,
+          157
+        ],
+        "target": "future_attack_within_horizon",
+        "target_definition": "any current_attack in t+1..t+6 (current t excluded) -- UNCHANGED binary target, NOT converted to multiclass",
+        "counts": {
+          "train": {
+            "n": 23289,
+            "positive": 2631,
+            "negative": 20658
+          },
+          "validation": {
+            "n": 4921,
+            "positive": 2107,
+            "negative": 2814
+          },
+          "test_full_unmodified": {
+            "n": 6195,
+            "positive": 1763,
+            "negative": 4432
+          }
+        },
+        "preprocessing": {
+          "scaler": "NEW StandardScaler, fit ONLY on the reduced (family-held-out) train set -- never the original Phase 4/5 scaler",
+          "scaler_sha256": "caf3f858039e5b8f025ec9ff03d57f8d48d07a519630cf3689e7ebdb87b6fefb"
+        }
+      },
+      "leakage_checks": {
+        "held_out_family_rows_in_train_or_validation": 0,
+        "held_out_family_eligible_rows_that_WOULD_have_been_in_train_val": 7300,
+        "held_out_family_exclusion_verified": true,
+        "reduced_train_scaler_differs_from_original_full_train_scaler": true,
+        "scaler_fit_on_held_out_family_verified_absent": true,
+        "duplicate_sequences_between_reduced_train_and_test_total": 320,
+        "duplicate_sequences_all_zero_idle_windows": 320,
+        "duplicate_sequences_nonzero_genuine_concern": 0,
+        "validation_set_excludes_held_out_family_by_construction": true,
+        "validation_row_count": 4921,
+        "train_all_finite": true,
+        "validation_all_finite": true,
+        "test_all_finite": true,
+        "feature_count_is_157": true,
+        "all_checks_pass": true
+      },
+      "transformer": {
+        "best_epoch": 1,
+        "best_validation_pr_auc": 0.8034690930517925,
+        "training_duration_seconds": 10.531926899973769,
+        "parameter_count": 286081,
+        "device": "cuda:0",
+        "selected_validation_threshold": 0.0026145665906369686,
+        "evaluation": {
+          "threshold": 0.0026145665906369686,
+          "unseen_family_test": {
+            "precision": 0.03669724770642202,
+            "recall": 0.1794871794871795,
+            "f1": 0.060935799782372145,
+            "pr_auc": 0.08849535570960501,
+            "roc_auc": 0.47486773060723875,
+            "false_positive_rate": 0.3316787003610108,
+            "confusion_matrix": {
+              "tn": 2962,
+              "fp": 1470,
+              "fn": 256,
+              "tp": 56
+            },
+            "false_positives": 1470,
+            "false_negatives": 256,
+            "threshold": 0.0026145665906369686,
+            "n": 4744,
+            "positive": 312,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "seen_family_test": {
+            "precision": 0.46271929824561403,
+            "recall": 0.8725017229496899,
+            "f1": 0.6047289228564605,
+            "pr_auc": 0.8700100677722413,
+            "roc_auc": 0.8792932236450897,
+            "false_positive_rate": 0.3316787003610108,
+            "confusion_matrix": {
+              "tn": 2962,
+              "fp": 1470,
+              "fn": 185,
+              "tp": 1266
+            },
+            "false_positives": 1470,
+            "false_negatives": 185,
+            "threshold": 0.0026145665906369686,
+            "n": 5883,
+            "positive": 1451,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "full_test_for_reference": {
+            "precision": 0.47349570200573066,
+            "recall": 0.7498581962563812,
+            "f1": 0.5804610318331503,
+            "pr_auc": 0.7966393128812147,
+            "roc_auc": 0.8077216105833714,
+            "false_positive_rate": 0.3316787003610108,
+            "confusion_matrix": {
+              "tn": 2962,
+              "fp": 1470,
+              "fn": 441,
+              "tp": 1322
+            },
+            "false_positives": 1470,
+            "false_negatives": 441,
+            "threshold": 0.0026145665906369686,
+            "n": 6195,
+            "positive": 1763,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "unseen_family_recall_bootstrap_95ci": {
+            "mean": 0.1788621794871795,
+            "ci_lower_2.5pct": 0.13782051282051283,
+            "ci_upper_97.5pct": 0.22115384615384615,
+            "n_boot_valid": 1000
+          },
+          "seen_family_pr_auc_bootstrap_95ci": {
+            "mean": 0.8696319918818416,
+            "ci_lower_2.5pct": 0.8545132423012104,
+            "ci_upper_97.5pct": 0.8840776895175081,
+            "n_boot_valid": 1000
+          },
+          "unseen_family_positive_count": 312,
+          "unseen_family_test_files": [
+            "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+            "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+          ]
+        }
+      },
+      "logistic_regression_control": {
+        "selected_validation_threshold": 0.3354490635983948,
+        "evaluation": {
+          "threshold": 0.3354490635983948,
+          "unseen_family_test": {
+            "precision": 0.08421851289833081,
+            "recall": 0.3557692307692308,
+            "f1": 0.1361963190184049,
+            "pr_auc": 0.17066080428379607,
+            "roc_auc": 0.6222280558641118,
+            "false_positive_rate": 0.2723375451263538,
+            "confusion_matrix": {
+              "tn": 3225,
+              "fp": 1207,
+              "fn": 201,
+              "tp": 111
+            },
+            "false_positives": 1207,
+            "false_negatives": 201,
+            "threshold": 0.3354490635983948,
+            "n": 4744,
+            "positive": 312,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "seen_family_test": {
+            "precision": 0.5085504885993485,
+            "recall": 0.8607856650585803,
+            "f1": 0.6393652418735603,
+            "pr_auc": 0.8427749278846459,
+            "roc_auc": 0.8520429393894912,
+            "false_positive_rate": 0.2723375451263538,
+            "confusion_matrix": {
+              "tn": 3225,
+              "fp": 1207,
+              "fn": 202,
+              "tp": 1249
+            },
+            "false_positives": 1207,
+            "false_negatives": 202,
+            "threshold": 0.3354490635983948,
+            "n": 5883,
+            "positive": 1451,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "full_test_for_reference": {
+            "precision": 0.5298013245033113,
+            "recall": 0.7714123652864435,
+            "f1": 0.628175519630485,
+            "pr_auc": 0.7948014067781307,
+            "roc_auc": 0.811372353082107,
+            "false_positive_rate": 0.2723375451263538,
+            "confusion_matrix": {
+              "tn": 3225,
+              "fp": 1207,
+              "fn": 403,
+              "tp": 1360
+            },
+            "false_positives": 1207,
+            "false_negatives": 403,
+            "threshold": 0.3354490635983948,
+            "n": 6195,
+            "positive": 1763,
+            "negative": 4432,
+            "note": "both classes present"
+          },
+          "unseen_family_recall_bootstrap_95ci": {
+            "mean": 0.35525,
+            "ci_lower_2.5pct": 0.3076121794871795,
+            "ci_upper_97.5pct": 0.40705128205128205,
+            "n_boot_valid": 1000
+          },
+          "seen_family_pr_auc_bootstrap_95ci": {
+            "mean": 0.8421018639724859,
+            "ci_lower_2.5pct": 0.823603452573087,
+            "ci_upper_97.5pct": 0.8601238970318993,
+            "n_boot_valid": 1000
+          },
+          "unseen_family_positive_count": 312,
+          "unseen_family_test_files": [
+            "Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+            "Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv"
+          ]
+        }
+      },
+      "interpretation": {
+        "claim": "CLAIM C",
+        "rationale": "Unseen-family ROC-AUC is 0.475 -- at or near chance (0.5), versus a much higher seen-family ROC-AUC (0.879). The ranking the model learned does not transfer to this held-out family; this experiment does not demonstrate unseen-family generalization.",
+        "unseen_roc_auc": 0.47486773060723875,
+        "unseen_pr_auc": 0.08849535570960501,
+        "unseen_recall_at_selected_threshold": 0.1794871794871795,
+        "unseen_fpr_at_selected_threshold": 0.3316787003610108,
+        "seen_family_roc_auc_for_reference": 0.8792932236450897,
+        "control_model_unseen_roc_auc_for_reference": 0.6222280558641118,
+        "unseen_family_class_prevalence": 0.0657672849915683
+      }
+    }
+  },
+  "overall_claims_by_family": {
+    "Bot": "CLAIM B",
+    "Infiltration": "CLAIM C"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "target_definition": "y_k = 1 if per_step_stage_name[:,k] != BENIGN else 0 (k=0..5, t+1..t+6)",
+  "architecture": "VectorWorldModelWithPerStepRiskHead(VectorWorldModel) -- frozen Run-1 backbone + new per_step_risk_head",
+  "loss": "mean_k BCEWithLogitsLoss(logit_k, y_k), per-step pos_weight from TRAIN only",
+  "backbone_source": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\best_model.pt",
+  "scaler_source": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\scaler.joblib",
+  "seed": 42,
+  "model_selection_criterion": "validation mean per-step PR-AUC",
+  "threshold_selection": "per-step choose_threshold (F1-max) on validation only"
+}

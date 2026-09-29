@@ -1,0 +1,17 @@
+{
+  "held_out_family_rows_in_train_or_validation": 0,
+  "held_out_family_eligible_rows_that_WOULD_have_been_in_train_val": 3650,
+  "held_out_family_exclusion_verified": true,
+  "reduced_train_scaler_differs_from_original_full_train_scaler": true,
+  "scaler_fit_on_held_out_family_verified_absent": true,
+  "duplicate_sequences_between_reduced_train_and_test_total": 320,
+  "duplicate_sequences_all_zero_idle_windows": 320,
+  "duplicate_sequences_nonzero_genuine_concern": 0,
+  "validation_set_excludes_held_out_family_by_construction": true,
+  "validation_row_count": 5558,
+  "train_all_finite": true,
+  "validation_all_finite": true,
+  "test_all_finite": true,
+  "feature_count_is_157": true,
+  "all_checks_pass": true
+}

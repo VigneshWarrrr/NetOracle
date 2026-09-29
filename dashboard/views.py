@@ -11,6 +11,114 @@ from feature_engine.models import FeatureWindow
 from feature_engine.services import ingest_live_events
 
 from run_pipeline import run_pipeline
+from world_model.inference_service import AuthoritativeForecastService
+
+
+def format_attribution(value):
+    """Phase 10B, presentation only. Never changes the underlying value.
+
+    Gradient x Input importances can be ~1e-6 when the risk score is saturated
+    near 0 or 1; rounding those to four decimals showed a misleading "0.0000".
+    Values >= 1e-3 keep four decimals, smaller non-zero values use scientific
+    notation, and only a genuine 0.0 renders as "0".
+    """
+    value = float(value)
+    if value == 0.0:
+        return "0"
+    if abs(value) >= 1e-3:
+        return f"{value:.4f}"
+    return f"{value:.2e}"
+
+
+def build_attribution_rows(features):
+    """Rows for the explanation panel: rank, feature, a readable value, the exact
+    raw value (for the tooltip) and the value relative to the top feature."""
+    values = [float(item["importance"]) for item in features]
+    top = max(values) if values else 0.0
+    rows = []
+    for rank, (item, value) in enumerate(zip(features, values), start=1):
+        relative = (value / top * 100.0) if top > 0 else 0.0
+        rows.append({
+            "rank": rank,
+            "feature": item["feature"],
+            "display": format_attribution(value),
+            "raw": repr(value),
+            "relative_percent": f"{relative:.0f}",
+        })
+    return rows
+
+
+# Mirrors the artifact paths pinned in experiments/inference_engine.py (a test asserts they are equal).
+AUTHORITATIVE_CHECKPOINT_RELPATH = "experiments/results/phase7b_mitre_stage_head/model/best_stage_head.pt"
+AUTHORITATIVE_SCALER_RELPATH = "experiments/results/phase6b_vector_world_model_ablation/run1_existing_scaling/model/scaler.joblib"
+AUTHORITATIVE_WINDOWS_RELPATH = "../data/windows"
+EXPECTED_WINDOW_CSV_COUNT = 10
+
+
+def get_authoritative_artifact_status():
+    """Cheap availability check for the landing page: file existence only, no model
+    load (loading takes ~20 s and belongs to the forecast page)."""
+    root = Path(settings.BASE_DIR)
+    windows_dir = (root / AUTHORITATIVE_WINDOWS_RELPATH).resolve()
+    csv_count = len(list(windows_dir.glob("*.csv"))) if windows_dir.is_dir() else 0
+    items = [
+        {"label": "Authoritative checkpoint (Phase 7B stage head on the Phase 6B Run 1 backbone)",
+         "path": AUTHORITATIVE_CHECKPOINT_RELPATH, "present": (root / AUTHORITATIVE_CHECKPOINT_RELPATH).is_file()},
+        {"label": "Authoritative scaler (Phase 6B Run 1, train-only StandardScaler)",
+         "path": AUTHORITATIVE_SCALER_RELPATH, "present": (root / AUTHORITATIVE_SCALER_RELPATH).is_file()},
+        {"label": f"Phase 3.5 window data (157-feature schema and replay samples; {EXPECTED_WINDOW_CSV_COUNT} CSV files)",
+         "path": AUTHORITATIVE_WINDOWS_RELPATH, "present": csv_count == EXPECTED_WINDOW_CSV_COUNT},
+    ]
+    return {"authoritative_artifacts": items, "authoritative_artifacts_ready": all(item["present"] for item in items)}
+
+
+def get_authoritative_forecast_context():
+    """Phase 9L: context for the ONE authoritative, checkpoint-backed
+    prediction path (experiments/inference_engine.py via
+    world_model.inference_service.AuthoritativeForecastService). Distinct
+    from get_forecast_context() below, which remains the pre-existing,
+    NON-AUTHORITATIVE live-capture heuristic path (left unmodified -- its
+    feature schema is incompatible with the authoritative model; see
+    experiments/results/phase9l_django_integration/)."""
+    try:
+        result = AuthoritativeForecastService.predict_demo_sample(index=0)
+        error = None
+    except FileNotFoundError as exc:
+        result = None
+        error = f"Authoritative model checkpoint not found: {exc}"
+    except (ValueError, TypeError) as exc:
+        result = None
+        error = f"Authoritative model input validation failed: {exc}"
+    except Exception as exc:  # noqa: BLE001 -- surface any other inference failure clearly, never substitute a heuristic
+        result = None
+        error = f"Authoritative inference failed: {exc}"
+    mitre_stage_steps = []
+    attribution_rows = []
+    attribution_method = None
+    if result is not None:
+        explanations = result.get("explanations") or {}
+        attribution_rows = build_attribution_rows(
+            (explanations.get("current_state_evidence") or {}).get("top_attack_risk_features", [])
+        )
+        attribution_method = (explanations.get("future_attack_risk_prediction") or {}).get("explanation_method")
+        trajectory = result["mitre_stage_trajectory"]
+        mitre_stage_steps = [
+            {"horizon_label": label, "stage": stage, "confidence": confidence}
+            for label, stage, confidence in zip(
+                trajectory["horizon_labels"],
+                trajectory["per_step_stage"],
+                trajectory["per_step_confidence"],
+            )
+        ]
+    return {
+        "authoritative_available": result is not None,
+        "authoritative_forecast": result,
+        "authoritative_error": error,
+        "mitre_stage_steps": mitre_stage_steps,
+        "attribution_rows": attribution_rows,
+        "attribution_method": attribution_method,
+    }
+
 
 def get_forecast_context():
     model_path = settings.BASE_DIR / 'models' / 'attack_forecaster.pt'
@@ -55,7 +163,9 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
         context['log_sources'] = LogSource.objects.all()
         context['total_logs'] = LogEntry.objects.count()
         context['active_alerts'] = Alert.objects.filter(status='active').count() if hasattr(Alert, 'status') else Alert.objects.count()
-        context.update(get_forecast_context())
+        # Phase 10B: the landing page describes the authoritative system; it no longer runs the
+        # legacy heuristic forecaster (that path stays reachable only at /dashboard/forecast/).
+        context.update(get_authoritative_artifact_status())
         return context
 
 
@@ -68,4 +178,22 @@ class NetworkRiskForecastView(AdminDashboardView):
     def get_context_data(self, **kwargs):
         context = super(AdminDashboardView, self).get_context_data(**kwargs)
         context.update(get_forecast_context())
+        return context
+
+
+class AuthoritativeForecastView(AdminDashboardView):
+    """Phase 9L: the ONE authoritative, checkpoint-backed forecast page.
+    Wraps world_model.inference_service.AuthoritativeForecastService,
+    which wraps experiments.inference_engine.NetOracleInferenceEngine
+    (Phase 9K). See that class's docstring for why this page uses an
+    already-validated test-split sample rather than live-captured events."""
+
+    template_name = 'dashboard/authoritative_forecast.html'
+
+    def post(self, request, *args, **kwargs):
+        return redirect('dashboard:authoritative_forecast')
+
+    def get_context_data(self, **kwargs):
+        context = super(AdminDashboardView, self).get_context_data(**kwargs)
+        context.update(get_authoritative_forecast_context())
         return context

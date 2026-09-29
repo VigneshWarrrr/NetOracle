@@ -1,0 +1,3 @@
+model,tn,fp,fn,tp
+logistic_regression,3423,1009,343,1420
+lstm,2343,2089,186,1577

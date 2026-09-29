@@ -1,0 +1,63 @@
+{
+  "phase": "9K",
+  "commit_hash": "4e54c7533fc327331d1ea44a609a52a6010424e0",
+  "branch": "main",
+  "git_status_short": "M experiments/tests.py\n M forecasting/mitre_mapping.py\n M forecasting/tests.py\n?? audits/\n?? docs/\n?? experiments/data/\n?? experiments/inference_engine.py\n?? experiments/phase4_2_diagnostics.py\n?? experiments/phase4_3_class_weight_ablation.py\n?? experiments/phase4_baseline.py\n?? experiments/phase5_temporal_transformer.py\n?? experiments/phase6b_ablation.py\n?? experiments/phase6b_diagnostics.py\n?? experiments/phase6b_vector_world_model.py\n?? experiments/phase7b_mitre_stage_head.py\n?? experiments/phase7b_stage_targets.py\n?? experiments/phase7b_train_stage_head.py\n?? experiments/phase7c_explain_samples.py\n?? experiments/phase7c_explainability.py\n?? experiments/phase7d_generate_trajectories.py\n?? experiments/phase7d_trajectory_narrative.py\n?? experiments/phase8_evaluation_comparison.py\n?? experiments/phase8b_calibration.py\n?? experiments/phase9b_pcap_discovery.py\n?? experiments/phase9c_pcap_archive_inspection.py\n?? experiments/phase9d_pcap_validation.py\n?? experiments/phase9e_temporal_packet_graph.py\n?? experiments/phase9f_cross_host_graph.py\n?? experiments/phase9g_event_representation.py\n?? experiments/phase9h_multimodal_baseline.py\n?? experiments/phase9i_pcap_flow_alignment.py\n?? experiments/phase9j_sih_gap_audit.py\n?? experiments/phase9k_integration.py\n?? experiments/results/\n?? experiments/world_model_dataset.py\n?? reports/\n?? scripts/\n?? tests/",
+  "git_status_note": "Non-empty status reflects pre-existing modified/untracked files from earlier phases in this session, not changes made by Phase 9K.",
+  "prior_result_directory_file_counts": {
+    "phase4_3_class_weight_ablation": 11,
+    "phase4_baseline": 17,
+    "phase5_temporal_transformer": 11,
+    "phase6b_vector_world_model": 20,
+    "phase6b_vector_world_model_ablation": 22,
+    "phase7b_mitre_stage_head": 9,
+    "phase7c_explainability": 6,
+    "phase7d_trajectory": 8,
+    "phase8_final_evaluation": 5,
+    "phase8b_calibration": 9,
+    "phase9b_pcap_discovery": 2,
+    "phase9c_pcap_archive_inspection": 2,
+    "phase9d_pcap_validation": 2,
+    "phase9e_temporal_packet_graph": 2,
+    "phase9f_cross_host_graph": 2,
+    "phase9g_event_representation": 2,
+    "phase9h_multimodal_baseline": 4,
+    "phase9i_pcap_flow_alignment": 2,
+    "phase9j_sih_gap_audit": 5
+  },
+  "checksums": {
+    "phase6b_run1_checkpoint": {
+      "path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\best_model.pt",
+      "sha256": "6374a9c47d722215e64a3cae1b1e24c425a89dad26407b147b153af03404fb79"
+    },
+    "phase6b_run1_scaler": {
+      "path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase6b_vector_world_model_ablation\\run1_existing_scaling\\model\\scaler.joblib",
+      "sha256": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881"
+    },
+    "phase7b_stage_head_checkpoint": {
+      "path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\experiments\\results\\phase7b_mitre_stage_head\\model\\best_stage_head.pt",
+      "sha256": "f9d16f1943aeeed4f355659b85e90cb6cf8cb94ae84d2fcbd473c59fa3342fe4"
+    },
+    "phase7c_shap_explainer_module": {
+      "path": "C:\\AKSHAY\\Akshay\\SIH FOLDER MAIN\\NetOracle\\explainability\\shap_explainer.py",
+      "sha256": "7045f572bd9922c419b180742c9b4ecb2720968e02c7ded21d00a1db309ba36a"
+    }
+  },
+  "dashboard_entry_points": {
+    "django_root_urlconf": "db.urls (db/settings.py: ROOT_URLCONF)",
+    "django_installed_apps_with_urls": [
+      "users",
+      "dashboard",
+      "logs",
+      "alerts",
+      "api",
+      "management",
+      "server",
+      "settings_app"
+    ],
+    "dashboard_view": "dashboard/views.py: AdminDashboardView, NetworkRiskForecastView, get_forecast_context()",
+    "current_model_loader_in_dashboard_path": "world_model/inference_service.py: AttackForecastService (looks for models/attack_forecaster.pt, falls back to heuristic -- see Phase 9J finding)",
+    "streamlit_track_b_entry_point": "world_model/src/streamlit.py (NON-AUTHORITATIVE, see track_reconciliation.md)",
+    "new_phase9k_authoritative_entry_point": "experiments/inference_engine.py: NetOracleInferenceEngine"
+  }
+}

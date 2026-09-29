@@ -1,0 +1,203 @@
+{
+  "reproduction_check": {
+    "matches_saved_metrics.json": true,
+    "reproduced_test_pr_auc": 0.8681700414271173,
+    "saved_test_pr_auc": 0.8681700414271173
+  },
+  "1_test_vs_validation_state_mse": {
+    "test_total_feature_mse_standardized": 334527.03125,
+    "validation_total_feature_mse_standardized": 292.91717529296875,
+    "ratio_test_over_validation": 1142.0533156357733,
+    "top10_features_share_of_total_test_mse_pct": 99.94890041695908,
+    "top10_features": [
+      {
+        "rank": 1,
+        "feature": "fwd_act_data_pkts__mean",
+        "test_mse_standardized": 88306.09375,
+        "test_mae_standardized": 41.390472412109375,
+        "validation_mse_standardized": 0.11972209811210632,
+        "validation_mae_standardized": 0.2162257879972458,
+        "test_mse_share_of_total_pct": 26.397296905517578
+      },
+      {
+        "rank": 2,
+        "feature": "tot_fwd_pkts__mean",
+        "test_mse_standardized": 86068.09375,
+        "test_mae_standardized": 40.86894607543945,
+        "validation_mse_standardized": 0.15117329359054565,
+        "validation_mae_standardized": 0.23037593066692352,
+        "test_mse_share_of_total_pct": 25.728290557861328
+      },
+      {
+        "rank": 3,
+        "feature": "subflow_fwd_pkts__mean",
+        "test_mse_standardized": 86062.4921875,
+        "test_mae_standardized": 40.87077331542969,
+        "validation_mse_standardized": 0.17244566977024078,
+        "validation_mae_standardized": 0.24393458664417267,
+        "test_mse_share_of_total_pct": 25.726619720458984
+      },
+      {
+        "rank": 4,
+        "feature": "fwd_header_len__mean",
+        "test_mse_standardized": 71201.296875,
+        "test_mae_standardized": 37.19643020629883,
+        "validation_mse_standardized": 0.28121694922447205,
+        "validation_mae_standardized": 0.24569514393806458,
+        "test_mse_share_of_total_pct": 21.284168243408203
+      },
+      {
+        "rank": 5,
+        "feature": "subflow_fwd_byts__mean",
+        "test_mse_standardized": 1312.7138671875,
+        "test_mae_standardized": 5.1096320152282715,
+        "validation_mse_standardized": 0.12288539856672287,
+        "validation_mae_standardized": 0.11505714058876038,
+        "test_mse_share_of_total_pct": 0.39240890741348267
+      },
+      {
+        "rank": 6,
+        "feature": "totlen_fwd_pkts__mean",
+        "test_mse_standardized": 1309.068115234375,
+        "test_mae_standardized": 5.104550838470459,
+        "validation_mse_standardized": 0.12051552534103394,
+        "validation_mae_standardized": 0.1107872873544693,
+        "test_mse_share_of_total_pct": 0.39131906628608704
+      },
+      {
+        "rank": 7,
+        "feature": "bwd_pkts_per_s__mean",
+        "test_mse_standardized": 47.95353698730469,
+        "test_mae_standardized": 1.8975212574005127,
+        "validation_mse_standardized": 72.1736068725586,
+        "validation_mae_standardized": 2.72271728515625,
+        "test_mse_share_of_total_pct": 0.01433472614735365
+      },
+      {
+        "rank": 8,
+        "feature": "pkt_len_var__mean",
+        "test_mse_standardized": 26.596738815307617,
+        "test_mae_standardized": 0.5271714925765991,
+        "validation_mse_standardized": 0.7106655240058899,
+        "validation_mae_standardized": 0.5022399425506592,
+        "test_mse_share_of_total_pct": 0.007950549945235252
+      },
+      {
+        "rank": 9,
+        "feature": "flow_pkts_per_s__mean",
+        "test_mse_standardized": 12.000171661376953,
+        "test_mae_standardized": 1.2156206369400024,
+        "validation_mse_standardized": 17.557819366455078,
+        "validation_mae_standardized": 1.6178932189941406,
+        "test_mse_share_of_total_pct": 0.0035872054286301136
+      },
+      {
+        "rank": 10,
+        "feature": "bwd_pkts_per_s__sum",
+        "test_mse_standardized": 9.783358573913574,
+        "test_mae_standardized": 0.8452844023704529,
+        "validation_mse_standardized": 16.836172103881836,
+        "validation_mae_standardized": 1.1896218061447144,
+        "test_mse_share_of_total_pct": 0.0029245344921946526
+      }
+    ]
+  },
+  "worst_sample_concentration": {
+    "top_1pct_samples": {
+      "sample_count": 62,
+      "sse_share_of_total_pct": 49.901817321777344
+    },
+    "top_5pct_samples": {
+      "sample_count": 310,
+      "sse_share_of_total_pct": 99.95562744140625
+    },
+    "top_10pct_samples": {
+      "sample_count": 620,
+      "sse_share_of_total_pct": 99.97689056396484
+    }
+  },
+  "worst_samples_file": "worst_test_samples.csv",
+  "top10_feature_distributions_file": "top10_feature_ranges_and_distributions.json",
+  "2_training_curve": {
+    "epochs_run": 6,
+    "best_epoch": 1,
+    "patience": 5,
+    "epoch_log": [
+      {
+        "epoch": "1.0",
+        "train_total_loss": "1.0394724860139515",
+        "train_state_loss": "0.5861832831216895",
+        "train_attack_loss": "0.4532892041232275",
+        "validation_pr_auc": "0.7566347827482176",
+        "validation_state_mse": "1.8657861948013306"
+      },
+      {
+        "epoch": "2.0",
+        "train_total_loss": "0.8362295687198639",
+        "train_state_loss": "0.5007019054630528",
+        "train_attack_loss": "0.3355276641638383",
+        "validation_pr_auc": "0.7423562873787449",
+        "validation_state_mse": "1.7977654933929443"
+      },
+      {
+        "epoch": "3.0",
+        "train_total_loss": "0.7656199863423472",
+        "train_state_loss": "0.48928454395221627",
+        "train_attack_loss": "0.2763354448520619",
+        "validation_pr_auc": "0.7437711715006763",
+        "validation_state_mse": "1.7789878845214844"
+      },
+      {
+        "epoch": "4.0",
+        "train_total_loss": "0.7326553682918134",
+        "train_state_loss": "0.47003511838291",
+        "train_attack_loss": "0.2626202515609886",
+        "validation_pr_auc": "0.7263850356290409",
+        "validation_state_mse": "1.8759344816207886"
+      },
+      {
+        "epoch": "5.0",
+        "train_total_loss": "0.6898332356110863",
+        "train_state_loss": "0.4507943534332773",
+        "train_attack_loss": "0.23903888230738432",
+        "validation_pr_auc": "0.6897834172144117",
+        "validation_state_mse": "1.8659718036651611"
+      },
+      {
+        "epoch": "6.0",
+        "train_total_loss": "0.6580564584097136",
+        "train_state_loss": "0.43831460806338685",
+        "train_attack_loss": "0.21974184940285657",
+        "validation_pr_auc": "0.7415686104618822",
+        "validation_state_mse": "1.7978047132492065"
+      }
+    ],
+    "checkpoint_note": "Only one checkpoint was persisted (best_model.pt, saved at the epoch with the highest validation PR-AUC). Training stopped after 6 epochs with best_epoch=1 and no later epoch improved on it, so no other epoch's weights were ever written to disk. Per-epoch validation PR-AUC was logged live during training (see training_log.csv / epoch curve below) and is reported in full. Per-epoch ROC-AUC was NOT logged during training and cannot be recovered for epochs 2-6 without re-running training with checkpointing enabled at every epoch, which would require retraining -- out of scope for this diagnostic-only pass."
+  },
+  "3_threshold_analysis": {
+    "selected_validation_threshold": 0.04385456070303917,
+    "selection_rule": "F1-maximizing threshold on VALIDATION predictions only (choose_threshold in phase4_baseline.py)",
+    "validation_positive_rate": 0.41840193704600487,
+    "test_positive_rate": 0.28458434221146084,
+    "train_positive_rate": 0.1218147705952584,
+    "ranking_metrics": {
+      "validation": {
+        "pr_auc": 0.7566347827482176,
+        "roc_auc": 0.7756313433078745
+      },
+      "test": {
+        "pr_auc": 0.8681700414271173,
+        "roc_auc": 0.8775065219483527
+      }
+    },
+    "fixed_threshold_sweep_file": "fixed_threshold_sweep.csv"
+  },
+  "calibration": {
+    "validation_brier_score": 0.21105126419365755,
+    "test_brier_score": 0.12980153959355245,
+    "validation_expected_calibration_error": 0.15852558522660576,
+    "test_expected_calibration_error": 0.16220416585689754,
+    "validation_calibration_file": "calibration_validation.csv",
+    "test_calibration_file": "calibration_test.csv"
+  }
+}

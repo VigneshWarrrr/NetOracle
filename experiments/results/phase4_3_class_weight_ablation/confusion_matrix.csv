@@ -1,0 +1,3 @@
+model,tp,tn,fp,fn
+unweighted_lstm,1512,2380,2052,251
+weighted_lstm,1577,2343,2089,186

@@ -1,0 +1,332 @@
+{
+  "validation_stage": {
+    "split": "validation",
+    "accuracy": 0.7530804412160345,
+    "macro_f1": 0.47575297531881655,
+    "per_class": {
+      "BENIGN": {
+        "precision": 0.810345429778911,
+        "recall": 0.9367328811369509,
+        "f1": 0.8689675836626154,
+        "support": 24768,
+        "note": null
+      },
+      "INITIAL_ACCESS": {
+        "precision": 0.0054694621695533276,
+        "recall": 1.0,
+        "f1": 0.010879419764279238,
+        "support": 6,
+        "note": "support=6 (at most one window per horizon step) -- not statistically meaningful"
+      },
+      "CREDENTIAL_ACCESS": {
+        "precision": 0.4420671494404213,
+        "recall": 0.4876543209876543,
+        "f1": 0.46374309392265195,
+        "support": 2754,
+        "note": null
+      },
+      "LATERAL_MOVEMENT": {
+        "precision": 0.6874145006839946,
+        "recall": 0.7015706806282722,
+        "f1": 0.694420452582484,
+        "support": 2865,
+        "note": null
+      },
+      "COMMAND_AND_CONTROL": {
+        "precision": 1.0,
+        "recall": 0.6509298998569385,
+        "f1": 0.7885615251299827,
+        "support": 2097,
+        "note": null
+      },
+      "IMPACT": {
+        "precision": 0.5826086956521739,
+        "recall": 0.014316239316239316,
+        "f1": 0.02794577685088634,
+        "support": 4680,
+        "note": null
+      }
+    },
+    "confusion_matrix": [
+      [
+        23201,
+        681,
+        45,
+        838,
+        0,
+        3
+      ],
+      [
+        0,
+        6,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1127,
+        284,
+        1343,
+        0,
+        0,
+        0
+      ],
+      [
+        852,
+        3,
+        0,
+        2010,
+        0,
+        0
+      ],
+      [
+        464,
+        120,
+        30,
+        73,
+        1365,
+        45
+      ],
+      [
+        2987,
+        3,
+        1620,
+        3,
+        0,
+        67
+      ]
+    ],
+    "confusion_matrix_labels": [
+      "BENIGN",
+      "INITIAL_ACCESS",
+      "CREDENTIAL_ACCESS",
+      "LATERAL_MOVEMENT",
+      "COMMAND_AND_CONTROL",
+      "IMPACT"
+    ],
+    "per_step_macro_f1": [
+      0.4753647614551891,
+      0.47547093720598466,
+      0.4764323842311075,
+      0.47655706369298895,
+      0.47554221665427426,
+      0.47512145211235274
+    ],
+    "absent_stages_not_evaluated": [
+      "RECONNAISSANCE",
+      "EXECUTION",
+      "PERSISTENCE",
+      "PRIVILEGE_ESCALATION",
+      "DEFENSE_EVASION",
+      "DISCOVERY",
+      "COLLECTION",
+      "EXFILTRATION"
+    ]
+  },
+  "test_stage": {
+    "split": "test",
+    "accuracy": 0.8394673123486682,
+    "macro_f1": 0.6093599128867319,
+    "per_class": {
+      "BENIGN": {
+        "precision": 0.9098867924528302,
+        "recall": 0.8811255253060478,
+        "f1": 0.8952752250997865,
+        "support": 27365,
+        "note": null
+      },
+      "INITIAL_ACCESS": {
+        "precision": null,
+        "recall": null,
+        "f1": null,
+        "support": 0,
+        "note": "not evaluable: zero examples of this stage in this split -- no fabricated score reported"
+      },
+      "CREDENTIAL_ACCESS": {
+        "precision": 0.882277397260274,
+        "recall": 0.959050721265705,
+        "f1": 0.9190635451505017,
+        "support": 2149,
+        "note": null
+      },
+      "LATERAL_MOVEMENT": {
+        "precision": 0.6524767801857585,
+        "recall": 0.45395799676898224,
+        "f1": 0.5354080660527152,
+        "support": 1857,
+        "note": null
+      },
+      "COMMAND_AND_CONTROL": {
+        "precision": 0.997874601487779,
+        "recall": 0.9858267716535433,
+        "f1": 0.9918141008714022,
+        "support": 3810,
+        "note": null
+      },
+      "IMPACT": {
+        "precision": 0.5739014647137151,
+        "recall": 0.21669180492709905,
+        "f1": 0.31459854014598543,
+        "support": 1989,
+        "note": null
+      }
+    },
+    "confusion_matrix": [
+      [
+        24112,
+        2527,
+        108,
+        290,
+        8,
+        320
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        88,
+        0,
+        2061,
+        0,
+        0,
+        0
+      ],
+      [
+        1014,
+        0,
+        0,
+        843,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        54,
+        3756,
+        0
+      ],
+      [
+        1286,
+        0,
+        167,
+        105,
+        0,
+        431
+      ]
+    ],
+    "confusion_matrix_labels": [
+      "BENIGN",
+      "INITIAL_ACCESS",
+      "CREDENTIAL_ACCESS",
+      "LATERAL_MOVEMENT",
+      "COMMAND_AND_CONTROL",
+      "IMPACT"
+    ],
+    "per_step_macro_f1": [
+      0.6470112084689534,
+      0.6300086206310417,
+      0.6212216044812658,
+      0.6079108271031238,
+      0.5887561255297676,
+      0.5535869039915567
+    ],
+    "absent_stages_not_evaluated": [
+      "RECONNAISSANCE",
+      "EXECUTION",
+      "PERSISTENCE",
+      "PRIVILEGE_ESCALATION",
+      "DEFENSE_EVASION",
+      "DISCOVERY",
+      "COLLECTION",
+      "EXFILTRATION"
+    ]
+  },
+  "calibration_test": {
+    "expected_calibration_error": 0.10315201536265957,
+    "bins": [
+      {
+        "bin_low": 0.0,
+        "bin_high": 0.1,
+        "count": 0,
+        "mean_confidence": null,
+        "accuracy": null
+      },
+      {
+        "bin_low": 0.1,
+        "bin_high": 0.2,
+        "count": 0,
+        "mean_confidence": null,
+        "accuracy": null
+      },
+      {
+        "bin_low": 0.2,
+        "bin_high": 0.30000000000000004,
+        "count": 19,
+        "mean_confidence": 0.28339290618896484,
+        "accuracy": 0.15789473684210525
+      },
+      {
+        "bin_low": 0.30000000000000004,
+        "bin_high": 0.4,
+        "count": 169,
+        "mean_confidence": 0.35875508189201355,
+        "accuracy": 0.28994082840236685
+      },
+      {
+        "bin_low": 0.4,
+        "bin_high": 0.5,
+        "count": 438,
+        "mean_confidence": 0.45430150628089905,
+        "accuracy": 0.363013698630137
+      },
+      {
+        "bin_low": 0.5,
+        "bin_high": 0.6000000000000001,
+        "count": 673,
+        "mean_confidence": 0.5522042512893677,
+        "accuracy": 0.4710252600297177
+      },
+      {
+        "bin_low": 0.6000000000000001,
+        "bin_high": 0.7000000000000001,
+        "count": 735,
+        "mean_confidence": 0.6549954414367676,
+        "accuracy": 0.6190476190476191
+      },
+      {
+        "bin_low": 0.7000000000000001,
+        "bin_high": 0.8,
+        "count": 3033,
+        "mean_confidence": 0.7744486927986145,
+        "accuracy": 0.8905374216946917
+      },
+      {
+        "bin_low": 0.8,
+        "bin_high": 0.9,
+        "count": 3553,
+        "mean_confidence": 0.8372266888618469,
+        "accuracy": 0.8142414860681114
+      },
+      {
+        "bin_low": 0.9,
+        "bin_high": 1.0,
+        "count": 28550,
+        "mean_confidence": 0.9769297242164612,
+        "accuracy": 0.8625569176882661
+      }
+    ]
+  },
+  "progression_consistency_test": {
+    "definition": "fraction of samples whose 6 raw per-step predicted MitreStage values form a non-decreasing sequence over t+1..t+6 (no unfiltered backward progression)",
+    "consistent_fraction": 0.9783696529459242,
+    "sample_count": 6195
+  }
+}

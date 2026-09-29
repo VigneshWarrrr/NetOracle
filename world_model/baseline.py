@@ -146,12 +146,19 @@ class BaselineModel:
 
         best_threshold = 0.5
         best_f1 = -1.0
+        best_recall = -1.0
+        best_precision = -1.0
 
-        for threshold in np.arange(
-            0.01,
-            0.991,
-            0.01,
-        ):
+        # A fixed grid can skip the only score values that separate
+        # positives from negatives, especially when probabilities are
+        # compressed near zero. Evaluate every observed validation score
+        # so threshold selection is driven by classification performance,
+        # not by the arbitrary grid spacing.
+        thresholds = np.unique(
+            np.concatenate((np.array([0.0, 0.5]), probabilities))
+        )
+
+        for threshold in thresholds:
 
             predictions = (
                 probabilities
@@ -185,11 +192,35 @@ class BaselineModel:
                 zero_division=0,
             )
 
-            if current_f1 > best_f1:
+            current_recall = recall_score(
+                targets,
+                predictions,
+                zero_division=0,
+            )
+
+            current_precision = precision_score(
+                targets,
+                predictions,
+                zero_division=0,
+            )
+
+            if (
+                current_f1,
+                current_recall,
+                current_precision,
+            ) > (
+                best_f1,
+                best_recall,
+                best_precision,
+            ):
 
                 best_f1 = (
                     current_f1
                 )
+
+                best_recall = current_recall
+
+                best_precision = current_precision
 
                 best_threshold = (
                     float(

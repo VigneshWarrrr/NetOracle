@@ -13,6 +13,42 @@ import random
 
 from rest_framework.permissions import IsAuthenticated
 
+from world_model.inference_service import AuthoritativeForecastService
+
+
+class AuthoritativeForecastAPIView(APIView):
+    """Phase 9L: JSON API for the ONE authoritative, checkpoint-backed
+    inference path (experiments/inference_engine.py via
+    world_model.inference_service.AuthoritativeForecastService).
+
+    GET ?index=<n> runs the engine on the n-th sample of the frozen Phase
+    3.5 TEST split (see AuthoritativeForecastService.predict_demo_sample
+    for why: the existing live-capture feature pipeline's schema is
+    incompatible with this model's 157-feature CICFlowMeter-window
+    schema). The response is the engine's own dict, which is already
+    JSON-serializable (plain floats/lists/strings -- no tensors) by
+    construction; nothing here reshapes its semantics.
+
+    Never falls back to a heuristic: any failure to load the checkpoint,
+    or invalid input, is surfaced as an explicit HTTP error.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            index = int(request.query_params.get('index', 0))
+        except (TypeError, ValueError):
+            return Response({'error': 'index must be an integer'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            result = AuthoritativeForecastService.predict_demo_sample(index=index)
+        except FileNotFoundError as exc:
+            return Response({'error': f'Authoritative model checkpoint not found: {exc}'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except (ValueError, TypeError, IndexError) as exc:
+            return Response({'error': f'Invalid request: {exc}'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(result, status=status.HTTP_200_OK)
+
+
 class LogIngestAPIView(APIView):
     """
     API endpoint for real-time log ingestion.

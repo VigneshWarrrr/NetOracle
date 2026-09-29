@@ -1,0 +1,366 @@
+{
+  "phase": "10B",
+  "checked_against": "git index",
+  "artifact_storage_summary": {
+    "checkpoint": "A (committed to Git)",
+    "scaler": "A (committed to Git)",
+    "run1_backbone_reference": "A (committed to Git)",
+    "window_dataset": "C (external, SHA-256 per file + layout/retrieval instructions; no immutable public URL)",
+    "git_lfs": "not used (artifacts are 1.4 MB and 4 KB)"
+  },
+  "required_workspace_layout": {
+    "<workspace>/NetOracle/": "this repository",
+    "<workspace>/data/windows/": "ten Phase 3.5 CSV files (external)"
+  },
+  "feature_schema": {
+    "count": 157,
+    "sha256": "f5117fda8518c9e373a4260ff65281800a4760d8af16bb97411ca8371b85bb73",
+    "source": "header order of data/windows/*.csv after removing the META columns (identical to feature_columns in experiments/results/phase4_baseline/config.json); the schema is not stored inside the checkpoint"
+  },
+  "expected_input_shape": [
+    6,
+    157
+  ],
+  "artifacts": [
+    {
+      "id": "checkpoint",
+      "path": "experiments/results/phase7b_mitre_stage_head/model/best_stage_head.pt",
+      "sha256": "f9d16f1943aeeed4f355659b85e90cb6cf8cb94ae84d2fcbd473c59fa3342fe4",
+      "size_bytes": 1443242,
+      "role": "AUTHORITATIVE checkpoint: frozen Phase 6B Run-1 backbone + trained Phase 7B MITRE stage head (VectorWorldModelWithStageHead, 356,452 parameters)",
+      "matches_phase9k_manifest": true,
+      "tracked_by_git": true,
+      "storage": "A: committed to Git (plain blob, no LFS)",
+      "retrieval": null
+    },
+    {
+      "id": "scaler",
+      "path": "experiments/results/phase6b_vector_world_model_ablation/run1_existing_scaling/model/scaler.joblib",
+      "sha256": "b3a0cea7f9d2d0fc59de163c8768116cbd95abbe3b30c127c44a2322f0c24881",
+      "size_bytes": 4335,
+      "role": "AUTHORITATIVE scaler: train-only StandardScaler, 157 features, never refit",
+      "matches_phase9k_manifest": true,
+      "tracked_by_git": true,
+      "storage": "A: committed to Git (plain blob, no LFS)",
+      "retrieval": null
+    },
+    {
+      "id": "run1_backbone_reference",
+      "path": "experiments/results/phase6b_vector_world_model_ablation/run1_existing_scaling/model/best_model.pt",
+      "sha256": "6374a9c47d722215e64a3cae1b1e24c425a89dad26407b147b153af03404fb79",
+      "size_bytes": 1406965,
+      "role": "Reference: Phase 6B Run-1 backbone; its 39 tensors are bit-identical to the backbone inside the authoritative checkpoint (used by verification, not by inference)",
+      "matches_phase9k_manifest": true,
+      "tracked_by_git": true,
+      "storage": "A: committed to Git (plain blob, no LFS)",
+      "retrieval": null
+    }
+  ],
+  "window_files": [
+    {
+      "id": "window:Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "581104eda595a3c9e577da33624481da2f291ac746f2b66b444fb7ebc819e1ed",
+      "size_bytes": 7661322,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    },
+    {
+      "id": "window:Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "32c93a7083082d2b7e5ae63b2b666f51ff6e7a53f6426e1413bd72cbcb64d046",
+      "size_bytes": 3253824,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    },
+    {
+      "id": "window:Friday-23-02-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Friday-23-02-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "c40f1a8813e4e12ce9207c3f2ad9be4df8ebd7af177bd8861315e68911174364",
+      "size_bytes": 8086005,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    },
+    {
+      "id": "window:Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "5e08acd61c2461d75e9fb578a136840bb2c28ab1c28d00f081c3b1bc4fe8d5fc",
+      "size_bytes": 9499885,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    },
+    {
+      "id": "window:Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "b692845ea56bbb4a15b0ae987721d52d4638abec0d0a951a3c18801c7fce94dd",
+      "size_bytes": 7684867,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    },
+    {
+      "id": "window:Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "6fa2913ec4300cfe7c9d5a389307caeb7e438cfde738ac1669898734a30333e9",
+      "size_bytes": 8179547,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    },
+    {
+      "id": "window:Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "2cdfc128d9ad0300a1481be5fe7a7fd7828142244de9caeafe595319fa774d40",
+      "size_bytes": 7997309,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    },
+    {
+      "id": "window:Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "83964b99e92d0c6db60c5046672755f9f2afda5a1879cc30367b4978ef874b69",
+      "size_bytes": 7836498,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    },
+    {
+      "id": "window:Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "698f262239eb940fbefd4e5347284e0c77cac7dee04bde3c4cacb7cc8bef5834",
+      "size_bytes": 2672917,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    },
+    {
+      "id": "window:Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv",
+      "path": "../data/windows/Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv",
+      "sha256": "fc4360af549f75a26806090c80d22fca0f87b40f993ee80f68fdba6122b98998",
+      "size_bytes": 7983175,
+      "role": "Phase 3.5 window file: source of the 157-feature names/order and of the replay samples read by the engine at start-up",
+      "tracked_by_git": false,
+      "storage": "C: external to Git (outside the repository tree; the sibling directory <workspace>/data/windows)",
+      "retrieval": "Obtain from the submission bundle and place at <workspace>/data/windows/. No immutable public URL exists for these derived files. They can be rebuilt with scripts/build_temporal_dataset.py from the public CSE-CIC-IDS2018 CSVs, but a rebuild is NOT verified to be byte-identical: compare against this SHA-256."
+    }
+  ],
+  "authoritative_source_closure_and_wiring": [
+    {
+      "path": "api/urls.py",
+      "sha256": "2820bd2737ff93e15b197db0bb12eb18a5d37b97dd5f3e26d821b6d2cdac3776",
+      "tracked_by_git": true,
+      "why": "Django wiring / template for the authoritative page"
+    },
+    {
+      "path": "api/views.py",
+      "sha256": "1648432e7117dadd693ae9ab79cc7550c7ffe78e5646ebe495676fb14c214149",
+      "tracked_by_git": true,
+      "why": "Django wiring / template for the authoritative page"
+    },
+    {
+      "path": "dashboard/urls.py",
+      "sha256": "70cbad3ce433b59a0f20c844aa3d0206f6aec0632c97e9d2314a48744b020918",
+      "tracked_by_git": true,
+      "why": "Django wiring / template for the authoritative page"
+    },
+    {
+      "path": "dashboard/views.py",
+      "sha256": "32cc83b4f98b574f50b210a2def40f811356ce1e9bd1766516c1c35296e3db95",
+      "tracked_by_git": true,
+      "why": "Django wiring / template for the authoritative page"
+    },
+    {
+      "path": "experiments/inference_engine.py",
+      "sha256": "c5802e4c3b02471e0d7d5d8019564ae2e6cda066f6dbe58e382a2f50a9014204",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "experiments/phase10b_build_manifest.py",
+      "sha256": "6ccca76c12e14e44fe83400742daccaa2ef4d6529ace032d9aa8b053ec55cfb3",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "experiments/phase4_baseline.py",
+      "sha256": "a575f3338de758c8f2a073d630cc5b53c9107f187cdb1d00cbf7cb981487f972",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "experiments/phase6b_vector_world_model.py",
+      "sha256": "602484e6e814cd11ed799735c9154fcaf2805b2d9d878b37afd48f17a343e92c",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "experiments/phase7b_mitre_stage_head.py",
+      "sha256": "5bce54d0da9a82ff52a8da4988cb1549340f3829fd4c5f57e2ab959523a363e1",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "experiments/phase7b_stage_targets.py",
+      "sha256": "7032924babd56e873281e90d6706affc76008aa9d5a1a143563ebb4c66bc0813",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "experiments/phase7c_explainability.py",
+      "sha256": "14dd2b76fe491f04bdecaf6e206cf0c28f80150d81fc55990a2ce7aa08f43dc4",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "experiments/world_model_dataset.py",
+      "sha256": "e7e4979198ab31c4aed6e720d8de7c35fd47dd5566d06de4d5e59e32205e3041",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "explainability/__init__.py",
+      "sha256": "8c5098626618f26c9c19e6f2db3fc1e0eb8b5c3d044870a7858a7bd6baad8105",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "explainability/graph_explainer.py",
+      "sha256": "67321dc36345efdd76eb284fd0d0bbe197d2b398de5f100326d773774cfa6770",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "explainability/shap_explainer.py",
+      "sha256": "7045f572bd9922c419b180742c9b4ecb2720968e02c7ded21d00a1db309ba36a",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "forecasting/__init__.py",
+      "sha256": "34d35ccffdf67aa344490fab004747848f2a5ee8086288304d8b363fd4656b23",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "forecasting/attack_chain.py",
+      "sha256": "6b1598245c4140a961925deeedcfb531b9cedbad301b5d6bf5137427a7b17819",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "forecasting/infiltration.py",
+      "sha256": "f688ddd88ec0aba0d301e5dc8e0415a69c667d217c7c97c368050a26b6776ade",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "forecasting/mitre_mapping.py",
+      "sha256": "d7001061f947cdb2dff232f64c90e5582d566c171365af7d0d7a1e2b7dc9e56e",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "forecasting/victim.py",
+      "sha256": "4a0e7fcf337a776670bad51b56ff735375db879d0b21ef7e282984c34620893e",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "templates/dashboard/authoritative_forecast.html",
+      "sha256": "8ff495b71572668008f77c362f87171838e6fc027e147a5ad7900de76de9383b",
+      "tracked_by_git": true,
+      "why": "Django wiring / template for the authoritative page"
+    },
+    {
+      "path": "templates/dashboard/index.html",
+      "sha256": "84d75861519b42e7e918244a1de5a937d51affc51fbe9ca5272e97ef328bb45c",
+      "tracked_by_git": true,
+      "why": "Django wiring / template for the authoritative page"
+    },
+    {
+      "path": "world_model/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    },
+    {
+      "path": "world_model/inference_service.py",
+      "sha256": "f0463aa279fe18fbcf2095a52360968a06e17e1a3ffc99c7669f16b77540b5a3",
+      "tracked_by_git": true,
+      "why": "imported by the authoritative inference path (measured)"
+    }
+  ],
+  "other_local_checkpoints_not_needed_for_inference": {
+    "note": "ignored by .gitignore (*.pt) and not tracked; required only to re-run other phases' tests/experiments",
+    "files": [
+      {
+        "path": "experiments/results/phase4_3_class_weight_ablation/lstm/best_model.pt",
+        "sha256": "8f845220f1f6ffb2eb1f68671fd40e80f85f2d96eb27898fea5a3f6501b03825",
+        "size_bytes": 1119612,
+        "tracked_by_git": false
+      },
+      {
+        "path": "experiments/results/phase4_baseline/lstm/best_model.pt",
+        "sha256": "41c82131c371204a1871d34b6974ed19ba5160420b813a6e54d2c5c77be47224",
+        "size_bytes": 1119612,
+        "tracked_by_git": false
+      },
+      {
+        "path": "experiments/results/phase5_temporal_transformer/transformer/best_model.pt",
+        "sha256": "5c12dbf59f58959f391200023caad6886af77ff7387cbf9c15ecafdd87730bec",
+        "size_bytes": 1155381,
+        "tracked_by_git": false
+      },
+      {
+        "path": "experiments/results/phase6b_vector_world_model/model/best_model.pt",
+        "sha256": "364276bd3f63be1d6a1b22124bc820614e42387f633bc14cf6b67d307a6238e2",
+        "size_bytes": 1406965,
+        "tracked_by_git": false
+      },
+      {
+        "path": "experiments/results/phase6b_vector_world_model_ablation/run2_robust_scaling/model/best_model.pt",
+        "sha256": "b3a11a2af018c6b0ab658b9972ee67b4000f6fcf51ff60965fdf4b08d45108b3",
+        "size_bytes": 1406965,
+        "tracked_by_git": false
+      },
+      {
+        "path": "experiments/results/phase9h_multimodal_baseline/variant_a_model/best_model.pt",
+        "sha256": "364276bd3f63be1d6a1b22124bc820614e42387f633bc14cf6b67d307a6238e2",
+        "size_bytes": 1406965,
+        "tracked_by_git": false
+      },
+      {
+        "path": "experiments/results/phase9m_unseen_attack_audit/holdout_bot/transformer_best_model.pt",
+        "sha256": "9c78d4d99f162eaac38010d1dc5f8d88c9270283af06fb234501c754d4ea2638",
+        "size_bytes": 1155929,
+        "tracked_by_git": false
+      },
+      {
+        "path": "experiments/results/phase9m_unseen_attack_audit/holdout_infiltration/transformer_best_model.pt",
+        "sha256": "fcb9e0eaa85dceac36965da9b9ef42a3957b7e966ca7792684964627573fcb2a",
+        "size_bytes": 1155929,
+        "tracked_by_git": false
+      },
+      {
+        "path": "experiments/results/phase9n_per_step_risk/model/best_per_step_risk_head.pt",
+        "sha256": "cf02d6f2444aca40e7730197116dcb43b803cc6d04c3b71b61dc7cc983e3acad",
+        "size_bytes": 1442610,
+        "tracked_by_git": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "source_file": "Friday-02-03-2018_TrafficForML_CICFlowMeter.csv",
+  "window_start": "2018-03-02 11:12:50",
+  "attack_probability": 0.9998519420623779,
+  "overall_predicted_stage": "COMMAND_AND_CONTROL",
+  "overall_confidence": 0.999414324760437,
+  "overall_stage_step": 6,
+  "steps": [
+    {
+      "step": 1,
+      "relative_window": "t+1",
+      "predicted_stage": "COMMAND_AND_CONTROL",
+      "stage_confidence": 0.9969698786735535,
+      "top2_confidence_margin": 0.9943863749504089,
+      "non_benign_probability": 0.9997947216033936,
+      "non_benign_probability_label": "MITRE-stage-derived non-benign signal (NOT attack probability, NOT attack risk, NOT infiltration probability)",
+      "top_k_driving_features": [
+        {
+          "feature": "fwd_seg_size_min__mean",
+          "importance": 4.754166366183199e-05
+        },
+        {
+          "feature": "rst_flag_cnt__mean",
+          "importance": 4.1415707528358325e-05
+        },
+        {
+          "feature": "dst_port__mean",
+          "importance": 4.107670611119829e-05
+        },
+        {
+          "feature": "bwd_pkt_len_min__mean",
+          "importance": 3.7649297155439854e-05
+        },
+        {
+          "feature": "fwd_iat_tot__mean",
+          "importance": 3.731144170160405e-05
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "relative_window": "t+2",
+      "predicted_stage": "COMMAND_AND_CONTROL",
+      "stage_confidence": 0.9984014630317688,
+      "top2_confidence_margin": 0.9970250129699707,
+      "non_benign_probability": 0.9998898506164551,
+      "non_benign_probability_label": "MITRE-stage-derived non-benign signal (NOT attack probability, NOT attack risk, NOT infiltration probability)",
+      "top_k_driving_features": [
+        {
+          "feature": "fwd_seg_size_min__mean",
+          "importance": 3.235277472413145e-05
+        },
+        {
+          "feature": "dst_port__mean",
+          "importance": 3.049559563805815e-05
+        },
+        {
+          "feature": "rst_flag_cnt__mean",
+          "importance": 2.9642238587257452e-05
+        },
+        {
+          "feature": "psh_flag_cnt__mean",
+          "importance": 2.5942894353647716e-05
+        },
+        {
+          "feature": "fwd_iat_tot__mean",
+          "importance": 2.3581918867421336e-05
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "relative_window": "t+3",
+      "predicted_stage": "COMMAND_AND_CONTROL",
+      "stage_confidence": 0.998933732509613,
+      "top2_confidence_margin": 0.9980161190032959,
+      "non_benign_probability": 0.9999269843101501,
+      "non_benign_probability_label": "MITRE-stage-derived non-benign signal (NOT attack probability, NOT attack risk, NOT infiltration probability)",
+      "top_k_driving_features": [
+        {
+          "feature": "fwd_seg_size_min__mean",
+          "importance": 2.217345536337234e-05
+        },
+        {
+          "feature": "dst_port__mean",
+          "importance": 2.17641190829454e-05
+        },
+        {
+          "feature": "rst_flag_cnt__mean",
+          "importance": 2.0856123228440993e-05
+        },
+        {
+          "feature": "psh_flag_cnt__mean",
+          "importance": 1.7889180526253767e-05
+        },
+        {
+          "feature": "ack_flag_cnt__mean",
+          "importance": 1.603727287147194e-05
+        }
+      ]
+    },
+    {
+      "step": 4,
+      "relative_window": "t+4",
+      "predicted_stage": "COMMAND_AND_CONTROL",
+      "stage_confidence": 0.9991890788078308,
+      "top2_confidence_margin": 0.9984942674636841,
+      "non_benign_probability": 0.9999451041221619,
+      "non_benign_probability_label": "MITRE-stage-derived non-benign signal (NOT attack probability, NOT attack risk, NOT infiltration probability)",
+      "top_k_driving_features": [
+        {
+          "feature": "dst_port__mean",
+          "importance": 1.685732240730431e-05
+        },
+        {
+          "feature": "fwd_seg_size_min__mean",
+          "importance": 1.6553492969251238e-05
+        },
+        {
+          "feature": "rst_flag_cnt__mean",
+          "importance": 1.553736365167424e-05
+        },
+        {
+          "feature": "psh_flag_cnt__mean",
+          "importance": 1.3491765457729343e-05
+        },
+        {
+          "feature": "ack_flag_cnt__mean",
+          "importance": 1.2901430636702571e-05
+        }
+      ]
+    },
+    {
+      "step": 5,
+      "relative_window": "t+5",
+      "predicted_stage": "COMMAND_AND_CONTROL",
+      "stage_confidence": 0.9993322491645813,
+      "top2_confidence_margin": 0.9987643361091614,
+      "non_benign_probability": 0.9999551773071289,
+      "non_benign_probability_label": "MITRE-stage-derived non-benign signal (NOT attack probability, NOT attack risk, NOT infiltration probability)",
+      "top_k_driving_features": [
+        {
+          "feature": "dst_port__mean",
+          "importance": 1.3982111340737902e-05
+        },
+        {
+          "feature": "fwd_seg_size_min__mean",
+          "importance": 1.3438163477985654e-05
+        },
+        {
+          "feature": "rst_flag_cnt__mean",
+          "importance": 1.2616447747859638e-05
+        },
+        {
+          "feature": "ack_flag_cnt__mean",
+          "importance": 1.100503413908882e-05
+        },
+        {
+          "feature": "psh_flag_cnt__mean",
+          "importance": 1.0977976671711076e-05
+        }
+      ]
+    },
+    {
+      "step": 6,
+      "relative_window": "t+6",
+      "predicted_stage": "COMMAND_AND_CONTROL",
+      "stage_confidence": 0.999414324760437,
+      "top2_confidence_margin": 0.9989205598831177,
+      "non_benign_probability": 0.999960720539093,
+      "non_benign_probability_label": "MITRE-stage-derived non-benign signal (NOT attack probability, NOT attack risk, NOT infiltration probability)",
+      "top_k_driving_features": [
+        {
+          "feature": "dst_port__mean",
+          "importance": 1.2388305549393408e-05
+        },
+        {
+          "feature": "fwd_seg_size_min__mean",
+          "importance": 1.1830903531517833e-05
+        },
+        {
+          "feature": "rst_flag_cnt__mean",
+          "importance": 1.1191889825568069e-05
+        },
+        {
+          "feature": "ack_flag_cnt__mean",
+          "importance": 9.989189493353479e-06
+        },
+        {
+          "feature": "psh_flag_cnt__mean",
+          "importance": 9.615501767257228e-06
+        }
+      ]
+    }
+  ],
+  "disagreement": {
+    "detected": false,
+    "warning": null,
+    "flagged_steps": [],
+    "thresholds": {
+      "low_attack_probability_threshold": 0.3,
+      "high_stage_confidence_threshold": 0.7
+    }
+  },
+  "mitre_technique_ids": null,
+  "mitre_technique_ids_note": "Not included: the model predicts a MITRE STAGE, not a specific attack label, and forecasting.mitre_mapping.MitreMapper's technique-ID table is keyed by label, not stage. A stage-to-technique lookup would require an arbitrary collapse Phase 7A never defined, so it is omitted rather than invented.",
+  "faithful_claims_only": "Per-step stage predictions and confidences, and the horizon-level attack_probability, are direct frozen-model outputs. non_benign_probability, top2_confidence_margin, overall_predicted_stage, and the disagreement flag are post-hoc arithmetic derived from those outputs. None of this proves real-world causality, attacker intent, a confirmed MITRE technique, or a guaranteed attack progression.",
+  "narrative": "Native horizon attack probability (the model's own single risk estimate for the complete 6-step / 60-second forecast horizon): 0.9999. Overall predicted MITRE stage, derived by combining the six independent per-step assessments: COMMAND_AND_CONTROL (confidence 0.9994). All six independent future-stage assessments (t+1 through t+6) predict COMMAND_AND_CONTROL. The MITRE-stage-derived non-benign signal (NOT attack probability, NOT attack risk, NOT infiltration probability) is roughly stable across the horizon (step 1: 0.9998, step 6: 1.0000). The feature contributing most (per gradient-based attribution on the frozen model) to step 6's predicted stage (COMMAND_AND_CONTROL) was 'dst_port__mean'. This describes model attribution only, not a real-world or causal explanation. These six future-stage assessments are independent per-step model outputs, not a guaranteed or causally-linked kill-chain progression."
+}
