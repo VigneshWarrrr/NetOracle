@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authoritative Forecast | NetOracle</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=9l2">
 </head>
 <body class="theme-{{ current_theme }}">
 <div class="dashboard-layout">
@@ -31,13 +31,46 @@
             </form>
         </div>
     </aside>
-    <main class="main-content forecast-page">
-        <header class="header">
+    <main class="main-content forecast-page af-page">
+        <header class="header af-header">
             <div><p class="eyebrow">NetOracle world model &middot; Phase 9K/9L</p><h1>Authoritative forecast</h1></div>
             <span class="model-status"><i></i>{% if authoritative_available %}Authoritative model loaded{% else %}Unavailable{% endif %}</span>
         </header>
 
-        <section class="forecast-panel" style="margin-bottom: 1.5rem;">
+        {% if authoritative_available %}
+        {% with f=authoritative_forecast %}
+        <section class="af-hero">
+            <div class="af-hero-score">
+                <p class="eyebrow af-eyebrow-risk">ATTACK RISK</p>
+                <h2 class="af-score-label">Whole-horizon attack-risk score</h2>
+                <div class="af-score-value">{{ f.whole_horizon_attack_probability.value|floatformat:4 }}</div>
+                <span class="af-score-sub">Attack-risk score, whole horizon (t+1 &hellip; t+6)</span>
+            </div>
+            <div class="af-hero-stage">
+                <span class="af-meta-label">Overall predicted MITRE stage</span>
+                <strong class="af-hero-stage-name">{{ f.explanations.mitre_stage_prediction.overall_stage|default:"n/a" }}</strong>
+                <small class="af-meta-sub">confidence {{ f.explanations.mitre_stage_prediction.overall_confidence|floatformat:3 }}</small>
+            </div>
+            <div class="af-hero-foot">
+                <div class="af-hero-disclosure">
+                    <p class="af-score-flag">One score for the whole horizon &mdash; not a per-step series. Uncalibrated model output.</p>
+                    <p class="af-score-disclosure">
+                        This is the model's single score for the whole 60-second horizon. It is <strong>not</strong> a
+                        six-element per-step series, and it is an uncalibrated sigmoid output (Phase 8B: test ECE 0.112),
+                        so read it as a ranking score rather than a statistical probability.
+                    </p>
+                </div>
+                <div class="af-hero-source">
+                    <span class="af-meta-label">Source sample</span>
+                    <strong class="af-mono">{{ f.input_metadata.source_file }}</strong>
+                    <small class="af-meta-sub">{{ f.input_metadata.window_start }}</small>
+                </div>
+            </div>
+        </section>
+        {% endwith %}
+        {% endif %}
+
+        <section class="af-banner">
             <p>
                 This page calls the ONE authoritative, checkpoint-backed inference path established in
                 Phase 9K (<code>experiments/inference_engine.py</code>, model
@@ -55,95 +88,74 @@
 
         {% if authoritative_available %}
         {% with f=authoritative_forecast %}
+        <section class="af-state-row">
+            <article class="af-state">
+                <p class="eyebrow">CURRENT STATE</p>
+                <h2 class="af-state-title">Observed state at window t</h2>
+                <div class="af-state-figure">
+                    <strong>{{ f.input_metadata.feature_count }}</strong>
+                    <p>features observed across {{ f.input_metadata.window_labels|length }} windows ({{ f.input_metadata.window_labels|join:", " }}).</p>
+                </div>
+            </article>
 
-        <section class="forecast-metric-grid">
-            <article class="forecast-metric forecast-metric-accent">
-                <span>Attack-risk score (whole horizon, t+1 &hellip; t+6)</span>
-                <strong>{{ f.whole_horizon_attack_probability.value|floatformat:4 }}</strong>
-                <small>One score for the whole horizon &mdash; not a per-step series. Uncalibrated model output.</small>
-            </article>
-            <article class="forecast-metric">
-                <span>Overall predicted MITRE stage</span>
-                <strong>{{ f.explanations.mitre_stage_prediction.overall_stage|default:"n/a" }}</strong>
-                <small>confidence {{ f.explanations.mitre_stage_prediction.overall_confidence|floatformat:3 }}</small>
-            </article>
-            <article class="forecast-metric">
-                <span>Source sample</span>
-                <strong>{{ f.input_metadata.source_file }}</strong>
-                <small>{{ f.input_metadata.window_start }}</small>
+            <article class="af-state">
+                <p class="eyebrow">FORECAST</p>
+                <h2 class="af-state-title">Six-step future state rollout</h2>
+                <p class="af-state-body">{{ f.future_state_rollout.note }}</p>
+                <p class="af-note">Horizon steps: {{ f.future_state_rollout.horizon_labels|join:", " }} (157-dim predicted state at each step; not rendered in full here to keep this page compact -- available via the API endpoint, <code>{% url 'api:authoritative_predict' %}</code>).</p>
             </article>
         </section>
 
-        <section class="forecast-dashboard-grid">
+        <section class="af-section af-trajectory">
+            <div class="af-section-head"><p class="eyebrow">MITRE STAGE TRAJECTORY</p><h2>Predicted attack-stage trajectory</h2></div>
+            <ol class="af-timeline">
+            {% for step in mitre_stage_steps %}
+                <li class="af-timeline-row"><span class="af-step">{{ step.horizon_label }}</span><strong class="af-stage-name">{{ step.stage }}</strong><small class="af-stage-conf" title="Softmax confidence of the predicted stage class; this is not an attack risk">stage conf. {{ step.confidence|floatformat:3 }}</small></li>
+            {% endfor %}
+            </ol>
+            <p class="af-note">{{ f.mitre_stage_trajectory.semantics }}</p>
+        </section>
 
-            <article class="forecast-panel forecast-panel-wide">
-                <div class="forecast-heading"><div><p class="eyebrow">CURRENT STATE</p><h2>Observed state at window t</h2></div></div>
-                <p>{{ f.input_metadata.feature_count }} features observed across {{ f.input_metadata.window_labels|length }} windows ({{ f.input_metadata.window_labels|join:", " }}).</p>
+        <section class="af-section af-explain">
+            <div class="af-section-head"><p class="eyebrow">EXPLANATION</p><h2>Gradient-based feature attribution</h2></div>
+            <p class="af-section-body">Method: post-hoc <strong>{{ attribution_method|default:"Gradient &times; Input" }}</strong> feature attribution on the frozen checkpoint (no retraining, no surrogate model). The engine reports the exact method for every call.</p>
+            <p class="af-meta-label af-attr-caption">Top features for the attack-risk score (window t): raw value and share of the top feature</p>
+            <ol class="af-attr-list">
+            {% for row in attribution_rows %}
+                <li class="af-attr-row" style="--share: {{ row.relative_percent }}%"><span class="af-attr-rank">{{ row.rank }}</span><strong class="af-attr-name">{{ row.feature }}</strong><span class="af-attr-vals"><small class="af-attr-raw" title="Exact raw value: {{ row.raw }}">{{ row.display }}</small> &middot; <b class="af-attr-share">{{ row.relative_percent }}% of top</b></span><i class="af-attr-bar" aria-hidden="true"></i></li>
+            {% endfor %}
+            </ol>
+            <p class="af-note">
+                Values are magnitudes of (gradient of the risk score) &times; (scaled input). When the score is
+                saturated near 0 or 1 they are legitimately tiny (for example 1e-06), so a small number does
+                <strong>not</strong> mean zero importance &mdash; compare the share-of-top column. The exact raw value is
+                in each tooltip and unchanged in the API response. Attribution describes this model's own score,
+                not real-world causality, attacker intent, or a confirmed MITRE technique. The full disclosure text
+                is <code>explanations.faithful_claims_only</code> and the exact method is
+                <code>explanations.future_attack_risk_prediction.explanation_method</code> in the API response.
+            </p>
+        </section>
+
+        <section class="af-reference">
+            <article class="af-ref">
+                <p class="eyebrow">PROVENANCE</p>
+                <h2 class="af-ref-title">Model / checkpoint / run identity</h2>
+                <dl class="af-prov">
+                    <div><dt>Model</dt><dd>{{ f.provenance.model_identifier }}</dd></div>
+                    <div><dt>Checkpoint</dt><dd>{{ f.provenance.checkpoint_path }}</dd></div>
+                    <div><dt>Checkpoint SHA-256</dt><dd>{{ f.provenance.checkpoint_sha256|slice:":16" }}&hellip;</dd></div>
+                    <div><dt>Scaler SHA-256</dt><dd>{{ f.provenance.scaler_sha256|slice:":16" }}&hellip;</dd></div>
+                    <div><dt>Feature schema SHA-256</dt><dd>{{ f.provenance.feature_schema_sha256|slice:":16" }}&hellip;</dd></div>
+                    <div><dt>Code commit</dt><dd>{{ f.provenance.code_commit_hash|slice:":12" }}</dd></div>
+                    <div><dt>Device</dt><dd>{{ f.provenance.device }}</dd></div>
+                    <div><dt>Inference duration</dt><dd>{{ f.provenance.inference_duration_seconds|floatformat:4 }}s</dd></div>
+                </dl>
             </article>
 
-            <article class="forecast-panel forecast-panel-wide">
-                <div class="forecast-heading"><div><p class="eyebrow">FORECAST</p><h2>Six-step future state rollout</h2></div></div>
-                <p>{{ f.future_state_rollout.note }}</p>
-                <p>Horizon steps: {{ f.future_state_rollout.horizon_labels|join:", " }} (157-dim predicted state at each step; not rendered in full here to keep this page compact -- available via the API endpoint, <code>{% url 'api:authoritative_predict' %}</code>).</p>
-            </article>
-
-            <article class="forecast-panel">
-                <div class="forecast-heading"><div><p class="eyebrow">ATTACK RISK</p><h2>Whole-horizon attack-risk score</h2></div></div>
-                <div class="attack-score"><span>Attack-risk score, whole horizon (t+1 &hellip; t+6)</span><strong>{{ f.whole_horizon_attack_probability.value|floatformat:4 }}</strong></div>
-                <p class="explainability-basis">
-                    This is the model's single score for the whole 60-second horizon. It is <strong>not</strong> a
-                    six-element per-step series, and it is an uncalibrated sigmoid output (Phase 8B: test ECE 0.112),
-                    so read it as a ranking score rather than a statistical probability.
-                </p>
-            </article>
-
-            <article class="forecast-panel forecast-panel-wide">
-                <div class="forecast-heading"><div><p class="eyebrow">MITRE STAGE TRAJECTORY</p><h2>Predicted attack-stage trajectory</h2></div></div>
-                <div class="chain-list">
-                {% for step in mitre_stage_steps %}
-                    <div class="chain-stage"><span>{{ step.horizon_label }}</span><strong>{{ step.stage }}</strong><small title="Softmax confidence of the predicted stage class; this is not an attack risk">stage conf. {{ step.confidence|floatformat:3 }}</small></div>
-                {% endfor %}
-                </div>
-                <p class="explainability-basis">{{ f.mitre_stage_trajectory.semantics }}</p>
-            </article>
-
-            <article class="forecast-panel explainability-panel forecast-panel-wide">
-                <div class="forecast-heading"><div><p class="eyebrow">EXPLANATION</p><h2>Gradient-based feature attribution</h2></div></div>
-                <p>Method: post-hoc <strong>{{ attribution_method|default:"Gradient &times; Input" }}</strong> feature attribution on the frozen checkpoint (no retraining, no surrogate model). The engine reports the exact method for every call.</p>
-                <p class="eyebrow">Top features for the attack-risk score (window t): raw value and share of the top feature</p>
-                <div class="chain-list">
-                {% for row in attribution_rows %}
-                    <div class="chain-stage"><span>{{ row.rank }}</span><strong>{{ row.feature }}</strong><small title="Exact raw value: {{ row.raw }}">{{ row.display }} &middot; {{ row.relative_percent }}% of top</small></div>
-                {% endfor %}
-                </div>
-                <p class="explainability-basis">
-                    Values are magnitudes of (gradient of the risk score) &times; (scaled input). When the score is
-                    saturated near 0 or 1 they are legitimately tiny (for example 1e-06), so a small number does
-                    <strong>not</strong> mean zero importance &mdash; compare the share-of-top column. The exact raw value is
-                    in each tooltip and unchanged in the API response. Attribution describes this model's own score,
-                    not real-world causality, attacker intent, or a confirmed MITRE technique. The full disclosure text
-                    is <code>explanations.faithful_claims_only</code> and the exact method is
-                    <code>explanations.future_attack_risk_prediction.explanation_method</code> in the API response.
-                </p>
-            </article>
-
-            <article class="forecast-panel forecast-panel-wide">
-                <div class="forecast-heading"><div><p class="eyebrow">PROVENANCE</p><h2>Model / checkpoint / run identity</h2></div></div>
-                <div class="explainability-summary">
-                    <div><span>Model</span><strong>{{ f.provenance.model_identifier }}</strong></div>
-                    <div><span>Checkpoint</span><strong>{{ f.provenance.checkpoint_path }}</strong></div>
-                    <div><span>Checkpoint SHA-256</span><strong>{{ f.provenance.checkpoint_sha256|slice:":16" }}&hellip;</strong></div>
-                    <div><span>Scaler SHA-256</span><strong>{{ f.provenance.scaler_sha256|slice:":16" }}&hellip;</strong></div>
-                    <div><span>Feature schema SHA-256</span><strong>{{ f.provenance.feature_schema_sha256|slice:":16" }}&hellip;</strong></div>
-                    <div><span>Code commit</span><strong>{{ f.provenance.code_commit_hash|slice:":12" }}</strong></div>
-                    <div><span>Device</span><strong>{{ f.provenance.device }}</strong></div>
-                    <div><span>Inference duration</span><strong>{{ f.provenance.inference_duration_seconds|floatformat:4 }}s</strong></div>
-                </div>
-            </article>
-
-            <article class="forecast-panel forecast-panel-wide">
-                <div class="forecast-heading"><div><p class="eyebrow">LIMITATIONS</p><h2>What this page does NOT claim</h2></div></div>
-                <ul>
+            <article class="af-ref">
+                <p class="eyebrow">LIMITATIONS</p>
+                <h2 class="af-ref-title">What this page does NOT claim</h2>
+                <ul class="af-limits">
                     <li>No native per-step attack probability -- only the single whole-horizon scalar above.</li>
                     <li>MITRE stages are a reasoned label mapping from CIC-IDS-2018 attack labels, not authoritative MITRE ATT&amp;CK ground truth, and not causal attacker kill-chain inference.</li>
                     <li>No calibrated probabilities (Phase 8B finding).</li>
@@ -153,7 +165,6 @@
                     <li>This page shows a fixed, already-validated demonstration sample, not live network data (see the explanation banner above).</li>
                 </ul>
             </article>
-
         </section>
         {% endwith %}
         {% else %}
