@@ -20,6 +20,7 @@ import pandas as pd
 import yaml
 
 from sklearn.preprocessing import StandardScaler
+from .packet_features import extract_packet_features
 
 
 class FeatureExtractor:
@@ -912,3 +913,33 @@ class FeatureExtractor:
             "test_files":
                 test_files,
         }
+
+def merge_flow_and_packet_features(
+    flow_states,
+    packet_states
+):
+
+    merged_states = []
+
+    packet_by_window = {
+        x["window_id"]: x
+        for x in packet_states
+    }
+
+    for flow_state in flow_states:
+
+        window_id = flow_state["window_id"]
+
+        packet_state = packet_by_window.get(
+            window_id,
+            {}
+        )
+
+        merged = {
+            **flow_state,
+            **packet_state
+        }
+
+        merged_states.append(merged)
+
+    return merged_states

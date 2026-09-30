@@ -1,6 +1,3 @@
-# NetOracle dependencies.
-# Tested environment for the authoritative path: Python 3.14, Django 6.0.2, torch 2.10.0+cu128,
-# numpy 2.3.5, scikit-learn 1.8.0, reportlab 5.0.1 (see README, "Tested environment").
 Django>=4.2,<7
 djangorestframework>=3.14
 django-cors-headers>=4.3
@@ -15,19 +12,15 @@ PyYAML>=6.0
 torch>=2.0
 joblib>=1.3
 
-# Legacy Track B Streamlit dashboard only (world_model/src/streamlit.py). Not used by Django or the
-# authoritative inference path.
+# Dashboard and explainability
 plotly>=5.15
+shap>=0.43
 streamlit>=1.28
-# shap is NOT required. The deployed explanation method is Gradient x Input (explainability/shap_explainer.py
-# falls back to it). The optional SHAP GradientExplainer path also needs tensorflow, which is not installed,
-# so SHAP does not run in the tested environment and must not be described as the explanation method.
-# shap>=0.43
 
 # Network capture and ingestion
 scapy>=2.5
 requests>=2.31
 
 # Existing log and report features
-reportlab>=4.0   # REQUIRED at Django start-up: server/views.py imports it when the URL configuration loads
+reportlab>=4.0
 PyPDF2>=3.0

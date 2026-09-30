@@ -22,6 +22,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+import torch
 
 # ---------------------------------------------------------
 # Project imports
@@ -786,23 +787,30 @@ with tabs[2]:
                         )
                     )
 
-                    features = (
-                        explainer.get_top_features(
-                            prepared[
-                                "input_tensor"
-                            ],
-                            top_k=10,
+                    with torch.no_grad():
+                        forecast = engine.model.simulate(
+                            prepared["input_tensor"]
                         )
+                        target_index = int(
+                            torch.argmax(
+                                forecast["attack_probs"][0]
+                            ).item()
+                        )
+
+                    explanation = explainer.explain_attack_risk(
+                        prepared["input_tensor"],
+                        target_index=target_index,
+                        top_k=10,
                     )
 
                 feature_names = [
-                    item[0]
-                    for item in features
+                    item["feature"]
+                    for item in explanation.top_features
                 ]
 
                 scores = [
-                    item[1]
-                    for item in features
+                    item["importance"]
+                    for item in explanation.top_features
                 ]
 
                 fig = go.Figure(
@@ -823,7 +831,8 @@ with tabs[2]:
                     height=450,
 
                     title=
-                        "Features Driving the Forecast",
+                        explanation.prediction_name
+                        + " Drivers",
 
                     xaxis_title=
                         "Attribution magnitude",

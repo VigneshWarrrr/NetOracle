@@ -7,6 +7,3 @@ cic.csv
 *.pth
 *.pt
 .env
-# Phase 10B: the ONLY checkpoints tracked in Git (exact files; the broad *.pt / *.pth rules above stay in force)
-!experiments/results/phase7b_mitre_stage_head/model/best_stage_head.pt
-!experiments/results/phase6b_vector_world_model_ablation/run1_existing_scaling/model/best_model.pt
