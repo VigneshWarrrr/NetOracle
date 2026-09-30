@@ -7,6 +7,7 @@ class UserProfile(models.Model):
     THEME_CHOICES = [
         ('dark', 'Dark'),
         ('light', 'Light'),
+        ('system', 'System'),  # follows the OS prefers-color-scheme (resolved in CSS)
     ]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')

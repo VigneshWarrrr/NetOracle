@@ -2,242 +2,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings | NetOracle</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-        }
-        .settings-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-        }
-        .theme-toggle {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        .theme-option {
-            flex: 1;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 2px solid var(--border);
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        .theme-option.active {
-            border-color: var(--accent);
-            background: rgba(56, 189, 248, 0.1);
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: var(--bg-dark);
-            color: var(--text-primary);
-        }
-        .helptext {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-        }
-        .errorlist {
-            color: var(--error);
-            font-size: 0.75rem;
-            list-style: none;
-            padding: 0;
-            margin-top: 0.5rem;
-        }
-        .alert {
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            border: 1px solid currentColor;
-        }
-        .alert-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-        .alert-error {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--error);
-        }
-    </style>
+    {% include "partials/app_head.html" %}
 </head>
 <body class="theme-{{ current_theme }}">
-    <div class="dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-logo">
-                <span class="brand-mark" aria-label="NetOracle logo">NO</span>
-                <span class="fancy-logo" style="font-size: 1.5rem;">NetOracle</span>
+<div class="no-app">
+    {% include "partials/app_sidebar.html" with nav_active="settings" %}
+
+    <main class="no-main" id="main">
+        <header class="no-page-header">
+            <div>
+                <p class="no-eyebrow">System &middot; Settings</p>
+                <h1>Settings</h1>
+                <p class="no-page-desc">Appearance, account security and session.</p>
             </div>
-            
-            <nav>
-                {% if user.is_staff or user.is_superuser %}
-                <a href="{% url 'dashboard:index' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    Dashboard
-                </a>
-                <a href="{% url 'dashboard:forecast' %}" class="nav-item"><span class="nav-mark">R</span> Risk Forecast</a>
-                <a href="{% url 'logs:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Logs
-                </a>
-                <a href="{% url 'alerts:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                    Alerts
-                </a>
-                <a href="{% url 'management:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    Users
-                </a>
-                <a href="{% url 'server:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2-2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
-                    Server
-                </a>
-                <a href="{% url 'api:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    API Engine
-                </a>
-{% else %}
-                <a href="{% url 'users:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    Dashboard
-                </a>
-                <a href="{% url 'logs:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Logs
-                </a>
-                <a href="{% url 'alerts:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                    Alerts
-                </a>
-                <a href="{% url 'api:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    API Engine
-                </a>
-                {% endif %}
-                <a href="{% url 'settings_app:dashboard' %}" class="nav-item active">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    Settings
-                </a>
-            </nav>
-            
-            <div style="margin-top: auto;">
-                <form action="{% url 'users:logout' %}" method="post">
+        </header>
+
+        {% include "partials/app_messages.html" %}
+
+        <section class="no-card" aria-labelledby="appearance-title">
+            <h2 class="no-card-title" id="appearance-title">Appearance</h2>
+            <p class="no-card-sub" id="theme-help">Choose light or dark mode for the NetOracle interface, or follow your system setting.</p>
+            <form method="post" style="margin-top: 16px;">
+                {% csrf_token %}
+                <input type="hidden" name="update_theme" value="1">
+                <div class="no-segmented theme-toggle" role="radiogroup" aria-labelledby="appearance-title" aria-describedby="theme-help">
+                    <label class="no-segment theme-option {% if current_theme == 'light' %}active{% endif %}">
+                        <input type="radio" name="theme" value="light" {% if current_theme == 'light' %}checked{% endif %}>
+                        <span class="no-segment-name">Light</span>
+                        <span class="no-segment-hint">Always light</span>
+                        <span class="no-segment-state theme-option-state" aria-hidden="true"></span>
+                    </label>
+                    <label class="no-segment theme-option {% if current_theme == 'dark' %}active{% endif %}">
+                        <input type="radio" name="theme" value="dark" {% if current_theme == 'dark' %}checked{% endif %}>
+                        <span class="no-segment-name">Dark</span>
+                        <span class="no-segment-hint">Always dark</span>
+                        <span class="no-segment-state theme-option-state" aria-hidden="true"></span>
+                    </label>
+                    <label class="no-segment theme-option {% if current_theme == 'system' %}active{% endif %}">
+                        <input type="radio" name="theme" value="system" {% if current_theme == 'system' %}checked{% endif %}>
+                        <span class="no-segment-name">System</span>
+                        <span class="no-segment-hint">Follows your OS setting</span>
+                        <span class="no-segment-state theme-option-state" aria-hidden="true"></span>
+                    </label>
+                </div>
+                <div class="no-actions" style="margin-top: 16px;"><button type="submit" class="no-btn no-btn-primary">Save appearance</button></div>
+            </form>
+        </section>
+
+        <div class="no-grid no-grid-2 no-section">
+            <section class="no-card" aria-labelledby="security-title">
+                <h2 class="no-card-title" id="security-title">Account security</h2>
+                <p class="no-card-sub">Change your password.</p>
+                <form method="post" class="no-form no-stack" style="margin-top: 16px;">
                     {% csrf_token %}
-                    <button type="submit" class="nav-item" style="background: none; border: none; width: 100%; cursor: pointer;">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        Logout
-                    </button>
+                    <input type="hidden" name="change_password" value="1">
+                    {% for field in password_form %}
+                    <div class="no-field">
+                        <label class="no-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="no-help">{{ field.help_text|safe }}</div>{% endif %}
+                        {% if field.errors %}<div class="no-errors">{{ field.errors }}</div>{% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class="no-actions"><button type="submit" class="no-btn">Update password</button></div>
                 </form>
-            </div>
-        </aside>
+            </section>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="header">
-                <div>
-                    <h1>Settings</h1>
-                    <p style="color: var(--text-secondary);">Manage your security preferences and app appearance.</p>
-                </div>
-                <form action="{% url 'users:logout' %}" method="post" style="margin: 0;">
+            <section class="no-card" aria-labelledby="session-title">
+                <h2 class="no-card-title" id="session-title">Session</h2>
+                <p class="no-card-sub">The account you are signed in with.</p>
+                <dl class="no-kv" style="margin-top: 16px;">
+                    <dt>Username</dt><dd>{{ user.username }}</dd>
+                    <dt>Email</dt><dd>{{ user.email|default:"Not set" }}</dd>
+                    <dt>Role</dt><dd>{% if user.is_superuser %}Superuser{% elif user.is_staff %}Staff{% else %}User{% endif %}</dd>
+                    <dt>Last sign-in</dt><dd>{{ user.last_login|date:"Y-m-d H:i"|default:"Not available" }}</dd>
+                </dl>
+                <form action="{% url 'users:logout' %}" method="post" style="margin-top: 16px;">
                     {% csrf_token %}
-                    <button type="submit" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error);">
-                        Logout
-                    </button>
+                    <button type="submit" class="no-btn no-btn-danger">Log out</button>
                 </form>
-            </header>
+            </section>
+        </div>
+    </main>
+</div>
 
-            {% if messages %}
-            <div style="margin-bottom: 1.5rem;">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
+<script>
+    function selectTheme(theme) {
+        // Update UI selection
+        document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+        document.querySelector(`.theme-option input[value="${theme}"]`).parentElement.classList.add('active');
+        document.querySelector(`.theme-option input[value="${theme}"]`).checked = true;
 
-            <div class="settings-grid">
-                <!-- Theme Settings -->
-                <div class="settings-card">
-                    <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">App Appearance</h2>
-                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Choose between light and dark modes for the NetOracle interface.</p>
-                    
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="update_theme" value="1">
-                        <div class="theme-toggle">
-                            <label class="theme-option {% if current_theme == 'dark' %}active{% endif %}" onclick="selectTheme('dark')">
-                                <input type="radio" name="theme" value="dark" style="display: none;" {% if current_theme == 'dark' %}checked{% endif %}>
-                                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🌙</div>
-                                <div style="font-weight: 600;">Dark Mode</div>
-                            </label>
-                            <label class="theme-option {% if current_theme == 'light' %}active{% endif %}" onclick="selectTheme('light')">
-                                <input type="radio" name="theme" value="light" style="display: none;" {% if current_theme == 'light' %}checked{% endif %}>
-                                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">☀️</div>
-                                <div style="font-weight: 600;">Light Mode</div>
-                            </label>
-                        </div>
-                        <button type="submit" class="btn" style="margin-top: 1.5rem;">Save Appearance</button>
-                    </form>
-                </div>
-
-                <!-- Password Settings -->
-                <div class="settings-card">
-                    <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Security</h2>
-                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Change your password to keep your account secure.</p>
-                    
-                    <form method="post" style="margin-top: 1.5rem;">
-                        {% csrf_token %}
-                        <input type="hidden" name="change_password" value="1">
-                        {% for field in password_form %}
-                        <div class="form-group">
-                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            {{ field }}
-                            {% if field.help_text %}
-                            <div class="helptext">{{ field.help_text }}</div>
-                            {% endif %}
-                            {{ field.errors }}
-                        </div>
-                        {% endfor %}
-                        <button type="submit" class="btn">Update Password</button>
-                    </form>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        function selectTheme(theme) {
-            // Update UI selection
-            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
-            document.querySelector(`.theme-option input[value="${theme}"]`).parentElement.classList.add('active');
-            document.querySelector(`.theme-option input[value="${theme}"]`).checked = true;
-            
-            // Apply instant preview
-            document.body.className = `theme-${theme}`;
-        }
-    </script>
+        // Apply instant preview (theme-system resolves via prefers-color-scheme in CSS)
+        document.body.className = `theme-${theme}`;
+    }
+    // Mouse and keyboard (arrow keys / space) both change the radio, so preview on 'change'.
+    document.querySelectorAll('.theme-option input[name="theme"]').forEach(input => {
+        input.addEventListener('change', () => { if (input.checked) selectTheme(input.value); });
+    });
+</script>
 </body>
 </html>

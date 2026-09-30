@@ -2,41 +2,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Risk Forecast | NetOracle</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Risk Forecast (legacy) | NetOracle</title>
+    {% include "partials/app_head.html" %}
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 </head>
 <body class="theme-{{ current_theme }}">
-<div class="dashboard-layout">
-    <aside class="sidebar">
-        <div class="sidebar-logo"><span class="brand-mark">NO</span><span class="fancy-logo">NetOracle</span></div>
-        <nav>
-            <a href="{% url 'dashboard:index' %}" class="nav-item"><span class="nav-mark">⌂</span>Dashboard</a>
-            <a href="{% url 'dashboard:forecast' %}" class="nav-item active"><span class="nav-mark">R</span>Risk Forecast (legacy)</a>
-            <a href="{% url 'dashboard:authoritative_forecast' %}" class="nav-item"><span class="nav-mark">A</span>Authoritative Forecast</a>
-            <a href="{% url 'logs:dashboard' %}" class="nav-item"><span class="nav-mark">▤</span>Logs</a>
-            <a href="{% url 'alerts:dashboard' %}" class="nav-item"><span class="nav-mark">♧</span>Alerts</a>
-            {% if user.is_staff or user.is_superuser %}
-            <a href="{% url 'management:dashboard' %}" class="nav-item"><span class="nav-mark">♙</span>Users</a>
-            <a href="{% url 'server:dashboard' %}" class="nav-item"><span class="nav-mark">▣</span>Server</a>
-            {% endif %}
-            <a href="{% url 'api:dashboard' %}" class="nav-item"><span class="nav-mark">&gt;_</span>API Engine</a>
-            <a href="{% url 'settings_app:dashboard' %}" class="nav-item"><span class="nav-mark">⚙</span>Settings</a>
-        </nav>
-        <div style="margin-top: auto;">
-            <form action="{% url 'users:logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="nav-item" style="background: none; border: none; width: 100%; cursor: pointer;"><span class="nav-mark">↪</span>Logout</button>
-            </form>
-        </div>
-    </aside>
-    <main class="main-content forecast-page">
-        <header class="header">
-            <div><p class="eyebrow">NetOracle world model</p><h1>Risk forecast</h1></div>
-            <span class="model-status {% if not live_stream %}model-status-muted{% endif %}"><i></i>{% if live_stream %}Local capture · {{ forecast.live_events }} events{% else %}Waiting for local capture{% endif %}</span>
+<div class="no-app">
+    {% include "partials/app_sidebar.html" with nav_active="legacy" %}
+    <main class="no-main forecast-page no-legacy" id="main">
+        <header class="no-page-header">
+            <div>
+                <p class="no-eyebrow">Forecasting &middot; Legacy</p>
+                <h1>Risk Forecast <span class="no-badge no-badge-plain">Legacy</span></h1>
+            </div>
+            <div class="no-page-meta">
+                <span class="no-chip">{% if live_stream %}Local capture &middot; {{ forecast.live_events }} events{% else %}Waiting for local capture{% endif %}</span>
+            </div>
         </header>
+        <div class="no-callout" style="margin-bottom: 1rem;">
+            <span class="no-callout-title">Legacy forecast</span>
+            <p>This interface uses the legacy forecasting path and is retained for compatibility. For the authoritative submission path, use <a href="{% url 'dashboard:authoritative_forecast' %}"><strong>Authoritative Forecast</strong></a>.</p>
+        </div>
         <section class="forecast-panel" style="margin-bottom: 1.5rem;">
             <p>
                 <strong>This page is the legacy, NON-AUTHORITATIVE live-capture path</strong>

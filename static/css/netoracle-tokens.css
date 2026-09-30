@@ -1,0 +1,126 @@
+/* NetOracle design tokens - "Midnight Oracle" (black + yellow/gold).
+ *
+ * Foundation only: these --net-* tokens are not yet consumed by existing pages (which still use
+ * their legacy tokens in styles.css), so importing this file changes no page's appearance.
+ *
+ * Theme selection (all equivalent, so pages can migrate gradually):
+ *   dark   : default (:root), body.theme-dark, [data-theme="dark"]
+ *   light  : body.theme-light, [data-theme="light"]
+ *   system : body.theme-system, [data-theme="system"]  -> follows prefers-color-scheme
+ * The app currently emits body.theme-{light|dark} from the user profile; a "system" choice needs
+ * the profile/settings backend to accept it (not part of this foundation).
+ *
+ * Rules of use:
+ *   - --net-brand (yellow/gold) is the BRAND accent: logo, brand moments, primary brand buttons.
+ *     It is never a risk, warning, severity or data colour.
+ *   - Status uses the semantic tokens (success / warning / danger / info) with an icon or label.
+ *   - Yellow is not a text colour on light surfaces (#EAB308 on white is < 2:1); use --net-brand-text.
+ *   - Charts use --net-chart-* and --net-info, never --net-brand.
+ */
+
+:root,
+.theme-dark,
+[data-theme="dark"] {
+    /* surfaces */
+    --net-bg: #0A0A0A;
+    --net-surface: #141414;
+    --net-surface-raised: #1F1F1F;
+    --net-border: #3F3F46;
+    --net-border-subtle: #27272A;
+    /* text */
+    --net-text: #F8FAFC;
+    --net-text-secondary: #A1A1AA;
+    --net-text-muted: #71717A;
+    /* brand (accent, not status) */
+    --net-brand: #FACC15;
+    --net-brand-strong: #F59E0B;
+    --net-brand-text: #FACC15;          /* brand-coloured text that still passes AA on this theme */
+    --net-on-brand: #0A0A0A;            /* text/icons placed on a --net-brand fill */
+    /* semantic status (independent of brand) */
+    --net-success: #4ADE80;
+    --net-warning: #F59E0B;
+    --net-danger: #F87171;
+    --net-info: #60A5FA;
+    /* interaction */
+    --net-focus: #FACC15;
+    /* charts */
+    --net-chart-grid: #27272A;
+    --net-chart-axis: #A1A1AA;
+    --net-chart-series-1: #60A5FA;
+    --net-chart-series-2: #C084FC;
+    --net-chart-zone: #1B1B1D;
+    /* logo parts (used by inline SVG logos via fill="var(...)" or currentColor) */
+    --net-logo-ink: #F8FAFC;
+    --net-logo-accent: #FACC15;
+
+    /* typography + shape */
+    --net-font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --net-font-mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    --net-radius-sm: 0.375rem;
+    --net-radius-md: 0.6rem;
+    --net-radius-pill: 999px;
+    --net-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --net-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.theme-light,
+[data-theme="light"] {
+    --net-bg: #FAFAFA;
+    --net-surface: #FFFFFF;
+    --net-surface-raised: #F4F4F5;
+    --net-border: #D4D4D8;
+    --net-border-subtle: #E4E4E7;
+    --net-text: #18181B;
+    --net-text-secondary: #52525B;
+    --net-text-muted: #71717A;
+    --net-brand: #EAB308;
+    --net-brand-strong: #D97706;
+    --net-brand-text: #A16207;          /* yellow-700: AA on white; #EAB308 itself is not a text colour here */
+    --net-on-brand: #18181B;
+    --net-success: #15803D;
+    --net-warning: #B45309;
+    --net-danger: #B91C1C;
+    --net-info: #1D4ED8;
+    --net-focus: #A16207;
+    --net-chart-grid: #E4E4E7;
+    --net-chart-axis: #52525B;
+    --net-chart-series-1: #1D4ED8;
+    --net-chart-series-2: #7E22CE;
+    --net-chart-zone: #F4F4F5;
+    --net-logo-ink: #0A0A0A;
+    --net-logo-accent: #EAB308;
+    --net-shadow-sm: 0 1px 2px rgba(24, 24, 27, 0.08);
+    --net-shadow-md: 0 6px 18px rgba(24, 24, 27, 0.10);
+}
+
+@media (prefers-color-scheme: light) {
+    .theme-system,
+    [data-theme="system"] {
+        --net-bg: #FAFAFA;
+        --net-surface: #FFFFFF;
+        --net-surface-raised: #F4F4F5;
+        --net-border: #D4D4D8;
+        --net-border-subtle: #E4E4E7;
+        --net-text: #18181B;
+        --net-text-secondary: #52525B;
+        --net-text-muted: #71717A;
+        --net-brand: #EAB308;
+        --net-brand-strong: #D97706;
+        --net-brand-text: #A16207;
+        --net-on-brand: #18181B;
+        --net-success: #15803D;
+        --net-warning: #B45309;
+        --net-danger: #B91C1C;
+        --net-info: #1D4ED8;
+        --net-focus: #A16207;
+        --net-chart-grid: #E4E4E7;
+        --net-chart-axis: #52525B;
+        --net-chart-series-1: #1D4ED8;
+        --net-chart-series-2: #7E22CE;
+        --net-chart-zone: #F4F4F5;
+        --net-logo-ink: #0A0A0A;
+        --net-logo-accent: #EAB308;
+        --net-shadow-sm: 0 1px 2px rgba(24, 24, 27, 0.08);
+        --net-shadow-md: 0 6px 18px rgba(24, 24, 27, 0.10);
+    }
+}

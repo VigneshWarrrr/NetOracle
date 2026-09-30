@@ -2,43 +2,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | NetOracle</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Sign in | NetOracle</title>
+    {% include "partials/app_head.html" %}
 </head>
 <body class="theme-{{ current_theme }}">
-    <div class="auth-container">
-        <div class="auth-card">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <span class="brand-mark brand-mark-large" aria-label="NetOracle logo">NO</span>
-                <h1 class="fancy-logo" style="font-size: 2.5rem; margin-bottom: 0.5rem;">NetOracle</h1>
-                <p style="color: var(--text-secondary);">Security Intelligence Platform</p>
+    <main class="no-auth">
+        <div class="no-auth-card">
+            <div class="no-auth-brand">
+                <img class="no-on-dark" src="{% static 'img/branding/netoracle-mark-dark.svg' %}" alt="" width="56" height="56">
+                <img class="no-on-light" src="{% static 'img/branding/netoracle-mark-light.svg' %}" alt="" width="56" height="56">
+                <h1>NetOracle</h1>
+                <p>Network intelligence and attack forecasting</p>
             </div>
-            
-            <form method="post">
+
+            <form method="post" class="no-form no-stack">
                 {% csrf_token %}
-                
+
                 {% if form.errors %}
-                <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 0.75rem; border-radius: 0.75rem; margin-bottom: 1.5rem; font-size: 0.875rem;">
-                    Invalid username or password.
-                </div>
+                <div class="no-message no-message-error" role="alert">Invalid username or password.</div>
                 {% endif %}
 
-                <div class="form-group">
-                    <label for="id_username">Username</label>
+                <div class="no-field">
+                    <label class="no-label" for="id_username">Username</label>
                     <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username">
                 </div>
 
-                <div class="form-group">
-                    <label for="id_password">Password</label>
+                <div class="no-field">
+                    <label class="no-label" for="id_password">Password</label>
                     <input type="password" name="password" autocomplete="current-password" required="" id="id_password">
                 </div>
 
-                <button type="submit" class="btn">Sign In</button>
+                <button type="submit" class="no-btn no-btn-primary">Sign in</button>
             </form>
+            <p class="no-auth-foot">Offline forecasting prototype &middot; authorised users only</p>
         </div>
-    </div>
+    </main>
 </body>
 </html>

@@ -2,252 +2,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | NetOracle</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Overview | NetOracle</title>
+    {% include "partials/app_head.html" %}
 </head>
 <body class="theme-{{ current_theme }}">
-    <div class="dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-logo">
-                <span class="brand-mark" aria-label="NetOracle logo">NO</span>
-                <span class="fancy-logo" style="font-size: 1.5rem;">NetOracle</span>
-            </div>
-            
-            <nav>
-                {% if user.is_staff or user.is_superuser %}
-                <a href="{% url 'dashboard:index' %}" class="nav-item active">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    Dashboard
-                </a>
-                <a href="{% url 'dashboard:forecast' %}" class="nav-item">
-                    <span class="nav-mark">R</span>
-                    Risk Forecast
-                </a>
-                <a href="{% url 'dashboard:authoritative_forecast' %}" class="nav-item">
-                    <span class="nav-mark">A</span>
-                    Authoritative Forecast
-                </a>
-                <a href="{% url 'logs:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Logs
-                </a>
-                <a href="{% url 'alerts:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                    Alerts
-                </a>
-                <a href="{% url 'management:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    Users
-                </a>
-                <a href="{% url 'server:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2-2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
-                    Server
-                </a>
-                {% else %}
-                <a href="{% url 'users:dashboard' %}" class="nav-item active">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    Dashboard
-                </a>
-                {% endif %}
-                <a href="{% url 'api:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    API Engine
-                </a>
-                <a href="{% url 'settings_app:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    Settings
-                </a>
-            </nav>
+<div class="no-app">
+    {% include "partials/app_sidebar.html" with nav_active="overview" %}
 
-            <div style="margin-top: auto;">
-                <form action="{% url 'users:logout' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="nav-item" style="background: none; border: none; width: 100%; cursor: pointer;">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        Logout
-                    </button>
-                </form>
+    <main class="no-main" id="main">
+        <header class="no-page-header">
+            <div>
+                <p class="no-eyebrow">Forecasting &middot; Overview</p>
+                <h1>Overview</h1>
             </div>
-        </aside>
+            <div class="no-page-meta">
+                <span class="no-chip">Offline prototype &middot; replay data</span>
+            </div>
+        </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="header">
+        <section class="no-hero" aria-labelledby="hero-title">
+            <div>
+                <div class="no-hero-brand">
+                    <img class="no-on-dark" src="{% static 'img/branding/netoracle-mark-dark.svg' %}" alt="" width="44" height="44">
+                    <img class="no-on-light" src="{% static 'img/branding/netoracle-mark-light.svg' %}" alt="" width="44" height="44">
+                    <span class="no-hero-kicker">NETORACLE</span>
+                </div>
+                <h1 id="hero-title">Network intelligence and attack forecasting</h1>
+                <p class="no-hero-lede">An offline forecasting prototype for modeling temporal network state, future attack risk, and predicted MITRE ATT&amp;CK stages from prepared network telemetry.</p>
+                <p class="no-hero-detail">The model reads the six most recent 10-second network-state windows (t-5 &hellip; t, 157 features each) and forecasts the next six windows (t+1 &hellip; t+6): one whole-horizon attack-risk score, a six-step MITRE-stage trajectory, six predicted future network states, and Gradient &times; Input feature attribution.</p>
+                <div class="no-hero-actions">
+                    <a class="no-btn no-btn-primary" href="{% url 'dashboard:authoritative_forecast' %}">Open Authoritative Forecast <span aria-hidden="true">&rarr;</span></a>
+                    <a class="no-btn" href="{% url 'api:dashboard' %}#authoritative">Review evaluation</a>
+                </div>
+            </div>
+            <aside class="no-hero-side" aria-label="Model input and horizon">
+                <div class="no-stat"><span class="no-stat-label">Input</span><span class="no-stat-value">6 &times; 157</span><span class="no-stat-note">t-5 &hellip; t &middot; 10 s windows</span></div>
+                <div class="no-stat"><span class="no-stat-label">Forecast horizon</span><span class="no-stat-value">6 windows</span><span class="no-stat-note">t+1 &hellip; t+6 &middot; 10 s each</span></div>
                 <div>
-                    <p class="eyebrow">Network intelligence center</p>
-                    <h1>Attack forecast</h1>
-                </div>
-                <div style="display: flex; gap: 1.5rem; align-items: center;">
-                    <span style="color: var(--text-secondary);">Logged in as <strong>{{ user.username }}</strong></span>
-                    <form action="{% url 'users:logout' %}" method="post" style="margin: 0;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error);">
-                            Logout
-                        </button>
-                    </form>
-                </div>
-            </header>
-
-            <section class="forecast-hero">
-                <div class="forecast-hero-copy">
-                    <p class="eyebrow">NetOracle world model</p>
-                    <h2>Attack-risk forecasting<br><em>from network-flow windows.</em></h2>
-                    <p>The model reads the six most recent 10-second network-state windows (t-5 &hellip; t, 157 features each) and forecasts the next six windows (t+1 &hellip; t+6): one whole-horizon attack-risk score, a six-step MITRE-stage trajectory, six predicted future network states, and Gradient &times; Input feature attribution.</p>
                     {% if authoritative_artifacts_ready %}
-                    <span class="model-status"><i></i> Authoritative model artifacts found</span>
+                    <span class="no-status no-status-ok"><span class="no-status-mark" aria-hidden="true">&#10003;</span> Authoritative model artifacts found</span>
                     {% else %}
-                    <span class="model-status model-status-muted"><i></i> Authoritative model artifacts missing &mdash; see the checklist below</span>
+                    <span class="no-status no-status-missing"><span class="no-status-mark" aria-hidden="true">!</span> Authoritative model artifacts missing &mdash; see the checklist below</span>
                     {% endif %}
                 </div>
-                <div class="forecast-hero-signal">
-                    <span class="signal-label">Forecast horizon</span>
-                    <strong>6<small> windows</small></strong>
-                    <span class="signal-note">t+1 &hellip; t+6, 10 s each &middot; input: 6 &times; 157</span>
-                </div>
-            </section>
+            </aside>
+        </section>
 
-            <section class="forecast-panel forecast-panel-primary">
-                <div class="forecast-heading">
-                    <div>
-                        <p class="eyebrow">Authoritative output</p>
-                        <h2>What the model produces</h2>
+        <section class="no-section" aria-labelledby="cap-title">
+            <h2 class="no-section-title" id="cap-title">What the model produces</h2>
+            <div class="no-grid no-grid-4">
+                <article class="no-card no-cap-card">
+                    <span class="no-cap-index">01</span>
+                    <h3>Network state</h3>
+                    <p>157-feature temporal state representation, built from 10-second network-flow windows.</p>
+                </article>
+                <article class="no-card no-cap-card">
+                    <span class="no-cap-index">02</span>
+                    <h3>Future risk</h3>
+                    <p>Whole-horizon attack-risk score over the forecast window. One score for the whole horizon t+1 &hellip; t+6. It is not a six-element per-step series and it is not a calibrated probability.</p>
+                </article>
+                <article class="no-card no-cap-card">
+                    <span class="no-cap-index">03</span>
+                    <h3>MITRE trajectory</h3>
+                    <p>Six-step predicted stage trajectory from a six-class stage head (a reasoned label mapping, not MITRE ground truth).</p>
+                </article>
+                <article class="no-card no-cap-card">
+                    <span class="no-cap-index">04</span>
+                    <h3>Explainability</h3>
+                    <p>Gradient &times; Input feature attribution: post-hoc attribution of the model output to the observed input features.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="no-section" aria-labelledby="eval-title">
+            <h2 class="no-section-title" id="eval-title">Evaluation &amp; artifacts</h2>
+            <div class="no-grid no-grid-2">
+                <article class="no-card">
+                    <div class="no-card-head">
+                        <div>
+                            <h3 class="no-card-title">Held-out test replay</h3>
+                            <p class="no-card-sub">Replay demo &mdash; not live detection</p>
+                        </div>
+                        <span class="no-badge no-badge-info">Offline inference</span>
                     </div>
-                    <span class="badge badge-warning">Replay demo &mdash; not live detection</span>
-                </div>
-                <ul>
-                    <li><strong>Attack-risk score</strong> &mdash; one score for the whole horizon t+1 &hellip; t+6. It is not a six-element per-step series and it is not a calibrated probability.</li>
-                    <li><strong>MITRE-stage trajectory</strong> &mdash; a predicted stage for each of the six steps, from a six-class stage head (a reasoned label mapping, not MITRE ground truth).</li>
-                    <li><strong>Future-state rollout</strong> &mdash; six predicted 157-feature network states.</li>
-                    <li><strong>Explanation</strong> &mdash; post-hoc Gradient &times; Input feature attribution.</li>
-                </ul>
-                <p class="forecast-empty">The forecast page runs the model on a validated replay window taken from the held-out test split of the Phase 3.5 dataset. This dashboard does not perform live network detection. The first request loads the model and takes about 20 seconds.</p>
-                <table>
-                    <thead><tr><th>Artifact</th><th>Location</th><th>Status</th></tr></thead>
-                    <tbody>
+                    <p class="no-muted" style="margin: 0;">The forecast page runs the model on a validated replay window taken from the held-out test split of the Phase 3.5 dataset (6,195 samples, indices 0&ndash;6194). This dashboard does not perform live network detection.</p>
+                    <dl class="no-kv" style="margin-top: 14px;">
+                        <dt>Inference path</dt><dd>Authoritative (checkpoint-backed)</dd>
+                        <dt>Configuration</dt><dd>Frozen checkpoint and scaler; fixed 157-feature schema</dd>
+                        <dt>Reports</dt><dd>Phase validation reports under <code>experiments/results/</code></dd>
+                    </dl>
+                </article>
+                <article class="no-card">
+                    <div class="no-card-head">
+                        <div>
+                            <h3 class="no-card-title">Authoritative checkpoint</h3>
+                            <p class="no-card-sub">Model artifacts required by the authoritative inference path</p>
+                        </div>
+                    </div>
+                    <ul class="no-artifacts">
                         {% for item in authoritative_artifacts %}
-                        <tr>
-                            <td>{{ item.label }}</td>
-                            <td><code>{{ item.path }}</code></td>
-                            <td><span class="badge {% if item.present %}badge-success{% else %}badge-error{% endif %}">{% if item.present %}found{% else %}missing{% endif %}</span></td>
-                        </tr>
+                        <li>
+                            <span>{% if item.present %}<span class="no-badge no-badge-success">Found</span>{% else %}<span class="no-badge no-badge-danger">Missing</span>{% endif %}</span>
+                            <div>
+                                <span style="display: block; font-size: 13.5px;">{{ item.label }}</span>
+                                <code>{{ item.path }}</code>
+                            </div>
+                        </li>
                         {% endfor %}
-                    </tbody>
-                </table>
-                <p style="margin-top: 1rem;"><a class="btn" style="width: auto; display: inline-block;" href="{% url 'dashboard:authoritative_forecast' %}">Open the authoritative forecast</a></p>
-            </section>
-
-            <!-- Supporting telemetry -->
-            <div class="stats-grid stats-grid-supporting">
-                <div class="stat-card">
-                    <h3>Total Logs</h3>
-                    <div class="value">{{ total_logs }}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Active Alerts</h3>
-                    <div class="value" style="color: var(--error);">{{ active_alerts }}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>System Status</h3>
-                    <div class="value" style="color: var(--success);">Healthy</div>
-                </div>
+                    </ul>
+                </article>
             </div>
-
-            <!-- Recent Activity -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-                <!-- Logs Table -->
-                <div class="data-table-container">
-                    <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-                        <h2 style="font-size: 1.25rem;">Recent Logs</h2>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Event</th>
-                                <th>Severity</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for log in recent_logs %}
-                            <tr>
-                                <td style="color: var(--text-secondary);">{{ log.timestamp|date:"H:i:s" }}</td>
-                                <td style="font-weight: 600;">{{ log.event_type }}</td>
-                                <td>
-                                    <span class="badge {% if log.severity == 'CRITICAL' %}badge-error{% elif log.severity == 'WARNING' %}badge-warning{% else %}badge-success{% endif %}">
-                                        {{ log.severity }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr><td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No logs.</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Alerts Table -->
-                <div class="data-table-container">
-                    <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-                        <h2 style="font-size: 1.25rem;">Recent Alerts</h2>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>Rule</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for alert in all_alerts %}
-                            <tr>
-                                <td style="color: var(--text-secondary);">{{ alert.created_at|date:"H:i:s" }}</td>
-                                <td style="font-weight: 600;">{{ alert.rule_triggered }}</td>
-                                <td>
-                                    <span class="badge {% if alert.status == 'active' %}badge-error{% else %}badge-success{% endif %}">
-                                        {{ alert.status }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr><td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No alerts.</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Log Sources Table -->
-            <div class="data-table-container">
-                <div style="padding: 1.5rem;">
-                    <h2 style="font-size: 1.25rem;">Registered Log Sources</h2>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>IP Address</th>
-                            <th>Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for source in log_sources %}
-                        <tr>
-                            <td style="font-weight: 600;">{{ source.name }}</td>
-                            <td><code>{{ source.ip_address }}</code></td>
-                            <td>{{ source.source_type }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No sources.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
+        </section>
+    </main>
+</div>
 </body>
 </html>

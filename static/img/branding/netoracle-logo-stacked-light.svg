@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 176 124" role="img" aria-label="NetOracle">
+  <title>NetOracle</title>
+  <g transform="translate(56 4)">
+  <defs><mask id="nos-l" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><rect width="64" height="64" fill="#fff"/><circle cx="50.38" cy="50.38" r="8.2" fill="#000"/></mask></defs>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#0A0A0A" stroke-width="4" mask="url(#nos-l)"/>
+  <path d="M21 43V21L43 43V21" fill="none" stroke="#0A0A0A" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="50.38" cy="50.38" r="4.6" fill="#EAB308" stroke="#0A0A0A" stroke-width="1.4"/>
+  <circle cx="21" cy="43" r="3.6" fill="#EAB308" stroke="#0A0A0A" stroke-width="1.4"/>
+  <circle cx="43" cy="21" r="3.6" fill="#EAB308" stroke="#0A0A0A" stroke-width="1.4"/>
+  </g>
+  <text x="88" y="112" fill="#0A0A0A" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="700" letter-spacing="-0.4" text-anchor="middle" textLength="146" lengthAdjust="spacingAndGlyphs">NetOracle</text>
+</svg>

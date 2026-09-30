@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="NetOracle">
+  <title>NetOracle</title>
+  <rect width="32" height="32" rx="7" fill="#0A0A0A"/>
+  <defs><mask id="nof" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32"><rect width="32" height="32" fill="#fff"/><circle cx="24.13" cy="24.13" r="4.4" fill="#000"/></mask></defs>
+  <circle cx="16" cy="16" r="11.5" fill="none" stroke="#FACC15" stroke-width="2.6" mask="url(#nof)"/>
+  <path d="M11.2 20.8V11.2L20.8 20.8V11.2" fill="none" stroke="#F8FAFC" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="24.13" cy="24.13" r="2.5" fill="#FACC15"/>
+</svg>

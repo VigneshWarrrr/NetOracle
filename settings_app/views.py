@@ -29,7 +29,7 @@ class SettingsDashboardView(LoginRequiredMixin, View):
         
         elif 'update_theme' in request.POST:
             theme = request.POST.get('theme')
-            if theme in ['light', 'dark']:
+            if theme in dict(UserProfile.THEME_CHOICES):  # light / dark / system; anything else is ignored
                 profile = request.user.profile
                 profile.theme = theme
                 profile.save()

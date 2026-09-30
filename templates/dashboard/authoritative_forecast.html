@@ -2,54 +2,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authoritative Forecast | NetOracle</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=9l2">
+    {% include "partials/app_head.html" %}
 </head>
 <body class="theme-{{ current_theme }}">
-<div class="dashboard-layout">
-    <aside class="sidebar">
-        <div class="sidebar-logo"><span class="brand-mark">NO</span><span class="fancy-logo">NetOracle</span></div>
-        <nav>
-            <a href="{% url 'dashboard:index' %}" class="nav-item"><span class="nav-mark">⌂</span>Dashboard</a>
-            <a href="{% url 'dashboard:forecast' %}" class="nav-item"><span class="nav-mark">R</span>Risk Forecast (legacy)</a>
-            <a href="{% url 'dashboard:authoritative_forecast' %}" class="nav-item active"><span class="nav-mark">A</span>Authoritative Forecast</a>
-            <a href="{% url 'logs:dashboard' %}" class="nav-item"><span class="nav-mark">▤</span>Logs</a>
-            <a href="{% url 'alerts:dashboard' %}" class="nav-item"><span class="nav-mark">♧</span>Alerts</a>
-            {% if user.is_staff or user.is_superuser %}
-            <a href="{% url 'management:dashboard' %}" class="nav-item"><span class="nav-mark">♙</span>Users</a>
-            <a href="{% url 'server:dashboard' %}" class="nav-item"><span class="nav-mark">▣</span>Server</a>
-            {% endif %}
-            <a href="{% url 'api:dashboard' %}" class="nav-item"><span class="nav-mark">&gt;_</span>API Engine</a>
-            <a href="{% url 'settings_app:dashboard' %}" class="nav-item"><span class="nav-mark">⚙</span>Settings</a>
-        </nav>
-        <div style="margin-top: auto;">
-            <form action="{% url 'users:logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="nav-item" style="background: none; border: none; width: 100%; cursor: pointer;"><span class="nav-mark">↪</span>Logout</button>
-            </form>
-        </div>
-    </aside>
+<div class="dashboard-layout af-layout no-app">
+    {% include "partials/app_sidebar.html" with nav_active="authoritative" %}
     <main class="main-content forecast-page af-page">
         <header class="header af-header">
             <div><p class="eyebrow">NetOracle world model &middot; Phase 9K/9L</p><h1>Authoritative forecast</h1></div>
-            <span class="model-status"><i></i>{% if authoritative_available %}Authoritative model loaded{% else %}Unavailable{% endif %}</span>
+            <span class="model-status{% if not authoritative_available %} af-status-unavailable{% endif %}"><i></i>{% if authoritative_available %}Authoritative model loaded{% else %}Unavailable{% endif %}</span>
         </header>
 
         {% if authoritative_available %}
         {% with f=authoritative_forecast %}
+        <section class="af-replay" id="af-replay" hidden
+                 data-api-url="{% url 'api:authoritative_predict' %}" data-min-index="0" data-max-index="6194" data-index="0"
+                 aria-label="Test-sample replay">
+            <div class="af-replay-controls">
+                <button type="button" class="af-replay-btn" data-replay-action="prev">Previous</button>
+                <button type="button" class="af-replay-btn af-replay-play" data-replay-action="play" aria-pressed="false">Play</button>
+                <button type="button" class="af-replay-btn" data-replay-action="next">Next</button>
+            </div>
+            <label class="af-replay-range">
+                <span class="af-meta-label">Test sample index</span>
+                <input type="range" min="0" max="6194" step="1" value="0" data-replay-slider>
+            </label>
+            <p class="af-replay-index"><output data-replay-index>0</output><span> / 6194</span></p>
+            <p class="af-replay-status" role="status" aria-live="polite" data-replay-status>Showing test sample 0.</p>
+        </section>
+
         <section class="af-hero">
             <div class="af-hero-score">
                 <p class="eyebrow af-eyebrow-risk">ATTACK RISK</p>
                 <h2 class="af-score-label">Whole-horizon attack-risk score</h2>
-                <div class="af-score-value">{{ f.whole_horizon_attack_probability.value|floatformat:4 }}</div>
+                <div class="af-score-value" data-replay="score">{{ f.whole_horizon_attack_probability.value|floatformat:4 }}</div>
                 <span class="af-score-sub">Attack-risk score, whole horizon (t+1 &hellip; t+6)</span>
             </div>
             <div class="af-hero-stage">
                 <span class="af-meta-label">Overall predicted MITRE stage</span>
-                <strong class="af-hero-stage-name">{{ f.explanations.mitre_stage_prediction.overall_stage|default:"n/a" }}</strong>
-                <small class="af-meta-sub">confidence {{ f.explanations.mitre_stage_prediction.overall_confidence|floatformat:3 }}</small>
+                <strong class="af-hero-stage-name" data-replay="overall-stage">{{ f.explanations.mitre_stage_prediction.overall_stage|default:"n/a" }}</strong>
+                <small class="af-meta-sub">confidence <span data-replay="overall-confidence">{{ f.explanations.mitre_stage_prediction.overall_confidence|floatformat:3 }}</span></small>
             </div>
             <div class="af-hero-foot">
                 <div class="af-hero-disclosure">
@@ -62,8 +55,8 @@
                 </div>
                 <div class="af-hero-source">
                     <span class="af-meta-label">Source sample</span>
-                    <strong class="af-mono">{{ f.input_metadata.source_file }}</strong>
-                    <small class="af-meta-sub">{{ f.input_metadata.window_start }}</small>
+                    <strong class="af-mono" data-replay="source-file">{{ f.input_metadata.source_file }}</strong>
+                    <small class="af-meta-sub" data-replay="window-start">{{ f.input_metadata.window_start }}</small>
                 </div>
             </div>
         </section>
@@ -93,38 +86,126 @@
                 <p class="eyebrow">CURRENT STATE</p>
                 <h2 class="af-state-title">Observed state at window t</h2>
                 <div class="af-state-figure">
-                    <strong>{{ f.input_metadata.feature_count }}</strong>
-                    <p>features observed across {{ f.input_metadata.window_labels|length }} windows ({{ f.input_metadata.window_labels|join:", " }}).</p>
+                    <strong data-replay="feature-count">{{ f.input_metadata.feature_count }}</strong>
+                    <p>features observed across <span data-replay="window-count">{{ f.input_metadata.window_labels|length }}</span> windows (<span data-replay="window-labels">{{ f.input_metadata.window_labels|join:", " }}</span>).</p>
                 </div>
             </article>
 
             <article class="af-state">
                 <p class="eyebrow">FORECAST</p>
                 <h2 class="af-state-title">Six-step future state rollout</h2>
-                <p class="af-state-body">{{ f.future_state_rollout.note }}</p>
-                <p class="af-note">Horizon steps: {{ f.future_state_rollout.horizon_labels|join:", " }} (157-dim predicted state at each step; not rendered in full here to keep this page compact -- available via the API endpoint, <code>{% url 'api:authoritative_predict' %}</code>).</p>
+                <p class="af-state-body" data-replay="rollout-note">{{ f.future_state_rollout.note }}</p>
+                <p class="af-note">Horizon steps: <span data-replay="horizon-labels">{{ f.future_state_rollout.horizon_labels|join:", " }}</span> (157-dim predicted state at each step; not rendered in full here to keep this page compact -- available via the API endpoint, <code>{% url 'api:authoritative_predict' %}</code>).</p>
             </article>
+        </section>
+
+        <section class="af-section af-trajectory-section" id="af-trajectory" aria-labelledby="af-trajectory-title">
+            <div class="af-section-head af-trajectory-head">
+                <h2 id="af-trajectory-title">Network-state trajectory</h2>
+                <p class="af-trajectory-subtitle">Observed &rarr; forecast</p>
+            </div>
+            <div class="af-trajectory-panel">
+            <div class="af-trajectory-controls">
+                <div class="af-trajectory-field">
+                    <label class="af-trajectory-label" for="af-trajectory-feature">Feature</label>
+                    <select id="af-trajectory-feature" class="af-trajectory-select" disabled></select>
+                </div>
+                <span class="af-trajectory-key" aria-hidden="true">
+                    <span class="af-trajectory-key-item"><svg width="28" height="10"><line x1="1" y1="5" x2="27" y2="5" class="af-trajectory-key-observed"/><circle cx="14" cy="5" r="3.5" class="af-trajectory-key-observed-dot"/></svg>Observed input (t-5 &hellip; t)</span>
+                    <span class="af-trajectory-key-item"><svg width="28" height="10"><line x1="1" y1="5" x2="27" y2="5" class="af-trajectory-key-forecast"/><circle cx="14" cy="5" r="3.5" class="af-trajectory-key-forecast-dot"/></svg>Model-predicted state (t+1 &hellip; t+6)</span>
+                    <span class="af-trajectory-key-item" data-trajectory-key-negative hidden><svg width="14" height="14"><path d="M7 1L13 7L7 13L1 7Z" class="af-trajectory-key-negative"/></svg>Predicted value below 0</span>
+                </span>
+            </div>
+            <div class="af-trajectory-chart" data-trajectory-chart tabindex="0" aria-describedby="af-trajectory-summary">
+                <p class="af-trajectory-empty" data-trajectory-empty>The feature trajectory needs JavaScript; the values are in the API response.</p>
+            </div>
+            <p class="af-trajectory-summary" id="af-trajectory-summary" data-trajectory-summary></p>
+            </div>
+            <p class="af-note">The first six points are the input windows the model reads (t-5 &hellip; t). The last six are the model's predicted future network state (t+1 &hellip; t+6, <code>future_state_rollout.predicted_state_raw_units</code>) &mdash; a model output, not observed data. Values are plotted exactly as returned by the API, with straight segments and no smoothing; no line is drawn between t and t+1. Observed values are the API's scaler-reconstructed input (<code>explanations.temporal_evidence.raw_feature_values</code>, float32 inverse of the fitted scaler) and may differ slightly from the literal input; for some large-magnitude features a literal zero can appear as a small negative value.</p>
+            <details class="af-trajectory-table-wrap">
+                <summary>Show values table</summary>
+                <table class="af-trajectory-table">
+                    <thead><tr><th scope="col">Step</th><th scope="col">Series</th><th scope="col">Value (raw units)</th></tr></thead>
+                    <tbody data-trajectory-table></tbody>
+                </table>
+            </details>
+            {{ f.explanations.feature_names|json_script:"af-trajectory-names" }}
+            {{ f.explanations.temporal_evidence.raw_feature_values|json_script:"af-trajectory-observed" }}
+            {{ f.future_state_rollout.predicted_state_raw_units|json_script:"af-trajectory-predicted" }}
         </section>
 
         <section class="af-section af-trajectory">
             <div class="af-section-head"><p class="eyebrow">MITRE STAGE TRAJECTORY</p><h2>Predicted attack-stage trajectory</h2></div>
-            <ol class="af-timeline">
+            <ol class="af-timeline" data-replay="stage-steps">
             {% for step in mitre_stage_steps %}
                 <li class="af-timeline-row"><span class="af-step">{{ step.horizon_label }}</span><strong class="af-stage-name">{{ step.stage }}</strong><small class="af-stage-conf" title="Softmax confidence of the predicted stage class; this is not an attack risk">stage conf. {{ step.confidence|floatformat:3 }}</small></li>
             {% endfor %}
             </ol>
-            <p class="af-note">{{ f.mitre_stage_trajectory.semantics }}</p>
+            <p class="af-note" data-replay="stage-semantics">{{ f.mitre_stage_trajectory.semantics }}</p>
         </section>
 
         <section class="af-section af-explain">
             <div class="af-section-head"><p class="eyebrow">EXPLANATION</p><h2>Gradient-based feature attribution</h2></div>
-            <p class="af-section-body">Method: post-hoc <strong>{{ attribution_method|default:"Gradient &times; Input" }}</strong> feature attribution on the frozen checkpoint (no retraining, no surrogate model). The engine reports the exact method for every call.</p>
-            <p class="af-meta-label af-attr-caption">Top features for the attack-risk score (window t): raw value and share of the top feature</p>
-            <ol class="af-attr-list">
-            {% for row in attribution_rows %}
-                <li class="af-attr-row" style="--share: {{ row.relative_percent }}%"><span class="af-attr-rank">{{ row.rank }}</span><strong class="af-attr-name">{{ row.feature }}</strong><span class="af-attr-vals"><small class="af-attr-raw" title="Exact raw value: {{ row.raw }}">{{ row.display }}</small> &middot; <b class="af-attr-share">{{ row.relative_percent }}% of top</b></span><i class="af-attr-bar" aria-hidden="true"></i></li>
-            {% endfor %}
-            </ol>
+            <div class="af-explain-method">
+                <p class="af-section-body">Method: post-hoc <strong data-replay="attribution-method">{{ attribution_method|default:"Gradient &times; Input" }}</strong> feature attribution on the frozen checkpoint (no retraining, no surrogate model). The engine reports the exact method for every call.</p>
+                <p class="af-explain-unsigned">Attribution values in the API are unsigned magnitudes, so they show how strongly an input feature contributed to the model output, not the direction of that contribution.</p>
+            </div>
+
+            <div class="af-explain-grid">
+                <article class="af-explain-panel" aria-labelledby="af-explain-risk-title">
+                    <h3 class="af-explain-target" id="af-explain-risk-title">Whole-horizon attack-risk score</h3>
+                    <p class="af-meta-label af-attr-caption">Top features for the attack-risk score (window t): raw value and share of the top feature</p>
+                    <ol class="af-attr-list" data-replay="attribution-rows">
+                    {% for row in attribution_rows %}
+                        <li class="af-attr-row" style="--share: {{ row.relative_percent }}%"><span class="af-attr-rank">{{ row.rank }}</span><strong class="af-attr-name">{{ row.feature }}</strong><span class="af-attr-vals"><small class="af-attr-raw" title="Exact raw value: {{ row.raw }}">{{ row.display }}</small> &middot; <b class="af-attr-share">{{ row.relative_percent }}% of top</b></span><i class="af-attr-bar" aria-hidden="true"></i></li>
+                    {% endfor %}
+                    </ol>
+                </article>
+
+                <article class="af-explain-panel af-explain-panel-stage" id="af-explain-stage" aria-labelledby="af-explain-stage-title">
+                    <h3 class="af-explain-target" id="af-explain-stage-title">Predicted MITRE stage</h3>
+                    <p class="af-meta-label af-attr-caption">Top features for the predicted stage class <span data-explain="stage-class">&hellip;</span> at <span data-explain="stage-step">&hellip;</span> (window t): raw value and share of the top feature</p>
+                    <ol class="af-attr-list" data-explain="stage-rows">
+                        <li class="af-explain-empty">The stage attribution list needs JavaScript; the values are in the API response.</li>
+                    </ol>
+                    <p class="af-explain-panel-note">Method: <span data-explain="stage-method">&hellip;</span>. Explains the stage class the model predicts for that one horizon step.</p>
+                </article>
+            </div>
+
+            <div class="af-explain-temporal" id="af-explain-temporal" aria-labelledby="af-explain-temporal-title">
+                <div class="af-explain-temporal-head">
+                    <div>
+                        <h3 class="af-explain-target" id="af-explain-temporal-title">Temporal evidence &middot; observed windows t-5 &hellip; t</h3>
+                        <p class="af-explain-temporal-sub">Attribution of each list's top features across the six observed input windows. The model's predicted future states (t+1 &hellip; t+6) have no attribution.</p>
+                    </div>
+                    <div class="af-explain-toggle" role="group" aria-label="Attribution target">
+                        <button type="button" data-explain-target="risk" aria-pressed="true">Attack-risk score</button>
+                        <button type="button" data-explain-target="stage" aria-pressed="false">Predicted MITRE stage</button>
+                    </div>
+                </div>
+                <div class="af-explain-heatmap" data-explain="heatmap" role="img" aria-describedby="af-explain-heatmap-summary"></div>
+                <div class="af-explain-legend" data-explain="legend" aria-hidden="true"></div>
+                <p class="af-explain-heatmap-summary" id="af-explain-heatmap-summary" data-explain="heatmap-summary"></p>
+                <details class="af-explain-table-wrap">
+                    <summary>Show attribution values table</summary>
+                    <div class="af-explain-table-scroll">
+                        <table class="af-explain-table">
+                            <thead data-explain="table-head"></thead>
+                            <tbody data-explain="table-body"></tbody>
+                        </table>
+                    </div>
+                </details>
+            </div>
+
+            {{ f.explanations.feature_names|json_script:"af-explain-names" }}
+            {{ f.explanations.current_state_evidence.top_attack_risk_features|json_script:"af-explain-risk-top" }}
+            {{ f.explanations.current_state_evidence.top_stage_features|json_script:"af-explain-stage-top" }}
+            {{ f.explanations.temporal_evidence.attack_risk_attribution|json_script:"af-explain-risk-temporal" }}
+            {{ f.explanations.temporal_evidence.stage_attribution|json_script:"af-explain-stage-temporal" }}
+            {{ f.explanations.temporal_evidence.window_labels|json_script:"af-explain-windows" }}
+            {{ f.explanations.mitre_stage_prediction.explained_stage_class|json_script:"af-explain-stage-class" }}
+            {{ f.explanations.mitre_stage_prediction.explained_step_index|json_script:"af-explain-stage-step" }}
+            {{ f.explanations.mitre_stage_prediction.explanation_method|json_script:"af-explain-stage-method" }}
             <p class="af-note">
                 Values are magnitudes of (gradient of the risk score) &times; (scaled input). When the score is
                 saturated near 0 or 1 they are legitimately tiny (for example 1e-06), so a small number does
@@ -141,14 +222,14 @@
                 <p class="eyebrow">PROVENANCE</p>
                 <h2 class="af-ref-title">Model / checkpoint / run identity</h2>
                 <dl class="af-prov">
-                    <div><dt>Model</dt><dd>{{ f.provenance.model_identifier }}</dd></div>
-                    <div><dt>Checkpoint</dt><dd>{{ f.provenance.checkpoint_path }}</dd></div>
-                    <div><dt>Checkpoint SHA-256</dt><dd>{{ f.provenance.checkpoint_sha256|slice:":16" }}&hellip;</dd></div>
-                    <div><dt>Scaler SHA-256</dt><dd>{{ f.provenance.scaler_sha256|slice:":16" }}&hellip;</dd></div>
-                    <div><dt>Feature schema SHA-256</dt><dd>{{ f.provenance.feature_schema_sha256|slice:":16" }}&hellip;</dd></div>
-                    <div><dt>Code commit</dt><dd>{{ f.provenance.code_commit_hash|slice:":12" }}</dd></div>
-                    <div><dt>Device</dt><dd>{{ f.provenance.device }}</dd></div>
-                    <div><dt>Inference duration</dt><dd>{{ f.provenance.inference_duration_seconds|floatformat:4 }}s</dd></div>
+                    <div><dt>Model</dt><dd data-replay="prov-model">{{ f.provenance.model_identifier }}</dd></div>
+                    <div><dt>Checkpoint</dt><dd data-replay="prov-checkpoint">{{ f.provenance.checkpoint_path }}</dd></div>
+                    <div><dt>Checkpoint SHA-256</dt><dd><span data-replay="prov-checkpoint-sha">{{ f.provenance.checkpoint_sha256|slice:":16" }}</span>&hellip;</dd></div>
+                    <div><dt>Scaler SHA-256</dt><dd><span data-replay="prov-scaler-sha">{{ f.provenance.scaler_sha256|slice:":16" }}</span>&hellip;</dd></div>
+                    <div><dt>Feature schema SHA-256</dt><dd><span data-replay="prov-schema-sha">{{ f.provenance.feature_schema_sha256|slice:":16" }}</span>&hellip;</dd></div>
+                    <div><dt>Code commit</dt><dd data-replay="prov-commit">{{ f.provenance.code_commit_hash|slice:":12" }}</dd></div>
+                    <div><dt>Device</dt><dd data-replay="prov-device">{{ f.provenance.device }}</dd></div>
+                    <div><dt>Inference duration</dt><dd><span data-replay="prov-duration">{{ f.provenance.inference_duration_seconds|floatformat:4 }}</span>s</dd></div>
                 </dl>
             </article>
 
@@ -162,7 +243,7 @@
                     <li>No PCAP-derived model input (Phase 9H/9I).</li>
                     <li>No unseen-attack-generalization claim.</li>
                     <li>No uncertainty quantification or counterfactual simulation.</li>
-                    <li>This page shows a fixed, already-validated demonstration sample, not live network data (see the explanation banner above).</li>
+                    <li>This page replays already-validated samples from the held-out test split, not live network data; it does not perform live network detection.</li>
                 </ul>
             </article>
         </section>
@@ -175,5 +256,8 @@
         {% endif %}
     </main>
 </div>
+{% if authoritative_available %}<script src="{% static 'js/authoritative_trajectory.js' %}?v=3" defer></script>
+<script src="{% static 'js/authoritative_explain.js' %}?v=2" defer></script>
+<script src="{% static 'js/authoritative_replay.js' %}?v=2" defer></script>{% endif %}
 </body>
 </html>

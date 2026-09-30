@@ -68,6 +68,9 @@ class APIDashboardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Presentation only: authoritative artifact availability (file-existence check, no model load).
+        from dashboard.views import get_authoritative_artifact_status
+        context.update(get_authoritative_artifact_status())
         context['connectors'] = ExternalDatabase.objects.filter(user=self.request.user)
         # Mock "database table" logs for the first connector
         if context['connectors'].exists():

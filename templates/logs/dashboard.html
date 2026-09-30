@@ -1,278 +1,118 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logs | NetOracle</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .ingestion-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .ingestion-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-        }
-
-        .upload-zone {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 1rem 0;
-        }
-
-        .upload-zone:hover {
-            border-color: var(--accent);
-            background: rgba(56, 189, 248, 0.05);
-        }
-
-        pre {
-            background: #000;
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            color: #d1d5db;
-            font-size: 0.75rem;
-            margin-top: 0.5rem;
-        }
-
-        code {
-            color: #ec4899;
-        }
-    </style>
+    {% include "partials/app_head.html" %}
 </head>
-
 <body class="theme-{{ current_theme }}">
-    <div class="dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-logo">
-                <span
-                    class="brand-mark" aria-label="NetOracle logo">NO</span>
-                <span class="fancy-logo" style="font-size: 1.5rem;">NetOracle</span>
+<div class="no-app">
+    {% include "partials/app_sidebar.html" with nav_active="logs" %}
+
+    <main class="no-main" id="main">
+        <header class="no-page-header">
+            <div>
+                <p class="no-eyebrow">Operations &middot; Logs</p>
+                <h1>Network Logs</h1>
+                <p class="no-page-desc">Inspect available telemetry records and prepared network observations. Records come from files uploaded here or submitted to the ingestion API; there is no continuous capture.</p>
             </div>
+            <div class="no-page-meta">
+                <span class="no-chip">{% if page_obj %}{{ page_obj.paginator.count }}{% else %}{{ logs|length }}{% endif %} record{% if page_obj %}{{ page_obj.paginator.count|pluralize }}{% else %}{{ logs|length|pluralize }}{% endif %}{% if request.GET.severity or request.GET.src_ip %} (filtered){% endif %}</span>
+            </div>
+        </header>
 
-            <nav>
-                <a href="{% url 'dashboard:index' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                        </path>
-                    </svg>
-                    Dashboard
-                </a>
-                <a href="{% url 'dashboard:forecast' %}" class="nav-item"><span class="nav-mark">R</span> Risk Forecast</a>
-                <a href="{% url 'logs:dashboard' %}" class="nav-item active">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
-                    Logs
-                </a>
-                <a href="{% url 'alerts:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                        </path>
-                    </svg>
-                    Alerts
-                </a>
-                {% if user.is_staff or user.is_superuser %}
-                <a href="{% url 'management:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
-                        </path>
-                    </svg>
-                    Users
-                </a>
-                <a href="{% url 'server:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2-2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01">
-                        </path>
-                    </svg>
-                    Server
-                </a>
-                {% endif %}
-                <a href="{% url 'api:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                        </path>
-                    </svg>
-                    API Engine
-                </a>
-                <a href="{% url 'settings_app:dashboard' %}" class="nav-item">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                        </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    Settings
-                </a>
-            </nav>
+        {% include "partials/app_messages.html" %}
 
-            <div style="margin-top: auto;">
-                <form action="{% url 'users:logout' %}" method="post">
+        <div class="no-grid no-grid-2">
+            <section class="no-card" aria-labelledby="upload-title">
+                <h2 class="no-card-title" id="upload-title">Upload log files</h2>
+                <p class="no-card-sub">CSV, JSON, TXT or PDF. Each file is parsed into log records and checked against the detection rules.</p>
+                <form action="{% url 'logs:dashboard' %}" method="post" enctype="multipart/form-data" class="no-form" style="margin-top: 14px;">
                     {% csrf_token %}
-                    <button type="submit" class="nav-item"
-                        style="background: none; border: none; width: 100%; cursor: pointer;">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                            </path>
-                        </svg>
-                        Logout
-                    </button>
+                    <label class="no-label" for="adminFileInput">Files</label>
+                    <input type="file" id="adminFileInput" name="log_file" class="no-file" accept=".csv,.json,.txt,.pdf" multiple required style="margin-top: 6px;">
+                    <div class="no-actions" style="margin-top: 12px;"><button type="submit" class="no-btn no-btn-primary">Upload and parse</button></div>
+                </form>
+            </section>
+            <section class="no-card" aria-labelledby="ingest-title">
+                <h2 class="no-card-title" id="ingest-title">Ingestion API</h2>
+                <p class="no-card-sub">Authenticated endpoint for submitting individual log records.</p>
+                <p style="margin: 14px 0 8px;"><code>POST {% url 'api:ingest' %}</code></p>
+                <pre class="no-pre" style="border: 1px solid var(--net-border-subtle); border-radius: 7px;">curl -X POST http://127.0.0.1:8000{% url 'api:ingest' %} \
+  -H "Content-Type: application/json" \
+  -d '{"event_type":"Failed Login","severity":"HIGH","src_ip":"192.168.1.1"}'</pre>
+            </section>
+        </div>
+
+        <section class="no-card no-card-flush no-section" aria-labelledby="records-title">
+            <div class="no-card-head">
+                <div>
+                    <h2 class="no-card-title" id="records-title">Log records</h2>
+                    <p class="no-card-sub">Newest first, 50 per page.{% if not user.is_staff %} Showing your own records.{% endif %}</p>
+                </div>
+                <form method="get" class="no-form no-form-row no-filter-bar" role="search" aria-label="Filter log records" style="gap: 8px;">
+                    <div class="no-field" style="flex: 0 1 11rem;">
+                        <label class="no-label" for="f-severity">Severity</label>
+                        <select id="f-severity" name="severity">
+                            <option value="">All severities</option>
+                            <option value="LOW" {% if request.GET.severity == 'LOW' %}selected{% endif %}>Low</option>
+                            <option value="MEDIUM" {% if request.GET.severity == 'MEDIUM' %}selected{% endif %}>Medium</option>
+                            <option value="HIGH" {% if request.GET.severity == 'HIGH' %}selected{% endif %}>High</option>
+                            <option value="CRITICAL" {% if request.GET.severity == 'CRITICAL' %}selected{% endif %}>Critical</option>
+                        </select>
+                    </div>
+                    <div class="no-field" style="flex: 0 1 11rem;">
+                        <label class="no-label" for="f-src">Source IP</label>
+                        <input id="f-src" name="src_ip" type="text" inputmode="decimal" placeholder="e.g. 192.168.1.1" value="{{ request.GET.src_ip|default:'' }}">
+                    </div>
+                    <div class="no-actions">
+                        <button type="submit" class="no-btn">Apply</button>
+                        {% if request.GET.severity or request.GET.src_ip %}<a class="no-btn no-btn-ghost" href="{% url 'logs:dashboard' %}">Clear</a>{% endif %}
+                    </div>
                 </form>
             </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="header">
-                <h1>Log Management</h1>
-                <div style="display: flex; gap: 1.5rem; align-items: center;">
-                    <span style="color: var(--text-secondary);">Logged in as <strong>{{ user.username }}</strong></span>
-                    <form action="{% url 'users:logout' %}" method="post" style="margin: 0;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn"
-                            style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error);">
-                            Logout
-                        </button>
-                    </form>
-                </div>
-            </header>
-
-            {% if messages %}
-            <div style="margin-bottom: 1.5rem;">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <!-- Ingestion Section -->
-            <div class="ingestion-grid">
-                <div class="ingestion-card">
-                    <h2 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Manual Ingestion</h2>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Upload CSV/JSON/TXT files for instant
-                        threat analysis.</p>
-                    <form action="{% url 'logs:dashboard' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="upload-zone" id="drop-zone" onclick="document.getElementById('adminFileInput').click()">
-                        <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--accent); margin-bottom: 1rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                        <p style="font-weight: 600;">Click to upload or drag and drop</p>
-                        <p style="color: var(--text-secondary); font-size: 0.875rem;">Supported formats: CSV, JSON, TXT, PDF</p>
-                    </div>
-                        <input type="file" id="adminFileInput" name="log_file" style="display: none;"
-                            onchange="this.form.submit()" multiple>
-                    </form>
-                </div>
-
-                <div class="ingestion-card">
-                    <h2 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Real-time API</h2>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Automated ingestion endpoint for remote
-                        agents.</p>
-                    <div style="margin-top: 1rem;">
-                        <code style="font-size: 0.8rem; font-weight: 600;">POST /api/ingest/</code>
-                        <pre style="margin-bottom: 0;">curl -X POST http://127.0.0.1:8000/api/ingest/ \
--H "Content-Type: application/json" \
--d '{"event_type":"Failed Login","severity":"HIGH","src_ip":"192.168.1.1"}'</pre>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Logs Table -->
-            <div class="data-table-container">
-                <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-                    <h2 style="font-size: 1.25rem;">System Logs</h2>
-                    <div style="display: flex; gap: 1rem;">
-                        <form method="get" style="display: flex; gap: 0.5rem;">
-                            <select name="severity" onchange="this.form.submit()"
-                                style="padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-primary);">
-                                <option value="">All Severities</option>
-                                <option value="LOW" {% if request.GET.severity == 'LOW' %}selected{% endif %}>Low</option>
-                                <option value="MEDIUM" {% if request.GET.severity == 'MEDIUM' %}selected{% endif %}>Medium
-                                </option>
-                                <option value="HIGH" {% if request.GET.severity == 'HIGH' %}selected{% endif %}>High
-                                </option>
-                                <option value="CRITICAL" {% if request.GET.severity == 'CRITICAL' %}selected{% endif %}>
-                                    Critical</option>
-                            </select>
-                        </form>
-                    </div>
-                </div>
-                <table>
+            {% if logs %}
+            <div class="no-table-wrap">
+                <table class="no-table">
                     <thead>
                         <tr>
-                            <th>Timestamp</th>
-                            <th>Source</th>
-                            <th>Event Type</th>
-                            <th>Severity</th>
-                            <th>Src IP</th>
-                            <th>Dest IP</th>
+                            <th scope="col">Timestamp</th>
+                            <th scope="col">Source</th>
+                            <th scope="col">Event type</th>
+                            <th scope="col">Severity</th>
+                            <th scope="col">Source IP</th>
+                            <th scope="col">Destination IP</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for log in logs %}
                         <tr>
-                            <td style="color: var(--text-secondary);">{{ log.timestamp|date:"Y-m-d H:i:s" }}</td>
-                            <td>{{ log.source.name }}</td>
+                            <td class="no-nowrap no-muted no-mono">{{ log.timestamp|date:"Y-m-d H:i:s" }}</td>
+                            <td>{{ log.source.name|default:"—" }}</td>
                             <td style="font-weight: 600;">{{ log.event_type }}</td>
-                            <td>
-                                <span
-                                    class="badge {% if log.severity == 'CRITICAL' %}badge-error{% elif log.severity == 'HIGH' %}badge-error{% elif log.severity == 'MEDIUM' %}badge-warning{% else %}badge-success{% endif %}">
-                                    {{ log.severity }}
-                                </span>
-                            </td>
-                            <td><code>{{ log.src_ip }}</code></td>
-                            <td><code>{{ log.dest_ip }}</code></td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No
-                                logs found.</td>
+                            <td><span class="no-badge {% if log.severity == 'CRITICAL' or log.severity == 'HIGH' %}no-badge-danger{% elif log.severity == 'MEDIUM' %}no-badge-warning{% else %}no-badge-info{% endif %}">{{ log.severity }}</span></td>
+                            <td class="no-mono">{{ log.src_ip }}</td>
+                            <td class="no-mono">{{ log.dest_ip }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-
-                {% if is_paginated %}
-                <div style="padding: 1rem; display: flex; justify-content: center; gap: 0.5rem;">
-                    {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.severity %}&severity={{ request.GET.severity }}{% endif %}"
-                        class="nav-item" style="padding: 0.5rem 1rem;">Previous</a>
-                    {% endif %}
-                    <span style="padding: 0.5rem 1rem; color: var(--text-secondary);">Page {{ page_obj.number }} of {{
-                        page_obj.paginator.num_pages }}</span>
-                    {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.severity %}&severity={{ request.GET.severity }}{% endif %}"
-                        class="nav-item" style="padding: 0.5rem 1rem;">Next</a>
-                    {% endif %}
-                </div>
-                {% endif %}
             </div>
-        </main>
-    </div>
-</body>
+            {% else %}
+            <div class="no-empty"><strong>No log records{% if request.GET.severity or request.GET.src_ip %} match these filters{% else %} yet{% endif %}.</strong>{% if request.GET.severity or request.GET.src_ip %}Clear the filters to see all records.{% else %}Upload a file above or submit records to the ingestion API.{% endif %}</div>
+            {% endif %}
 
+            {% if is_paginated %}
+            <nav class="no-pager" aria-label="Pagination">
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                <span class="no-actions">
+                    {% if page_obj.has_previous %}<a class="no-btn no-btn-sm" href="?page={{ page_obj.previous_page_number }}{% if request.GET.severity %}&amp;severity={{ request.GET.severity|urlencode }}{% endif %}{% if request.GET.src_ip %}&amp;src_ip={{ request.GET.src_ip|urlencode }}{% endif %}">Previous</a>{% endif %}
+                    {% if page_obj.has_next %}<a class="no-btn no-btn-sm" href="?page={{ page_obj.next_page_number }}{% if request.GET.severity %}&amp;severity={{ request.GET.severity|urlencode }}{% endif %}{% if request.GET.src_ip %}&amp;src_ip={{ request.GET.src_ip|urlencode }}{% endif %}">Next</a>{% endif %}
+                </span>
+            </nav>
+            {% endif %}
+        </section>
+    </main>
+</div>
+</body>
 </html>

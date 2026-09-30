@@ -1,0 +1,72 @@
+{% load static %}{# Shared NetOracle navigation. Usage: {% include "partials/app_sidebar.html" with nav_active="logs" %} #}
+{% with staff=user.is_staff|default:user.is_superuser %}
+<aside class="no-sidebar" aria-label="NetOracle navigation">
+    <a class="no-brand" href="{% if staff %}{% url 'dashboard:index' %}{% else %}{% url 'users:dashboard' %}{% endif %}" aria-label="NetOracle home">
+        <img class="no-on-dark" src="{% static 'img/branding/netoracle-mark-dark.svg' %}" alt="" width="30" height="30">
+        <img class="no-on-light" src="{% static 'img/branding/netoracle-mark-light.svg' %}" alt="" width="30" height="30">
+        <span><span class="no-brand-word">NetOracle</span><span class="no-brand-sub">Network intelligence</span></span>
+    </a>
+
+    <nav class="no-nav" aria-label="Primary">
+        <p class="no-nav-group">Forecasting</p>
+        <a class="no-nav-link" href="{% if staff %}{% url 'dashboard:index' %}{% else %}{% url 'users:dashboard' %}{% endif %}"{% if nav_active == "overview" %} aria-current="page"{% endif %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            Overview
+        </a>
+        {% if staff %}
+        <a class="no-nav-link" href="{% url 'dashboard:authoritative_forecast' %}"{% if nav_active == "authoritative" %} aria-current="page"{% endif %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+            Authoritative Forecast
+        </a>
+        <a class="no-nav-link no-nav-legacy" href="{% url 'dashboard:forecast' %}"{% if nav_active == "legacy" %} aria-current="page"{% endif %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>
+            Risk Forecast <span class="no-tag">Legacy</span>
+        </a>
+        {% endif %}
+
+        <p class="no-nav-group">Operations</p>
+        <a class="no-nav-link" href="{% url 'logs:dashboard' %}"{% if nav_active == "logs" %} aria-current="page"{% endif %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8M8 9h2"/></svg>
+            Logs
+        </a>
+        <a class="no-nav-link" href="{% url 'alerts:dashboard' %}"{% if nav_active == "alerts" %} aria-current="page"{% endif %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            Alerts
+        </a>
+
+        <p class="no-nav-group">System</p>
+        {% if staff %}
+        <a class="no-nav-link" href="{% url 'management:dashboard' %}"{% if nav_active == "users" %} aria-current="page"{% endif %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Users
+        </a>
+        <a class="no-nav-link" href="{% url 'server:dashboard' %}"{% if nav_active == "server" %} aria-current="page"{% endif %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M6 7h.01M6 17h.01"/></svg>
+            Server
+        </a>
+        {% endif %}
+        <a class="no-nav-link" href="{% url 'api:dashboard' %}"{% if nav_active == "api" %} aria-current="page"{% endif %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg>
+            API Engine
+        </a>
+        <a class="no-nav-link" href="{% url 'settings_app:dashboard' %}"{% if nav_active == "settings" %} aria-current="page"{% endif %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+            Settings
+        </a>
+    </nav>
+
+    <div class="no-sidebar-foot">
+        <div class="no-user">
+            <span class="no-avatar" aria-hidden="true">{{ user.username|slice:":1" }}</span>
+            <span style="min-width: 0;"><span class="no-user-name">{{ user.username }}</span><span class="no-user-role">{% if user.is_superuser %}Superuser{% elif user.is_staff %}Staff{% else %}User{% endif %} &middot; <a href="{% url 'settings_app:dashboard' %}" class="no-muted">Theme: {{ current_theme|capfirst }}</a></span></span>
+        </div>
+        <form action="{% url 'users:logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="no-nav-link no-logout">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Log out
+            </button>
+        </form>
+    </div>
+</aside>
+{% endwith %}
