@@ -115,6 +115,8 @@ python -m pip install -r requirements.txt
 
 ## Database setup
 
+After cloning the repository, the local database may be empty or not exist yet. Run migrations before starting the server; this creates Django's built-in tables, including `django_session`, which is required for login and sessions.
+
 ```powershell
 python manage.py migrate
 python manage.py createsuperuser
